@@ -840,8 +840,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
         session.write(script);
     }
-        session.write(script);
-    }
 
     private void setupRightSidebar() {
             // Fallback for old sidebar buttons if container is missing
