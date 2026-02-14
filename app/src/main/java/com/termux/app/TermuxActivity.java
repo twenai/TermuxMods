@@ -767,17 +767,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mExtraKeysView = extraKeysView;
     }
 
-    private void setupRightSidebar() {
-        Button btnPrompt = findViewById(R.id.btn_prompt);
-        Button btnLogo = findViewById(R.id.btn_logo);
-        Button btnBackground = findViewById(R.id.btn_background);
-        Button btnReset = findViewById(R.id.btn_reset);
-
-        btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-        btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-        btnBackground.setOnClickListener(v -> setCustomBackground());
-        btnReset.setOnClickListener(v -> executeScriptPart("reset"));
-    }
 
     private void executeScriptPart(String part) {
         TerminalSession session = getCurrentSession();
@@ -802,7 +791,12 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setCustomBackground() {
-        setTerminalBackground(ContextCompat.getDrawable(this, R.id.terminal_view).getContext().getResources().getDrawable(R.drawable.terminal_bg_custom));
+        if (mTerminalView != null) {
+            android.graphics.drawable.Drawable drawable = ContextCompat.getDrawable(this, R.drawable.terminal_bg_custom);
+            if (drawable != null) {
+                setTerminalBackground(drawable);
+            }
+        }
     }
 
     private void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
@@ -828,7 +822,20 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     private void setupRightSidebar() {
         GridLayout container = findViewById(R.id.commands_container);
-        if (container == null) return;
+        if (container == null) {
+            // Fallback for old sidebar buttons if container is missing
+            Button btnPrompt = findViewById(R.id.btn_prompt);
+            if (btnPrompt != null) {
+                btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
+                Button btnLogo = findViewById(R.id.btn_logo);
+                if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
+                Button btnBackground = findViewById(R.id.btn_background);
+                if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
+                Button btnReset = findViewById(R.id.btn_reset);
+                if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
+            }
+            return;
+        }
         container.removeAllViews();
 
         // Section: Info
