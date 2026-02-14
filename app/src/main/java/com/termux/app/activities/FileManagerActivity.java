@@ -1,5 +1,6 @@
 package com.termux.app.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -16,8 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.termux.R;
 import com.termux.shared.termux.TermuxConstants;
 
@@ -33,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FileManagerActivity extends AppCompatActivity {
+public class FileManagerActivity extends Activity {
 
     private TextView pathView;
     private ListView listView;
@@ -61,6 +60,7 @@ public class FileManagerActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
+        findViewById(R.id.file_manager_btn_back).setOnClickListener(v -> finish());
         Button btnUp = findViewById(R.id.file_manager_btn_up);
         Button btnHome = findViewById(R.id.file_manager_btn_home);
         Button btnNewFolder = findViewById(R.id.file_manager_btn_new_folder);
@@ -133,10 +133,8 @@ public class FileManagerActivity extends AppCompatActivity {
                     int children = file.list() == null ? 0 : file.list().length;
                     details = getString(R.string.file_manager_folder_details, children);
                 } else {
-                    details = getString(
-                        R.string.file_manager_file_details,
-                        Formatter.formatFileSize(FileManagerActivity.this, file.length())
-                    );
+                    details = getString(R.string.file_manager_file_details,
+                        Formatter.formatFileSize(FileManagerActivity.this, file.length()));
                 }
                 metaView.setText(details);
                 return view;
@@ -160,10 +158,10 @@ public class FileManagerActivity extends AppCompatActivity {
 
         int title = isFolder ? R.string.file_manager_dialog_new_folder : R.string.file_manager_dialog_new_file;
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(title)
             .setView(input)
-            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            .setPositiveButton(android.R.string.ok, (whichDialog, which) -> {
                 String name = input.getText().toString().trim();
                 if (name.isEmpty()) return;
 
@@ -179,7 +177,8 @@ public class FileManagerActivity extends AppCompatActivity {
                 refreshList();
             })
             .setNegativeButton(android.R.string.cancel, null)
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void showEntryActionDialog(File file) {
@@ -191,9 +190,9 @@ public class FileManagerActivity extends AppCompatActivity {
             getString(R.string.file_manager_action_show_info)
         };
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(file.getName())
-            .setItems(actions, (dialog, which) -> {
+            .setItems(actions, (whichDialog, which) -> {
                 if (which == 0) {
                     showRenameDialog(file);
                 } else if (which == 1) {
@@ -210,17 +209,18 @@ public class FileManagerActivity extends AppCompatActivity {
                     showFileInfo(file);
                 }
             })
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void showRenameDialog(File file) {
         EditText input = new EditText(this);
         input.setText(file.getName());
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.file_manager_action_rename)
             .setView(input)
-            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            .setPositiveButton(android.R.string.ok, (whichDialog, which) -> {
                 String newName = input.getText().toString().trim();
                 if (newName.isEmpty()) return;
                 File target = new File(file.getParentFile(), newName);
@@ -229,20 +229,22 @@ public class FileManagerActivity extends AppCompatActivity {
                 refreshList();
             })
             .setNegativeButton(android.R.string.cancel, null)
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void showDeleteDialog(File file) {
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.file_manager_action_delete)
             .setMessage(getString(R.string.file_manager_delete_confirm, file.getName()))
-            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            .setPositiveButton(android.R.string.ok, (whichDialog, which) -> {
                 boolean success = deleteRecursive(file);
                 toast(success ? getString(R.string.file_manager_success_delete) : getString(R.string.file_manager_error_delete));
                 refreshList();
             })
             .setNegativeButton(android.R.string.cancel, null)
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void showFileOptionsDialog(File file) {
@@ -252,9 +254,9 @@ public class FileManagerActivity extends AppCompatActivity {
             getString(R.string.file_manager_action_delete)
         };
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(file.getName())
-            .setItems(actions, (dialog, which) -> {
+            .setItems(actions, (whichDialog, which) -> {
                 if (which == 0) {
                     showFileInfo(file);
                 } else if (which == 1) {
@@ -263,7 +265,8 @@ public class FileManagerActivity extends AppCompatActivity {
                     showDeleteDialog(file);
                 }
             })
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void showFileInfo(File file) {
@@ -277,11 +280,12 @@ public class FileManagerActivity extends AppCompatActivity {
             lastModified
         );
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.file_manager_action_show_info)
             .setMessage(info)
             .setPositiveButton(android.R.string.ok, null)
-            .show();
+            .create();
+        showSmoothDialog(dialog);
     }
 
     private void pasteClipboard() {
@@ -343,6 +347,13 @@ public class FileManagerActivity extends AppCompatActivity {
             return true;
         } catch (IOException e) {
             return false;
+        }
+    }
+
+    private void showSmoothDialog(AlertDialog dialog) {
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
     }
 

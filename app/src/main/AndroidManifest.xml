@@ -100,7 +100,7 @@
             android:name=".app.activities.FileManagerActivity"
             android:exported="false"
             android:label="@string/file_manager_title"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/Theme.Termux" />
 
         <activity
             android:name=".shared.activities.ReportActivity"

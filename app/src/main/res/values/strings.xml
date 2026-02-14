@@ -247,11 +247,13 @@
     <string name="termuxmods_action_sidebar_settings">SETTING</string>
     <string name="termuxmods_toast_no_file_manager">No file manager app found</string>
     <string name="termuxmods_info_title">Info Termux</string>
-    <string name="termuxmods_info_message">Termux Mods sidebar shortcuts
+    <string name="termuxmods_info_message">Termux Info
 
-• File Manager: buka penyimpanan perangkat
-• Info Termux: lihat info versi aplikasi
-• Setting: buka halaman pengaturan aplikasi</string>
+Version: %1$s
+
+• File Manager membuka pengelola file internal Termux.
+• Info Termux menampilkan informasi aplikasi.
+• Setting membuka halaman pengaturan.</string>
 
 
     <string name="termuxmods_packages">PACKAGES</string>
@@ -268,6 +270,7 @@
 
     <!-- Termux File Manager -->
     <string name="file_manager_title">Termux File Manager</string>
+    <string name="file_manager_back">Back</string>
     <string name="file_manager_current_path">Path: %1$s</string>
     <string name="file_manager_up">UP</string>
     <string name="file_manager_home">HOME</string>

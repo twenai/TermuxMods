@@ -994,12 +994,16 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         } catch (PackageManager.NameNotFoundException ignored) {
         }
 
-        String infoText = getString(R.string.termuxmods_info_message) + "\n\nVersion: " + versionName;
-        new AlertDialog.Builder(this)
+        String infoText = getString(R.string.termuxmods_info_message, versionName);
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.termuxmods_info_title)
             .setMessage(infoText)
             .setPositiveButton(android.R.string.ok, null)
-            .show();
+            .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
     }
 
     private void openSidebarSettings() {

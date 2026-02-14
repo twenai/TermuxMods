@@ -2,8 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     android:orientation="vertical"
     android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/file_manager_btn_back"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/btn_glass_rounded"
+            android:contentDescription="@string/file_manager_back"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back_material"
+            android:tint="@color/text_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/file_manager_title"
+            android:textColor="@color/text_white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/file_manager_path"
@@ -13,7 +41,7 @@
         android:ellipsize="middle"
         android:maxLines="1"
         android:padding="10dp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/text_white"
         android:textSize="13sp"
         android:textStyle="bold" />
 
@@ -39,6 +67,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_up"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
 
             <Button
@@ -51,6 +80,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_home"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
 
             <Button
@@ -63,6 +93,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_new_folder"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
 
             <Button
@@ -75,6 +106,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_new_file"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
 
             <Button
@@ -87,6 +119,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_paste"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
 
             <Button
@@ -99,6 +132,7 @@
                 android:paddingHorizontal="10dp"
                 android:text="@string/file_manager_refresh"
                 android:textAllCaps="false"
+                android:textColor="@color/text_white"
                 android:textSize="11sp" />
         </LinearLayout>
     </HorizontalScrollView>
