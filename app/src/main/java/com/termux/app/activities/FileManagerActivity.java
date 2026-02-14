@@ -2,13 +2,17 @@ package com.termux.app.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.text.format.Formatter;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +38,7 @@ import java.util.Locale;
 
 public class FileManagerActivity extends Activity {
 
-    private TextView pathView;
+    private EditText pathView;
     private ListView listView;
     private File currentDirectory;
     private File homeDirectory;
@@ -61,6 +65,16 @@ public class FileManagerActivity extends Activity {
 
     private void setupButtons() {
         findViewById(R.id.file_manager_btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.file_manager_btn_go).setOnClickListener(v -> navigateToTypedPath());
+
+        pathView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_GO || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                navigateToTypedPath();
+                return true;
+            }
+            return false;
+        });
+
         Button btnUp = findViewById(R.id.file_manager_btn_up);
         Button btnHome = findViewById(R.id.file_manager_btn_home);
         Button btnNewFolder = findViewById(R.id.file_manager_btn_new_folder);
@@ -77,6 +91,21 @@ public class FileManagerActivity extends Activity {
         btnNewFile.setOnClickListener(v -> showCreateDialog(false));
         btnPaste.setOnClickListener(v -> pasteClipboard());
         btnRefresh.setOnClickListener(v -> refreshList());
+    }
+
+    private void navigateToTypedPath() {
+        String typed = pathView.getText().toString().trim();
+        if (typed.isEmpty()) return;
+
+        File target = new File(typed);
+        if (!target.exists() || !target.isDirectory()) {
+            toast(getString(R.string.file_manager_invalid_path));
+            pathView.setText(currentDirectory.getAbsolutePath());
+            return;
+        }
+
+        currentDirectory = target;
+        refreshList();
     }
 
     private void setupList() {
@@ -98,7 +127,7 @@ public class FileManagerActivity extends Activity {
     }
 
     private void refreshList() {
-        pathView.setText(getString(R.string.file_manager_current_path, currentDirectory.getAbsolutePath()));
+        pathView.setText(currentDirectory.getAbsolutePath());
 
         File[] files = currentDirectory.listFiles();
         entries.clear();
@@ -153,9 +182,7 @@ public class FileManagerActivity extends Activity {
     }
 
     private void showCreateDialog(boolean isFolder) {
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-
+        final EditText input = createDialogInput();
         int title = isFolder ? R.string.file_manager_dialog_new_folder : R.string.file_manager_dialog_new_file;
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -187,34 +214,33 @@ public class FileManagerActivity extends Activity {
             getString(R.string.file_manager_action_delete),
             getString(R.string.file_manager_action_copy),
             getString(R.string.file_manager_action_move),
-            getString(R.string.file_manager_action_show_info)
+            getString(R.string.file_manager_action_show_info),
+            getString(R.string.file_manager_action_edit_code)
         };
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(file.getName())
-            .setItems(actions, (whichDialog, which) -> {
-                if (which == 0) {
-                    showRenameDialog(file);
-                } else if (which == 1) {
-                    showDeleteDialog(file);
-                } else if (which == 2) {
-                    clipboardFile = file;
-                    clipboardCutMode = false;
-                    toast(getString(R.string.file_manager_clipboard_copy_ready));
-                } else if (which == 3) {
-                    clipboardFile = file;
-                    clipboardCutMode = true;
-                    toast(getString(R.string.file_manager_clipboard_move_ready));
-                } else if (which == 4) {
-                    showFileInfo(file);
-                }
-            })
-            .create();
-        showSmoothDialog(dialog);
+        showChoiceDialog(file.getName(), actions, which -> {
+            if (which == 0) {
+                showRenameDialog(file);
+            } else if (which == 1) {
+                showDeleteDialog(file);
+            } else if (which == 2) {
+                clipboardFile = file;
+                clipboardCutMode = false;
+                toast(getString(R.string.file_manager_clipboard_copy_ready));
+            } else if (which == 3) {
+                clipboardFile = file;
+                clipboardCutMode = true;
+                toast(getString(R.string.file_manager_clipboard_move_ready));
+            } else if (which == 4) {
+                showFileInfo(file);
+            } else if (which == 5 && file.isFile()) {
+                openCodeEditor(file);
+            }
+        });
     }
 
     private void showRenameDialog(File file) {
-        EditText input = new EditText(this);
+        EditText input = createDialogInput();
         input.setText(file.getName());
 
         AlertDialog dialog = new AlertDialog.Builder(this)
@@ -249,24 +275,29 @@ public class FileManagerActivity extends Activity {
 
     private void showFileOptionsDialog(File file) {
         String[] actions = new String[] {
+            getString(R.string.file_manager_action_edit_code),
             getString(R.string.file_manager_action_show_info),
             getString(R.string.file_manager_action_rename),
             getString(R.string.file_manager_action_delete)
         };
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(file.getName())
-            .setItems(actions, (whichDialog, which) -> {
-                if (which == 0) {
-                    showFileInfo(file);
-                } else if (which == 1) {
-                    showRenameDialog(file);
-                } else if (which == 2) {
-                    showDeleteDialog(file);
-                }
-            })
-            .create();
-        showSmoothDialog(dialog);
+        showChoiceDialog(file.getName(), actions, which -> {
+            if (which == 0) {
+                openCodeEditor(file);
+            } else if (which == 1) {
+                showFileInfo(file);
+            } else if (which == 2) {
+                showRenameDialog(file);
+            } else if (which == 3) {
+                showDeleteDialog(file);
+            }
+        });
+    }
+
+    private void openCodeEditor(File file) {
+        Intent intent = new Intent(this, CodeEditorActivity.class);
+        intent.putExtra(CodeEditorActivity.EXTRA_FILE_PATH, file.getAbsolutePath());
+        startActivity(intent);
     }
 
     private void showFileInfo(File file) {
@@ -286,6 +317,39 @@ public class FileManagerActivity extends Activity {
             .setPositiveButton(android.R.string.ok, null)
             .create();
         showSmoothDialog(dialog);
+    }
+
+    private interface ChoiceHandler {
+        void onChoice(int which);
+    }
+
+    private void showChoiceDialog(String title, String[] actions, ChoiceHandler handler) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, actions) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text = view.findViewById(android.R.id.text1);
+                text.setTextColor(Color.WHITE);
+                text.setTextSize(20f);
+                return view;
+            }
+        };
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(title)
+            .setAdapter(adapter, (d, which) -> handler.onChoice(which))
+            .create();
+        showSmoothDialog(dialog);
+    }
+
+    private EditText createDialogInput() {
+        EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setTextColor(Color.WHITE);
+        input.setHintTextColor(Color.parseColor("#99FFFFFF"));
+        input.setBackgroundResource(R.drawable.file_manager_item_smooth);
+        input.setPadding(20, 20, 20, 20);
+        return input;
     }
 
     private void pasteClipboard() {
@@ -341,9 +405,7 @@ public class FileManagerActivity extends Activity {
         try (FileInputStream in = new FileInputStream(source); FileOutputStream out = new FileOutputStream(target)) {
             byte[] buffer = new byte[8192];
             int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
+            while ((read = in.read(buffer)) != -1) out.write(buffer, 0, read);
             return true;
         } catch (IOException e) {
             return false;

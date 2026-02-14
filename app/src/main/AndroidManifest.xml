@@ -103,6 +103,12 @@
             android:theme="@style/Theme.Termux" />
 
         <activity
+            android:name=".app.activities.CodeEditorActivity"
+            android:exported="false"
+            android:label="@string/code_editor_title"
+            android:theme="@style/Theme.Termux" />
+
+        <activity
             android:name=".shared.activities.ReportActivity"
             android:theme="@style/Theme.AppCompat.TermuxReportActivity"
             android:documentLaunchMode="intoExisting"

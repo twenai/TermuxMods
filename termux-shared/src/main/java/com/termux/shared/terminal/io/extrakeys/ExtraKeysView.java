@@ -361,6 +361,12 @@ public final class ExtraKeysView extends GridLayout {
      *
      * @param extraKeysInfo The {@link ExtraKeysInfo} that defines the necessary info for the extra keys.
      */
+    private void animateKeyPress(View view, boolean pressed) {
+        float targetScale = pressed ? 0.94f : 1.0f;
+        view.animate().scaleX(targetScale).scaleY(targetScale).setDuration(110).start();
+        view.animate().alpha(pressed ? 0.92f : 1.0f).setDuration(110).start();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void reload(ExtraKeysInfo extraKeysInfo) {
         if (extraKeysInfo == null)
@@ -409,7 +415,7 @@ public final class ExtraKeysView extends GridLayout {
                 button.setOnTouchListener((view, event) -> {
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            // view.setBackgroundColor(mButtonActiveBackgroundColor);
+                            animateKeyPress(view, true);
                             // Start long press scheduled executors which will be stopped in next MotionEvent
                             startScheduledExecutors(view, buttonInfo, button);
                             return true;
@@ -430,12 +436,12 @@ public final class ExtraKeysView extends GridLayout {
                             return true;
 
                         case MotionEvent.ACTION_CANCEL:
-                            // view.setBackgroundColor(mButtonBackgroundColor);
+                            animateKeyPress(view, false);
                             stopScheduledExecutors();
                             return true;
 
                         case MotionEvent.ACTION_UP:
-                            // view.setBackgroundColor(mButtonBackgroundColor);
+                            animateKeyPress(view, false);
                             stopScheduledExecutors();
                             // If ACTION_UP up was not from a repetitive key or was with a key with a popup button
                             if (mLongPressCount == 0 || mPopupWindow != null) {

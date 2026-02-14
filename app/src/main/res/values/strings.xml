@@ -303,4 +303,17 @@ Last modified: %3$s</string>
     <string name="file_manager_success_paste">Paste berhasil</string>
     <string name="file_manager_error_paste">Paste gagal</string>
 
+
+    <string name="file_manager_go">GO</string>
+    <string name="file_manager_path_hint">Enter path manually</string>
+    <string name="file_manager_invalid_path">Path tidak valid atau tidak bisa dibuka</string>
+    <string name="file_manager_action_edit_code">Edit Code</string>
+
+    <string name="code_editor_title">Code Editor</string>
+    <string name="code_editor_save">Save</string>
+    <string name="code_editor_saved">File berhasil disimpan</string>
+    <string name="code_editor_error_no_file">Path file tidak ditemukan</string>
+    <string name="code_editor_error_load">Gagal membuka file</string>
+    <string name="code_editor_error_save">Gagal menyimpan file</string>
+
 </resources>

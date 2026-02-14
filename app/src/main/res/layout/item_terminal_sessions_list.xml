@@ -2,8 +2,11 @@
     android:id="@+id/session_title"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginVertical="4dp"
     android:background="@drawable/session_background_selected"
     android:ellipsize="marquee"
     android:gravity="start|center_vertical"
-    android:padding="6dip"
+    android:paddingHorizontal="10dp"
+    android:paddingVertical="6dp"
     android:textSize="14sp" />
