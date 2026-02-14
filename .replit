@@ -16,15 +16,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Build Android App"
+args = "SystemStatus"
 
 [[workflows.workflow]]
-name = "Build Android App"
+name = "SystemStatus"
 author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "./gradlew assembleDebug"
+args = "echo 'Replit build is disabled by user request'"
+
+[workflows.workflow.metadata]
+outputType = "console"
