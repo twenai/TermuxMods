@@ -1029,6 +1029,60 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             btnUpgrade.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg upgrade -y"); });
         }
 
+
+        int btnPkgGitId = getResources().getIdentifier("btn_pkg_git", "id", getPackageName());
+        Button btnPkgGit = btnPkgGitId != 0 ? findViewById(btnPkgGitId) : null;
+        if (btnPkgGit != null) {
+            btnPkgGit.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install git -y"); });
+        }
+
+        int btnPkgCurlId = getResources().getIdentifier("btn_pkg_curl", "id", getPackageName());
+        Button btnPkgCurl = btnPkgCurlId != 0 ? findViewById(btnPkgCurlId) : null;
+        if (btnPkgCurl != null) {
+            btnPkgCurl.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install curl -y"); });
+        }
+
+        int btnPkgWgetId = getResources().getIdentifier("btn_pkg_wget", "id", getPackageName());
+        Button btnPkgWget = btnPkgWgetId != 0 ? findViewById(btnPkgWgetId) : null;
+        if (btnPkgWget != null) {
+            btnPkgWget.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install wget -y"); });
+        }
+
+        int btnPkgPythonId = getResources().getIdentifier("btn_pkg_python", "id", getPackageName());
+        Button btnPkgPython = btnPkgPythonId != 0 ? findViewById(btnPkgPythonId) : null;
+        if (btnPkgPython != null) {
+            btnPkgPython.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install python -y"); });
+        }
+
+        int btnPkgPipId = getResources().getIdentifier("btn_pkg_pip", "id", getPackageName());
+        Button btnPkgPip = btnPkgPipId != 0 ? findViewById(btnPkgPipId) : null;
+        if (btnPkgPip != null) {
+            btnPkgPip.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install python-pip -y"); });
+        }
+
+        int btnPkgNodejsId = getResources().getIdentifier("btn_pkg_nodejs", "id", getPackageName());
+        Button btnPkgNodejs = btnPkgNodejsId != 0 ? findViewById(btnPkgNodejsId) : null;
+        if (btnPkgNodejs != null) {
+            btnPkgNodejs.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install nodejs -y"); });
+        }
+
+        int btnPkgOpensshId = getResources().getIdentifier("btn_pkg_openssh", "id", getPackageName());
+        Button btnPkgOpenssh = btnPkgOpensshId != 0 ? findViewById(btnPkgOpensshId) : null;
+        if (btnPkgOpenssh != null) {
+            btnPkgOpenssh.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install openssh -y"); });
+        }
+
+        int btnPkgOpensslId = getResources().getIdentifier("btn_pkg_openssl", "id", getPackageName());
+        Button btnPkgOpenssl = btnPkgOpensslId != 0 ? findViewById(btnPkgOpensslId) : null;
+        if (btnPkgOpenssl != null) {
+            btnPkgOpenssl.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install openssl -y"); });
+        }
+
+        int btnPkgMoreId = getResources().getIdentifier("btn_pkg_more", "id", getPackageName());
+        Button btnPkgMore = btnPkgMoreId != 0 ? findViewById(btnPkgMoreId) : null;
+        if (btnPkgMore != null) {
+            btnPkgMore.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg search ."); });
+        }
         int btnClearTerminalId = getResources().getIdentifier("btn_clear_terminal", "id", getPackageName());
         Button btnClearTerminal = btnClearTerminalId != 0 ? findViewById(btnClearTerminalId) : null;
         if (btnClearTerminal != null) {

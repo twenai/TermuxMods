@@ -229,8 +229,8 @@
 
     <!-- TermuxMods Right Sidebar -->
     <string name="termuxmods_developer_info">DEVELOPER INFO</string>
-    <string name="termuxmods_created_by">Created By Kz.tutorial</string>
-    <string name="termuxmods_youtube_handle">Youtube @Kz.tutorial</string>
+    <string name="termuxmods_created_by">Created By Kz.tutorial | Youtube</string>
+    <string name="termuxmods_youtube_handle">Youtube</string>
     <string name="termuxmods_update_system">UPDATE SYSTEM</string>
     <string name="termuxmods_cleanup">CLEAN UP</string>
     <string name="termuxmods_action_prompt">PROMPT</string>
@@ -246,5 +246,17 @@
     <string name="termuxmods_dialog_run_script">Run customization script?</string>
     <string name="termuxmods_toast_no_browser">No browser app found</string>
     <string name="termuxmods_toast_bg_reset">Background reset to default</string>
+
+
+    <string name="termuxmods_packages">PACKAGES</string>
+    <string name="termuxmods_action_git">GIT</string>
+    <string name="termuxmods_action_curl">CURL</string>
+    <string name="termuxmods_action_wget">WGET</string>
+    <string name="termuxmods_action_python">PYTHON</string>
+    <string name="termuxmods_action_pip">PIP</string>
+    <string name="termuxmods_action_nodejs">NODEJS</string>
+    <string name="termuxmods_action_openssh">OPENSSH</string>
+    <string name="termuxmods_action_openssl">OPENSSL</string>
+    <string name="termuxmods_action_more_pkg">MORE</string>
 
 </resources>

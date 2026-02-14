@@ -263,6 +263,129 @@
                         android:textColor="@color/text_white" />
                 </LinearLayout>
 
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_packages"
+                    android:textColor="@color/text_white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <Button
+                        android:id="@+id/btn_pkg_git"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_git"
+                        android:textAllCaps="true"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_curl"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_curl"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_wget"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_wget"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <Button
+                        android:id="@+id/btn_pkg_python"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_python"
+                        android:textAllCaps="true"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_pip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_pip"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_nodejs"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_nodejs"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_pkg_openssh"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_openssh"
+                        android:textAllCaps="true"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_openssl"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_openssl"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_more"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_more_pkg"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
