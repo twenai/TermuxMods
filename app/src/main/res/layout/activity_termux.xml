@@ -149,12 +149,41 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CUSTOM TERMUX"
+                    android:text="DEVELOPER INFO"
                     android:textColor="@color/text_white"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:gravity="center"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:id="@+id/developer_info_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:background="@drawable/btn_glass_rounded"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginBottom="24dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Created By Kz.tutorial"
+                        android:textColor="@color/text_white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Youtube @Kz.tutorial"
+                        android:textColor="#FF0000"
+                        android:textSize="14sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -166,35 +195,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Prompt"
-                        android:textAllCaps="false"
-                        android:layout_marginEnd="4dp"
-                        android:background="@drawable/btn_glass_rounded"
-                        android:textColor="@color/text_white" />
-                    <Button
-                        android:id="@+id/btn_logo"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Logo"
-                        android:textAllCaps="false"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/btn_glass_rounded"
-                        android:textColor="@color/text_white" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="24dp">
-                    <Button
-                        android:id="@+id/btn_background"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Background"
-                        android:textAllCaps="false"
+                        android:text="PROMPT"
+                        android:textAllCaps="true"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -203,38 +205,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Reset"
-                        android:textAllCaps="false"
+                        android:text="RESET"
+                        android:textAllCaps="true"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Termux Hub"
-                    android:textColor="@color/text_white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:layout_marginBottom="12dp" />
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="none">
-                    <GridLayout
-                        android:id="@+id/commands_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:columnCount="2"
-                        android:alignmentMode="alignMargins"
-                        android:columnOrderPreserved="false"
-                        android:useDefaultMargins="true">
-                        <!-- Commands will be added here in 2 columns -->
-                    </GridLayout>
-                </ScrollView>
             </LinearLayout>
 
         </androidx.drawerlayout.widget.DrawerLayout>

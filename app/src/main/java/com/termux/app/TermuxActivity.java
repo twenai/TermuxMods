@@ -754,6 +754,145 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return mTermuxActivityRootView;
     }
 
+    private void setupRightSidebar() {
+        View devInfo = findViewById(R.id.developer_info_link);
+        if (devInfo != null) {
+            devInfo.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/@Kz.tutorial"));
+                startActivity(intent);
+            });
+        }
+
+        Button btnPrompt = findViewById(R.id.btn_prompt);
+        if (btnPrompt != null) {
+            btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
+        }
+
+        Button btnReset = findViewById(R.id.btn_reset);
+        if (btnReset != null) {
+            btnReset.setOnClickListener(v -> executeScriptPart("reset"));
+        }
+    }
+
+    private void executeScriptPart(String part) {
+        TerminalSession session = getCurrentSession();
+        if (session == null) return;
+
+        String script = "";
+        switch (part) {
+            case "prompt":
+                script = "pkg update -y && pkg upgrade -y && " +
+                        "pkg install -y bash git curl make ruby neofetch lolcat && " +
+                        "rm -rf ~/.config/neofetch && mkdir -p ~/.config/neofetch && " +
+                        "cat > ~/.config/neofetch/vip-art.txt <<'EOF'\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⡋⠁⠀⠀⠀⠀⢀⣀⣀⡀\n" +
+                        "⠀⠀⠀⠀⠀⠠⠒⣶⣶⣿⣿⣷⣾⣿⣿⣿⣿⣛⣋⣉⠀⠀\n" +
+                        "⠀⠀⠀⠀⢀⣤⣞⣫⣿⣿⣿⡻⢿⣿⣿⣿⣿⣿⣦⡀⠀⠀\n" +
+                        "⠀⠀⣶⣾⡿⠿⠿⠿⠿⠋⠈⠀⣸⣿⣿⣿⣿⣷⡈⠙⢆⠀\n" +
+                        "⠀⠀⠉⠁⠀⠤⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⠿⣿⣷⠀⠀⠀\n" +
+                        "⠀⠀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⢹⣿⠀⠀⠀\n" +
+                        " ⣾⣿⣿⣿⣿⠟⠋⠉⠛⠋⠉⠁⣀⠀⠀⠀⠸⠃⠀⠀⠀\n" +
+                        " ⣿⣿⣿⠹⣇⠀⠀⠀⠀⢀⡀⠀⢀⡙⢷⣦⣄⡀⠀⠀⠀\n" +
+                        " ⢿⣿⣿⣷⣦⠤⠤⠀⠀⣠⣿⣶⣶⣿⣿⣿⣿⣿⣷⣄⠀\n" +
+                        "  ⣿⡿⢿⣿⣿⣷⣿⣿⡿⢿⣿⣿⣁⡀⠀⠀⠉⢻⣿⣧\n" +
+                        "⠀ ⡟⠀⠀⠉⠛⠙⠻⢿⣦⡀⠙⠛⠯⠤⠄⠀⠀⠈⠈⣿\n" +
+                        "⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡆⠀⠀⠀⠀⠀⠀⠀⢀⠟\n" +
+                        "EOF\n" +
+                        "cat > ~/.config/neofetch/config.conf <<'CONF'\n" +
+                        "print_info() {\n" +
+                        "    info \"OS\" distro\n" +
+                        "    info \"Host\" model\n" +
+                        "    info \"Kernel\" kernel\n" +
+                        "    info \"Uptime\" uptime\n" +
+                        "    info \"Packages\" packages\n" +
+                        "    info \"Shell\" shell\n" +
+                        "    info \"Terminal\" term\n" +
+                        "    info \"CPU\" cpu\n" +
+                        "    info \"Memory\" memory\n" +
+                        "}\n" +
+                        "image_backend=\"ascii\"\n" +
+                        "ascii_art() {\n" +
+                        "    cat ~/.config/neofetch/vip-art.txt | lolcat -a -d 3\n" +
+                        "}\n" +
+                        "image_source=\"~/.config/neofetch/vip-art.txt\"\n" +
+                        "image_size=\"auto\"\n" +
+                        "CONF\n" +
+                        "grep -qxF 'neofetch --source ~/.config/neofetch/vip-art.txt --ascii' ~/.bashrc || " +
+                        "echo 'neofetch --source ~/.config/neofetch/vip-art.txt --ascii' >> ~/.bashrc && " +
+                        "mv ~/.bashrc ~/.bashrc.bak.$(date +%s) 2>/dev/null; " +
+                        "cat > ~/.bashrc << 'EOF'\n" +
+                        "PS1='\\[\\e[1;32m\\]┌──(\\[\\e[1;34m\\]Termux㉿localhost\\[\\e[1;32m\\])-[\\[\\e[1;37;1m\\]\\w\\[\\e[1;32m\\]]\\n\\[\\e[1;32m\\]└─\\[\\e[1;34;1m\\]$ \\[\\e[37;1m\\]'\n" +
+                        "command_not_found_handle() {\n" +
+                        "    local PKG=\"$1\"\n" +
+                        "    shift\n" +
+                        "    if pkg search \"^${PKG}\\$\" 2>/dev/null | grep -q \"^${PKG}/\"; then\n" +
+                        "        printf \"\\033[1;32m[+] Installing %s...\\033[0m\\n\" \"$PKG\"\n" +
+                        "        if pkg install -y \"$PKG\"; then\n" +
+                        "            if command -v \"$PKG\" >/dev/null 2>&1; then\n" +
+                        "                printf \"\\033[1;32m[✓] Installed successfully.\\033[0m\\n\"\n" +
+                        "                \"$PKG\" \"$@\"\n" +
+                        "            else\n" +
+                        "                printf \"\\033[1;33m[!] Installed but no executable found.\\033[0m\\n\"\n" +
+                        "            fi\n" +
+                        "        else\n" +
+                        "            printf \"\\033[1;31m[✗] Failed to install %s.\\033[0m\\n\" \"$PKG\"\n" +
+                        "        fi\n" +
+                        "    else\n" +
+                        "        printf \"\\033[1;31m[!] Not found in repo: %s\\033[0m\\n\" \"$PKG\"\n" +
+                        "    fi\n" +
+                        "}\n" +
+                        "EOF\n" +
+                        "echo '✅ Setup complete - Restart Termux'";
+                break;
+            case "reset":
+                script = "echo \"⚠️  Reset Termux to default...\"; " +
+                        "if [ -f ~/.bashrc.bak.* ]; then " +
+                        "  cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; " +
+                        "  echo \"✅ Bash prompt restored\"; " +
+                        "fi; " +
+                        "rm -rf ~/.config/neofetch; " +
+                        "echo \"✅ Neofetch removed\"; " +
+                        "echo \"✅ Done! Restart Termux\"";
+                break;
+        }
+
+        if (!script.isEmpty()) {
+            session.write(script + "\n");
+            getDrawer().closeDrawers();
+        }
+    }
+
+    private void setCustomBackground() {
+        if (mTerminalView != null) {
+            android.graphics.drawable.Drawable drawable = ContextCompat.getDrawable(this, R.drawable.terminal_bg_custom);
+            if (drawable != null) {
+                setTerminalBackground(drawable);
+            }
+        }
+    }
+
+    private void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
+        if (mTerminalView != null) {
+            if (drawable == null) {
+                mTerminalView.setBackgroundColor(Color.BLACK);
+            } else {
+                mTerminalView.setBackground(drawable);
+            }
+        }
+    }
+
+    private void showInstallationDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        View view = getLayoutInflater().inflate(R.layout.dialog_installing_bootstrap, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+        dialog.show();
+        
+        new android.os.Handler().postDelayed(dialog::dismiss, 3000);
+    }
+
     public View getTermuxActivityBottomSpaceView() {
         return mTermuxActivityBottomSpaceView;
     }
