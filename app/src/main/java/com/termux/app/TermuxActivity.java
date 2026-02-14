@@ -845,21 +845,21 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         String message;
         switch (part) {
             case "prompt":
-                message = "Apply custom prompt configuration?";
+                message = getString(R.string.termuxmods_dialog_apply_prompt);
                 break;
             case "logo":
-                message = "Install/refresh logo and neofetch setup?";
+                message = getString(R.string.termuxmods_dialog_install_logo);
                 break;
             case "reset":
-                message = "Reset terminal customization to defaults?";
+                message = getString(R.string.termuxmods_dialog_reset);
                 break;
             default:
-                message = "Run customization script?";
+                message = getString(R.string.termuxmods_dialog_run_script);
                 break;
         }
 
         AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle("Termux Mods")
+            .setTitle(R.string.termuxmods_dialog_title)
             .setMessage(message)
             .setPositiveButton(android.R.string.ok, null)
             .create();
@@ -871,7 +871,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     private void setCustomBackground() {
         setTerminalBackground(null);
-        showToast("Background reset to default", false);
+        showToast(getString(R.string.termuxmods_toast_bg_reset), false);
     }
 
     private void animateSidebarTap(View view) {
@@ -979,7 +979,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setupRightSidebar() {
-
         int developerInfoLinkId = getResources().getIdentifier("developer_info_link", "id", getPackageName());
         View developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
         if (developerInfoLink != null) {
@@ -989,7 +988,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 try {
                     startActivity(youtubeIntent);
                 } catch (ActivityNotFoundException e) {
-                    showToast("No browser app found", true);
+                    showToast(getString(R.string.termuxmods_toast_no_browser), true);
                 }
             });
         }

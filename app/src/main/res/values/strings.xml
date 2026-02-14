@@ -226,4 +226,25 @@
     <!-- Donate Preference -->
     <string name="donate_preference_title">Donate</string>
 
+
+    <!-- TermuxMods Right Sidebar -->
+    <string name="termuxmods_developer_info">DEVELOPER INFO</string>
+    <string name="termuxmods_created_by">Created By Kz.tutorial</string>
+    <string name="termuxmods_youtube_handle">Youtube @Kz.tutorial</string>
+    <string name="termuxmods_update_system">UPDATE SYSTEM</string>
+    <string name="termuxmods_cleanup">CLEAN UP</string>
+    <string name="termuxmods_action_prompt">PROMPT</string>
+    <string name="termuxmods_action_reset">RESET</string>
+    <string name="termuxmods_action_update">UPDATE</string>
+    <string name="termuxmods_action_upgrade">UPGRADE</string>
+    <string name="termuxmods_action_clear">CLEAR</string>
+    <string name="termuxmods_action_remove_cache">REMOVE CACHE</string>
+    <string name="termuxmods_dialog_title">Termux Mods</string>
+    <string name="termuxmods_dialog_apply_prompt">Apply custom prompt configuration?</string>
+    <string name="termuxmods_dialog_install_logo">Install/refresh logo and neofetch setup?</string>
+    <string name="termuxmods_dialog_reset">Reset terminal customization to defaults?</string>
+    <string name="termuxmods_dialog_run_script">Run customization script?</string>
+    <string name="termuxmods_toast_no_browser">No browser app found</string>
+    <string name="termuxmods_toast_bg_reset">Background reset to default</string>
+
 </resources>
