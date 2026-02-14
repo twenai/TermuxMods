@@ -978,18 +978,67 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         session.write(command.endsWith("\n") ? command : command + "\n");
     }
 
+    private void openFileManager() {
+        Intent[] intents = new Intent[] {
+            new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_FILES),
+            new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        };
+
+        for (Intent intent : intents) {
+            try {
+                startActivity(intent);
+                return;
+            } catch (ActivityNotFoundException ignored) {
+            }
+        }
+
+        showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
+    }
+
+    private void showTermuxInfoDialog() {
+        String versionName = "unknown";
+        try {
+            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        String infoText = getString(R.string.termuxmods_info_message) + "\n\nVersion: " + versionName;
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.termuxmods_info_title)
+            .setMessage(infoText)
+            .setPositiveButton(android.R.string.ok, null)
+            .show();
+    }
+
+    private void openSidebarSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
     private void setupRightSidebar() {
-        int developerInfoLinkId = getResources().getIdentifier("developer_info_link", "id", getPackageName());
-        View developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
-        if (developerInfoLink != null) {
-            developerInfoLink.setOnClickListener(v -> {
+        int btnFileManagerId = getResources().getIdentifier("btn_file_manager", "id", getPackageName());
+        View btnFileManager = btnFileManagerId != 0 ? findViewById(btnFileManagerId) : null;
+        if (btnFileManager != null) {
+            btnFileManager.setOnClickListener(v -> {
                 animateSidebarTap(v);
-                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
-                try {
-                    startActivity(youtubeIntent);
-                } catch (ActivityNotFoundException e) {
-                    showToast(getString(R.string.termuxmods_toast_no_browser), true);
-                }
+                openFileManager();
+            });
+        }
+
+        int btnInfoTermuxId = getResources().getIdentifier("btn_info_termux", "id", getPackageName());
+        View btnInfoTermux = btnInfoTermuxId != 0 ? findViewById(btnInfoTermuxId) : null;
+        if (btnInfoTermux != null) {
+            btnInfoTermux.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                showTermuxInfoDialog();
+            });
+        }
+
+        int btnSidebarSettingsId = getResources().getIdentifier("btn_sidebar_settings", "id", getPackageName());
+        View btnSidebarSettings = btnSidebarSettingsId != 0 ? findViewById(btnSidebarSettingsId) : null;
+        if (btnSidebarSettings != null) {
+            btnSidebarSettings.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                openSidebarSettings();
             });
         }
 
