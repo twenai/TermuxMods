@@ -3,15 +3,20 @@ package com.termux.app.activities;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.format.DateFormat;
 import android.text.format.Formatter;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.termux.R;
 import com.termux.shared.termux.TermuxConstants;
@@ -24,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.Locale;
 
 public class FileManagerActivity extends AppCompatActivity {
 
@@ -101,21 +106,27 @@ public class FileManagerActivity extends AppCompatActivity {
             entries.addAll(Arrays.asList(files));
             Collections.sort(entries, Comparator
                 .comparing(File::isFile)
-                .thenComparing(file -> file.getName().toLowerCase()));
+                .thenComparing(file -> file.getName().toLowerCase(Locale.ROOT)));
         }
 
-        ArrayAdapter<File> adapter = new ArrayAdapter<File>(this, android.R.layout.simple_list_item_2, android.R.id.text1, entries) {
+        ArrayAdapter<File> adapter = new ArrayAdapter<File>(this, R.layout.file_manager_list_item, entries) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = view.findViewById(android.R.id.text1);
-                TextView text2 = view.findViewById(android.R.id.text2);
+                View view = convertView;
+                if (view == null) {
+                    view = LayoutInflater.from(getContext()).inflate(R.layout.file_manager_list_item, parent, false);
+                }
+
+                ImageView iconView = view.findViewById(R.id.file_manager_item_icon);
+                TextView nameView = view.findViewById(R.id.file_manager_item_name);
+                TextView metaView = view.findViewById(R.id.file_manager_item_meta);
+
                 File file = getItem(position);
                 if (file == null) return view;
 
                 boolean isDirectory = file.isDirectory();
-                String icon = isDirectory ? "📁 " : "📄 ";
-                text1.setText(icon + file.getName());
+                iconView.setImageResource(isDirectory ? R.drawable.ic_folder_material : R.drawable.ic_file_material);
+                nameView.setText(file.getName());
 
                 String details;
                 if (isDirectory) {
@@ -127,10 +138,11 @@ public class FileManagerActivity extends AppCompatActivity {
                         Formatter.formatFileSize(FileManagerActivity.this, file.length())
                     );
                 }
-                text2.setText(details);
+                metaView.setText(details);
                 return view;
             }
         };
+
         listView.setAdapter(adapter);
     }
 
@@ -175,7 +187,8 @@ public class FileManagerActivity extends AppCompatActivity {
             getString(R.string.file_manager_action_rename),
             getString(R.string.file_manager_action_delete),
             getString(R.string.file_manager_action_copy),
-            getString(R.string.file_manager_action_move)
+            getString(R.string.file_manager_action_move),
+            getString(R.string.file_manager_action_show_info)
         };
 
         new AlertDialog.Builder(this)
@@ -193,6 +206,8 @@ public class FileManagerActivity extends AppCompatActivity {
                     clipboardFile = file;
                     clipboardCutMode = true;
                     toast(getString(R.string.file_manager_clipboard_move_ready));
+                } else if (which == 4) {
+                    showFileInfo(file);
                 }
             })
             .show();
@@ -252,11 +267,14 @@ public class FileManagerActivity extends AppCompatActivity {
     }
 
     private void showFileInfo(File file) {
+        String lastModified = DateFormat.getMediumDateFormat(this).format(new Date(file.lastModified())) + " " +
+            DateFormat.getTimeFormat(this).format(new Date(file.lastModified()));
+
         String info = getString(
             R.string.file_manager_file_info,
             file.getAbsolutePath(),
             Formatter.formatFileSize(this, file.length()),
-            String.valueOf(file.lastModified())
+            lastModified
         );
 
         new AlertDialog.Builder(this)

@@ -275,7 +275,7 @@
     <string name="file_manager_new_file">NEW FILE</string>
     <string name="file_manager_paste">PASTE</string>
     <string name="file_manager_refresh">REFRESH</string>
-    <string name="file_manager_folder_details">Folder • %1$d item</string>
+    <string name="file_manager_folder_details">Folder • %1$d items</string>
     <string name="file_manager_file_details">File • %1$s</string>
     <string name="file_manager_dialog_new_folder">Create folder</string>
     <string name="file_manager_dialog_new_file">Create file</string>

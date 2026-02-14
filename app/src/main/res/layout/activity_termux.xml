@@ -181,20 +181,24 @@
                         android:focusable="true">
 
                         <ImageButton
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
                             android:src="@drawable/ic_file_manager"
                             android:background="@android:color/transparent"
                             android:tint="@color/text_white"
                             android:contentDescription="@string/termuxmods_action_file_manager" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/termuxmods_action_file_manager"
                             android:textColor="@color/text_white"
-                            android:textSize="12sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -211,20 +215,24 @@
                         android:focusable="true">
 
                         <ImageButton
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
                             android:src="@drawable/ic_info_termux"
                             android:background="@android:color/transparent"
                             android:tint="@color/text_white"
                             android:contentDescription="@string/termuxmods_action_info_termux" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/termuxmods_action_info_termux"
                             android:textColor="@color/text_white"
-                            android:textSize="12sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -241,20 +249,24 @@
                         android:focusable="true">
 
                         <ImageButton
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
                             android:src="@drawable/ic_settings"
                             android:background="@android:color/transparent"
                             android:tint="@color/text_white"
                             android:contentDescription="@string/termuxmods_action_sidebar_settings" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
                             android:text="@string/termuxmods_action_sidebar_settings"
                             android:textColor="@color/text_white"
-                            android:textSize="12sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </LinearLayout>
 
