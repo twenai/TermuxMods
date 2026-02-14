@@ -996,6 +996,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
+    private void registerTermuxActivityBroadcastReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
+        filter.addAction(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
+        registerReceiver(mTermuxActivityBroadcastReceiver, filter);
+    }
+
     private void reloadActivityStyling() {
         if (mProperties!= null) {
             mProperties.loadTermuxPropertiesFromDisk();
