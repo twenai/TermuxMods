@@ -18,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -470,24 +469,26 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
 
-        GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1 == null || e2 == null) return false;
-                float deltaX = e2.getX() - e1.getX();
-                float deltaY = Math.abs(e2.getY() - e1.getY());
-                if (Math.abs(deltaX) > 140 && deltaY < 120) {
-                    int position = termuxSessionsListView.pointToPosition((int) e2.getX(), (int) e2.getY());
-                    if (position != ListView.INVALID_POSITION) {
-                        mTermuxSessionListViewController.onItemSwipe(position);
+        final float[] touchStartX = new float[1];
+        final int[] touchStartPosition = new int[] { ListView.INVALID_POSITION };
+        termuxSessionsListView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    touchStartX[0] = event.getX();
+                    touchStartPosition[0] = termuxSessionsListView.pointToPosition((int) event.getX(), (int) event.getY());
+                    return false;
+                case MotionEvent.ACTION_UP:
+                    int endPosition = termuxSessionsListView.pointToPosition((int) event.getX(), (int) event.getY());
+                    float deltaX = event.getX() - touchStartX[0];
+                    if (touchStartPosition[0] != ListView.INVALID_POSITION && touchStartPosition[0] == endPosition && Math.abs(deltaX) > 120f) {
+                        mTermuxSessionListViewController.onItemSwipe(endPosition);
                         return true;
                     }
-                }
-                return false;
+                    return false;
+                default:
+                    return false;
             }
         });
-
-        termuxSessionsListView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
     }
 
 
@@ -887,10 +888,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
         }
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
         }
     }
 
@@ -1034,13 +1035,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
         }
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null) {
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
         }
     }
 

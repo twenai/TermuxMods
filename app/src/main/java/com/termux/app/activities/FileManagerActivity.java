@@ -325,9 +325,9 @@ public class FileManagerActivity extends Activity {
     private EditText createDialogInput() {
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setTextColor(Color.WHITE);
-        input.setHintTextColor(Color.parseColor("#99FFFFFF"));
-        input.setBackgroundResource(R.drawable.file_manager_item_smooth);
+        input.setTextColor(Color.parseColor("#1B1B1B"));
+        input.setHintTextColor(Color.parseColor("#66000000"));
+        input.setBackgroundResource(R.drawable.dialog_input_light);
         input.setPadding(20, 20, 20, 20);
         return input;
     }
@@ -408,18 +408,18 @@ public class FileManagerActivity extends Activity {
     private void showSmoothDialog(AlertDialog dialog) {
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
         }
         TextView title = dialog.findViewById(getResources().getIdentifier("alertTitle", "id", "android"));
-        if (title != null) title.setTextColor(Color.WHITE);
+        if (title != null) title.setTextColor(Color.parseColor("#1B1B1B"));
         TextView message = dialog.findViewById(android.R.id.message);
-        if (message != null) message.setTextColor(Color.WHITE);
+        if (message != null) message.setTextColor(Color.parseColor("#1B1B1B"));
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null)
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#1B1B1B"));
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#1B1B1B"));
         if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null)
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.WHITE);
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#1B1B1B"));
     }
 
     private void toast(String message) {

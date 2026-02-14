@@ -116,7 +116,7 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
         }
     }
 
