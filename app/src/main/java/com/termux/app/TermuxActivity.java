@@ -768,6 +768,65 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setupRightSidebar() {
+        Button btnPrompt = findViewById(R.id.btn_prompt);
+        Button btnLogo = findViewById(R.id.btn_logo);
+        Button btnBackground = findViewById(R.id.btn_background);
+        Button btnReset = findViewById(R.id.btn_reset);
+
+        btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
+        btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
+        btnBackground.setOnClickListener(v -> setCustomBackground());
+        btnReset.setOnClickListener(v -> executeScriptPart("reset"));
+    }
+
+    private void executeScriptPart(String part) {
+        TerminalSession session = getCurrentSession();
+        if (session == null) return;
+
+        showInstallationDialog(part);
+
+        String script = "";
+        switch (part) {
+            case "prompt":
+                script = "PS1='\\[\\e[1;32m\\]┌──(\\[\\e[1;34m\\]Termux㉿localhost\\[\\e[1;32m\\])-[\\[\\e[1;37;1m\\]\\w\\[\\e[1;32m\\]]\\n\\[\\e[1;32m\\]└─\\[\\e[1;34;1m\\]$ \\[\\e[37;1m\\]'\n";
+                break;
+            case "logo":
+                script = "pkg install -y neofetch lolcat && mkdir -p ~/.config/neofetch && printf \"print_info() {\\n    info \\\"OS\\\" distro\\n    info \\\"Host\\\" model\\n    info \\\"Kernel\\\" kernel\\n    info \\\"Uptime\\\" uptime\\n    info \\\"Packages\\\" packages\\n    info \\\"Shell\\\" shell\\n    info \\\"Terminal\\\" term\\n    info \\\"CPU\\\" cpu\\n    info \\\"Memory\\\" memory\\n}\\nimage_backend=\\\"ascii\\\"\\nascii_art() {\\n    cat ~/.config/neofetch/vip-art.txt | lolcat -a -d 3\\n}\\nimage_source=\\\"~/.config/neofetch/vip-art.txt\\\"\\nimage_size=\\\"auto\\\"\\n\" > ~/.config/neofetch/config.conf && printf \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⡋⠁⠀⠀⠀⠀⢀⣀⣀⡀\\n⠀⠀⠀⠀⠀⠠⠒⣶⣶⣿⣿⣷⣾⣿⣿⣿⣿⣛⣋⣉⠀⠀\\n⠀⠀⠀⠀⢀⣤⣞⣫⣿⣿⣿⡻⢿⣿⣿⣿⣿⣿⣦⡀⠀⠀\\n⠀⠀⣶⣾⡿⠿⠿⠿⠿⠋⠈⠀⣸⣿⣿⣿⣿⣷⡈⠙⢆⠀\\n⠀⠀⠉⠁⠀⠤⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⠿⣿⣷⠀⠀⠀\\n⠀⠀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⢹⣿⠀⠀⠀\\n ⣾⣿⣿⣿⣿⠟⠋⠉⠛⠋⠉⠁⣀⠀⠀⠀⠸⠃⠀⠀⠀\\n ⣿⣿⣿⠹⣇⠀⠀⠀⠀⢀⡀⠀⢀⡙⢷⣦⣄⡀⠀⠀⠀\\n ⢿⣿⣿⣷⣦⠤⠤⠀⠀⣠⣿⣶⣶⣿⣿⣿⣿⣿⣷⣄⠀\\n  ⣿⡿⢿⣿⣿⣷⣿⣿⡿⢿⣿⣿⣁⡀⠀⠀⠉⢻⣿⣧\\n⠀ ⡟⠀⠀⠉⠛⠙⠻⢿⣦⡀⠙⠛⠯⠤⠄⠀⠀⠈⠈⣿\\n⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡆⠀⠀⠀⠀⠀⠀⠀⢀⠟\" > ~/.config/neofetch/vip-art.txt && neofetch --source ~/.config/neofetch/vip-art.txt --ascii\n";
+                break;
+            case "reset":
+                script = "rm -rf ~/.config/neofetch && PS1='$ '\n";
+                setTerminalBackground(null);
+                break;
+        }
+        session.write(script);
+    }
+
+    private void setCustomBackground() {
+        setTerminalBackground(ContextCompat.getDrawable(this, R.id.terminal_view).getContext().getResources().getDrawable(R.drawable.terminal_bg_custom));
+    }
+
+    private void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
+        if (mTerminalView != null) {
+            if (drawable == null) {
+                mTerminalView.setBackgroundColor(Color.BLACK);
+            } else {
+                mTerminalView.setBackground(drawable);
+            }
+        }
+    }
+
+    private void showInstallationDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        View view = getLayoutInflater().inflate(R.layout.dialog_installing_bootstrap, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+        dialog.show();
+        
+        new android.os.Handler().postDelayed(dialog::dismiss, 3000);
+    }
+
+    private void setupRightSidebar() {
         GridLayout container = findViewById(R.id.commands_container);
         if (container == null) return;
         container.removeAllViews();
