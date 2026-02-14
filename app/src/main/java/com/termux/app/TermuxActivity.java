@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -758,6 +759,19 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return mExtraKeysView;
     }
 
+    public void setExtraKeysView(ExtraKeysView extraKeysView) {
+        mExtraKeysView = extraKeysView;
+    }
+
+    public void setTerminalBackground(Drawable drawable) {
+        if (mTerminalView == null) return;
+
+        if (drawable == null)
+            mTerminalView.setBackgroundColor(Color.BLACK);
+        else
+            mTerminalView.setBackground(drawable);
+    }
+
     public DrawerLayout getDrawer() {
         return findViewById(R.id.drawer_layout);
     }
@@ -820,6 +834,40 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     public TermuxAppSharedProperties getProperties() {
         return mProperties;
+    }
+
+    public static void updateTermuxActivityStyling(Context context) {
+        Intent stylingIntent = new Intent(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
+        context.sendBroadcast(stylingIntent);
+    }
+
+    private void showInstallationDialog(String part) {
+        String message;
+        switch (part) {
+            case "prompt":
+                message = "Apply custom prompt configuration?";
+                break;
+            case "logo":
+                message = "Install/refresh logo and neofetch setup?";
+                break;
+            case "reset":
+                message = "Reset terminal customization to defaults?";
+                break;
+            default:
+                message = "Run customization script?";
+                break;
+        }
+
+        new AlertDialog.Builder(this)
+            .setTitle("Termux Mods")
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .show();
+    }
+
+    private void setCustomBackground() {
+        setTerminalBackground(null);
+        showToast("Background reset to default", false);
     }
 
     private void executeScriptPart(String part) {
