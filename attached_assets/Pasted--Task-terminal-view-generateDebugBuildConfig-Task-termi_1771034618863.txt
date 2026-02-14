@@ -1,0 +1,103 @@
+> Task :terminal-view:generateDebugBuildConfig
+
+> Task :terminal-emulator:compileDebugJavaWithJavac
+Note: /home/runner/work/TermuxMods/TermuxMods/terminal-emulator/src/main/java/com/termux/terminal/TerminalSession.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :terminal-view:javaPreCompileDebug
+> Task :terminal-emulator:bundleLibCompileToJarDebug
+> Task :termux-shared:generateDebugBuildConfig
+> Task :termux-shared:generateDebugRFile
+Note: /home/runner/work/TermuxMods/TermuxMods/terminal-view/src/main/java/com/termux/view/TerminalView.java uses or overrides a deprecated API.
+
+> Task :terminal-view:compileDebugJavaWithJavac
+
+> Task :terminal-view:bundleLibCompileToJarDebug
+Note: Recompile with -Xlint:deprecation for details.
+> Task :termux-shared:javaPreCompileDebug
+> Task :app:generateJsonModelDebug
+> Task :app:processDebugResources
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :termux-shared:compileDebugJavaWithJavac
+
+> Task :termux-shared:bundleLibCompileToJarDebug
+> Task :terminal-emulator:generateJsonModelDebug
+
+> Task :terminal-emulator:externalNativeBuildDebug
+Build termux_armeabi-v7a
+Build termux_arm64-v8a
+Build termux_x86
+Build termux_x86_64
+
+> Task :terminal-emulator:mergeDebugJniLibFolders
+> Task :terminal-emulator:mergeDebugNativeLibs
+
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:797: error: cannot find symbol
+> Task :app:compileDebugJavaWithJavac FAILED
+    private void addSidebarSection(GridLayout container, String title, int iconRes) {
+                                   ^
+  symbol:   class GridLayout
+  location: class TermuxActivity
+54 actionable tasks: 54 executed
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:812: error: cannot find symbol
+    private void addSidebarCommand(GridLayout container, String label, String command, boolean isRoot) {
+                                   ^
+  symbol:   class GridLayout
+  location: class TermuxActivity
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:818: error: cannot find symbol
+    private void addSidebarCommandWithCheck(GridLayout container, String label, String command, String binary, boolean isRoot) {
+                                            ^
+  symbol:   class GridLayout
+  location: class TermuxActivity
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:770: error: cannot find symbol
+        GridLayout container = findViewById(R.id.commands_container);
+        ^
+  symbol:   class GridLayout
+  location: class TermuxActivity
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:799: error: package GridLayout does not exist
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                  ^
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:799: error: package GridLayout does not exist
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                                                       ^
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:800: error: cannot find symbol
+        params.columnSpec = GridLayout.spec(0, 2);
+                            ^
+  symbol:   variable GridLayout
+  location: class TermuxActivity
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:829: error: package GridLayout does not exist
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                  ^
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:829: error: package GridLayout does not exist
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                                                       ^
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:831: error: cannot find symbol
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                                            ^
+  symbol:   variable GridLayout
+  location: class TermuxActivity
+/home/runner/work/TermuxMods/TermuxMods/app/src/main/java/com/termux/app/TermuxActivity.java:831: error: cannot find symbol
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+                            ^
+  symbol:   variable GridLayout
+  location: class TermuxActivity
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+11 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 1m 47s
+Build failed for 'v0.118.3+14b874e' build.
+Error: Process completed with exit code 1.
