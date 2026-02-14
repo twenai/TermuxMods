@@ -873,6 +873,29 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
+    private void showInstallationDialog(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+        int layoutId = getResources().getIdentifier("dialog_installing_bootstrap", "layout", getPackageName());
+        View view = layoutId != 0 ? getLayoutInflater().inflate(layoutId, null) : null;
+        if (view != null) {
+            builder.setView(view);
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
+            dialog.show();
+            new android.os.Handler().postDelayed(dialog::dismiss, 3000);
+        }
+    }
+
+    private void setCustomBackground() {
+        if (mTerminalView != null) {
+            int drawableId = getResources().getIdentifier("terminal_bg_custom", "drawable", getPackageName());
+            android.graphics.drawable.Drawable drawable = drawableId != 0 ? ContextCompat.getDrawable(this, drawableId) : null;
+            if (drawable != null) {
+                setTerminalBackground(drawable);
+            }
+        }
+    }
+
     public View getTermuxActivityBottomSpaceView() {
         return mTermuxActivityBottomSpaceView;
     }
@@ -884,7 +907,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     public void setExtraKeysView(ExtraKeysView extraKeysView) {
         mExtraKeysView = extraKeysView;
     }
-
 
     private void executeScriptPart(String part) {
         TerminalSession session = getCurrentSession();
@@ -974,10 +996,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setupRightSidebar() {
-        int containerId = getResources().getIdentifier("commands_container", "id", getPackageName());
-        GridLayout container = containerId != 0 ? findViewById(containerId) : null;
-        
-        if (container == null) {
             // Fallback for old sidebar buttons if container is missing
             int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
             Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
@@ -1088,103 +1106,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         String lowerLabel = label.toLowerCase();
         if (lowerLabel.contains("pkg") || lowerLabel.contains("list")) iconRes = R.drawable.ic_pkg;
         else if (lowerLabel.contains("system") || lowerLabel.contains("top")) iconRes = R.drawable.ic_system;
-        else if (lowerLabel.equalsIgnoreCase("tsu")) iconRes = R.drawable.ic_root;
-        
-        if (iconRes != 0) {
-            btn.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
-            btn.setCompoundDrawablePadding(8);
-        } else if (isRoot) {
-            btn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_root, 0);
-        }
-        return btn;
-    }
-
-    private void executeCommand(String command) {
-        TerminalSession currentSession = getCurrentSession();
-        if (currentSession != null) {
-            currentSession.write(command + "\n");
-            getDrawer().closeDrawers();
-        }
-    }
-
-    public DrawerLayout getDrawer() {
-        return (DrawerLayout) findViewById(R.id.drawer_layout);
-    }
-
-
-    public ViewPager getTerminalToolbarViewPager() {
-        return (ViewPager) findViewById(R.id.terminal_toolbar_view_pager);
-    }
-
-    public boolean isTerminalViewSelected() {
-        return getTerminalToolbarViewPager().getCurrentItem() == 0;
-    }
-
-    public boolean isTerminalToolbarTextInputViewSelected() {
-        return getTerminalToolbarViewPager().getCurrentItem() == 1;
-    }
-
-
-    public void termuxSessionListNotifyUpdated() {
-        mTermuxSessionListViewController.notifyDataSetChanged();
-    }
-
-    public boolean isVisible() {
-        return mIsVisible;
-    }
-
-    public boolean isOnResumeAfterOnCreate() {
-        return isOnResumeAfterOnCreate;
-    }
-
-
-
-    public TermuxService getTermuxService() {
-        return mTermuxService;
-    }
-
-    public TerminalView getTerminalView() {
-        return mTerminalView;
-    }
-
-    public TermuxTerminalViewClient getTermuxTerminalViewClient() {
-        return mTermuxTerminalViewClient;
-    }
-
-    public TermuxTerminalSessionClient getTermuxTerminalSessionClient() {
-        return mTermuxTerminalSessionClient;
-    }
-
-    @Nullable
-    public TerminalSession getCurrentSession() {
-        if (mTerminalView != null)
-            return mTerminalView.getCurrentSession();
-        else
-            return null;
-    }
-
-    public TermuxAppSharedPreferences getPreferences() {
-        return mPreferences;
-    }
-
-    public TermuxAppSharedProperties getProperties() {
-        return mProperties;
-    }
-
-
-
-
-    public static void updateTermuxActivityStyling(Context context) {
-        // Make sure that terminal styling is always applied.
-        Intent stylingIntent = new Intent(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
-        context.sendBroadcast(stylingIntent);
-    }
-
-    private void registerTermuxActivityBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
-        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
-
         registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter);
     }
 
