@@ -902,7 +902,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "    fi\n" +
                         "}\n" +
                         "EOF\n" +
-                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated'\n";
+                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated. Restart Termux untuk melihat perubahan.'\n";
                 break;
             case "logo":
                 script = "pkg update -y && pkg upgrade -y && pkg install -y bash git curl make ruby neofetch lolcat && " +
@@ -950,14 +950,21 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "rm -rf ~/.config/neofetch; " +
                         "sed -i '/neofetch --source/d' ~/.bashrc; " +
                         "source ~/.bashrc >/dev/null 2>&1; clear; " +
-                        "echo 'Reset complete';\n";
+                        "echo 'Reset complete. Restart Termux untuk melihat perubahan.';\n";
                 setTerminalBackground(null);
                 break;
         }
         session.write(script);
     }
 
+    private void runTerminalCommand(String command) {
+        TerminalSession session = getCurrentSession();
+        if (session == null) return;
+        session.write(command.endsWith("\n") ? command : command + "\n");
+    }
+
     private void setupRightSidebar() {
+
         int developerInfoLinkId = getResources().getIdentifier("developer_info_link", "id", getPackageName());
         View developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
         if (developerInfoLink != null) {
@@ -993,6 +1000,30 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
         if (btnReset != null) {
             btnReset.setOnClickListener(v -> executeScriptPart("reset"));
+        }
+
+        int btnUpdateId = getResources().getIdentifier("btn_update", "id", getPackageName());
+        Button btnUpdate = btnUpdateId != 0 ? findViewById(btnUpdateId) : null;
+        if (btnUpdate != null) {
+            btnUpdate.setOnClickListener(v -> runTerminalCommand("pkg update -y"));
+        }
+
+        int btnUpgradeId = getResources().getIdentifier("btn_upgrade", "id", getPackageName());
+        Button btnUpgrade = btnUpgradeId != 0 ? findViewById(btnUpgradeId) : null;
+        if (btnUpgrade != null) {
+            btnUpgrade.setOnClickListener(v -> runTerminalCommand("pkg upgrade -y"));
+        }
+
+        int btnClearTerminalId = getResources().getIdentifier("btn_clear_terminal", "id", getPackageName());
+        Button btnClearTerminal = btnClearTerminalId != 0 ? findViewById(btnClearTerminalId) : null;
+        if (btnClearTerminal != null) {
+            btnClearTerminal.setOnClickListener(v -> runTerminalCommand("clear && printf '\\e[3J'"));
+        }
+
+        int btnRemoveCacheId = getResources().getIdentifier("btn_remove_cache", "id", getPackageName());
+        Button btnRemoveCache = btnRemoveCacheId != 0 ? findViewById(btnRemoveCacheId) : null;
+        if (btnRemoveCache != null) {
+            btnRemoveCache.setOnClickListener(v -> runTerminalCommand("rm -rf ~/.cache/* && rm -rf $PREFIX/tmp/* && echo 'Cache removed'"));
         }
     }
 
