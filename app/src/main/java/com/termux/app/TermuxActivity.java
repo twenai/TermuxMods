@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +58,6 @@ import com.termux.view.TerminalViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -71,8 +71,6 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Button;
 
 public final class TermuxActivity extends Activity implements ServiceConnection {
@@ -750,6 +748,78 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     public TermuxActivityRootView getTermuxActivityRootView() {
         return mTermuxActivityRootView;
+    }
+
+    public View getTermuxActivityBottomSpaceView() {
+        return mTermuxActivityBottomSpaceView;
+    }
+
+    public ExtraKeysView getExtraKeysView() {
+        return mExtraKeysView;
+    }
+
+    public DrawerLayout getDrawer() {
+        return findViewById(R.id.drawer_layout);
+    }
+
+    public ViewPager getTerminalToolbarViewPager() {
+        return findViewById(R.id.terminal_toolbar_view_pager);
+    }
+
+    public boolean isTerminalViewSelected() {
+        ViewPager viewPager = getTerminalToolbarViewPager();
+        return viewPager != null && viewPager.getCurrentItem() == 0;
+    }
+
+    public boolean isTerminalToolbarTextInputViewSelected() {
+        ViewPager viewPager = getTerminalToolbarViewPager();
+        return viewPager != null && viewPager.getCurrentItem() == 1;
+    }
+
+    public void termuxSessionListNotifyUpdated() {
+        if (mTermuxSessionListViewController != null) {
+            mTermuxSessionListViewController.notifyDataSetChanged();
+        }
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
+    }
+
+    public boolean isOnResumeAfterOnCreate() {
+        return isOnResumeAfterOnCreate;
+    }
+
+    public TermuxService getTermuxService() {
+        return mTermuxService;
+    }
+
+    public TerminalView getTerminalView() {
+        return mTerminalView;
+    }
+
+    public TermuxTerminalViewClient getTermuxTerminalViewClient() {
+        return mTermuxTerminalViewClient;
+    }
+
+    public TermuxTerminalSessionClient getTermuxTerminalSessionClient() {
+        return mTermuxTerminalSessionClient;
+    }
+
+    @Nullable
+    public TerminalSession getCurrentSession() {
+        if (mTerminalView != null)
+            return mTerminalView.getCurrentSession();
+        else
+            return null;
+    }
+
+    public TermuxAppSharedPreferences getPreferences() {
+        return mPreferences;
+    }
+
+    public TermuxAppSharedProperties getProperties() {
+        return mProperties;
     }
 
     private void executeScriptPart(String part) {
