@@ -902,7 +902,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "    fi\n" +
                         "}\n" +
                         "EOF\n" +
-                        "source ~/.bashrc\n";
+                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated'\n";
                 break;
             case "logo":
                 script = "pkg update -y && pkg upgrade -y && pkg install -y bash git curl make ruby neofetch lolcat && " +
@@ -946,10 +946,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "neofetch --source ~/.config/neofetch/vip-art.txt --ascii\n";
                 break;
             case "reset":
-                script = "if [ -f ~/.bashrc.bak.* ]; then cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; fi; " +
+                script = "if [ -f ~/.bashrc.bak.* ]; then cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; else : > ~/.bashrc; fi; " +
                         "rm -rf ~/.config/neofetch; " +
                         "sed -i '/neofetch --source/d' ~/.bashrc; " +
-                        "source ~/.bashrc; " +
+                        "source ~/.bashrc >/dev/null 2>&1; clear; " +
                         "echo 'Reset complete';\n";
                 setTerminalBackground(null);
                 break;
@@ -958,6 +958,19 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setupRightSidebar() {
+        int developerInfoLinkId = getResources().getIdentifier("developer_info_link", "id", getPackageName());
+        View developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
+        if (developerInfoLink != null) {
+            developerInfoLink.setOnClickListener(v -> {
+                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
+                try {
+                    startActivity(youtubeIntent);
+                } catch (ActivityNotFoundException e) {
+                    showToast("No browser app found", true);
+                }
+            });
+        }
+
         int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
         Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
         if (btnPrompt != null) {
