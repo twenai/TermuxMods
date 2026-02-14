@@ -18,6 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.Menu;
@@ -467,6 +469,25 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
+
+        GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1 == null || e2 == null) return false;
+                float deltaX = e2.getX() - e1.getX();
+                float deltaY = Math.abs(e2.getY() - e1.getY());
+                if (Math.abs(deltaX) > 140 && deltaY < 120) {
+                    int position = termuxSessionsListView.pointToPosition((int) e2.getX(), (int) e2.getY());
+                    if (position != ListView.INVALID_POSITION) {
+                        mTermuxSessionListViewController.onItemSwipe(position);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        termuxSessionsListView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
     }
 
 
@@ -864,10 +885,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             .setMessage(message)
             .setPositiveButton(android.R.string.ok, null)
             .create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setWindowAnimations(android.R.style.Animation_Dialog);
-        }
         dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+        }
     }
 
     private void setCustomBackground() {
@@ -918,7 +942,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "    fi\n" +
                         "}\n" +
                         "EOF\n" +
-                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated. Restart Termux untuk melihat perubahan.'\n";
+                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated. Restart Termux to apply changes.'\n";
                 break;
             case "logo":
                 script = "pkg update -y && pkg upgrade -y && pkg install -y bash git curl make ruby neofetch lolcat && " +
@@ -966,7 +990,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "rm -rf ~/.config/neofetch; " +
                         "sed -i '/neofetch --source/d' ~/.bashrc; " +
                         "source ~/.bashrc >/dev/null 2>&1; clear; " +
-                        "echo 'Reset complete. Restart Termux untuk melihat perubahan.';\n";
+                        "echo 'Reset complete. Restart Termux to apply changes.';\n";
                 setTerminalBackground(null);
                 break;
         }
@@ -998,11 +1022,25 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.termuxmods_info_title)
             .setMessage(infoText)
+            .setNeutralButton(R.string.termuxmods_action_youtube, (d, which) -> {
+                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
+                try {
+                    startActivity(youtubeIntent);
+                } catch (ActivityNotFoundException e) {
+                    showToast(getString(R.string.termuxmods_toast_no_browser), true);
+                }
+            })
             .setPositiveButton(android.R.string.ok, null)
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null) {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.WHITE);
         }
     }
 

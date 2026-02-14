@@ -1,7 +1,9 @@
 package com.termux.app.terminal;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.graphics.Color;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.SpannableString;
@@ -84,10 +86,47 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
         } else {
             sessionTitleView.setPaintFlags(sessionTitleView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
-        int defaultColor = isUsingBlackUI ? Color.WHITE : Color.BLACK;
+        int defaultColor = Color.WHITE;
         int color = sessionRunning || sessionAtRow.getExitStatus() == 0 ? defaultColor : Color.RED;
         sessionTitleView.setTextColor(color);
         return sessionRowView;
+    }
+
+
+    public void onItemSwipe(int position) {
+        TermuxSession selectedSession = getItem(position);
+        if (selectedSession == null || selectedSession.getTerminalSession() == null) return;
+
+        String[] actions = new String[] {
+            mActivity.getString(R.string.session_action_pin),
+            mActivity.getString(R.string.session_action_delete)
+        };
+
+        AlertDialog dialog = new AlertDialog.Builder(mActivity)
+            .setTitle(selectedSession.getTerminalSession().mSessionName)
+            .setItems(actions, (DialogInterface d, int which) -> {
+                if (which == 0) {
+                    togglePinSession(selectedSession.getTerminalSession());
+                } else if (which == 1) {
+                    selectedSession.getTerminalSession().finishIfRunning();
+                    mActivity.getTermuxTerminalSessionClient().removeFinishedSession(selectedSession.getTerminalSession());
+                }
+                notifyDataSetChanged();
+            })
+            .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+    }
+
+    private void togglePinSession(TerminalSession session) {
+        String name = session.mSessionName == null ? "" : session.mSessionName;
+        if (name.startsWith("[PIN] ")) {
+            session.mSessionName = name.substring(6);
+        } else {
+            session.mSessionName = "[PIN] " + name;
+        }
     }
 
     @Override

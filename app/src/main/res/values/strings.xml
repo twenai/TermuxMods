@@ -246,14 +246,19 @@
     <string name="termuxmods_action_info_termux">INFO TERMUX</string>
     <string name="termuxmods_action_sidebar_settings">SETTING</string>
     <string name="termuxmods_toast_no_file_manager">No file manager app found</string>
+    <string name="termuxmods_toast_no_browser">No browser app found</string>
     <string name="termuxmods_info_title">Info Termux</string>
-    <string name="termuxmods_info_message">Termux Info
+    <string name="termuxmods_action_youtube">YouTube</string>
+    <string name="termuxmods_info_message">Termux Information
 
 Version: %1$s
 
-• File Manager membuka pengelola file internal Termux.
-• Info Termux menampilkan informasi aplikasi.
-• Setting membuka halaman pengaturan.</string>
+Developer Info
+Created By Kz.tutorial
+
+File Manager opens internal Termux storage.
+Info Termux shows application details.
+Setting opens the settings page.</string>
 
 
     <string name="termuxmods_packages">PACKAGES</string>
@@ -291,29 +296,33 @@ Version: %1$s
     <string name="file_manager_file_info">Path: %1$s
 Size: %2$s
 Last modified: %3$s</string>
-    <string name="file_manager_clipboard_empty">Clipboard kosong</string>
-    <string name="file_manager_clipboard_copy_ready">File/folder siap di-copy, tekan PASTE.</string>
-    <string name="file_manager_clipboard_move_ready">File/folder siap di-move, tekan PASTE.</string>
-    <string name="file_manager_success_created">Berhasil dibuat</string>
-    <string name="file_manager_error_create">Gagal membuat file/folder</string>
-    <string name="file_manager_success_rename">Rename berhasil</string>
-    <string name="file_manager_error_rename">Rename gagal</string>
-    <string name="file_manager_success_delete">Delete berhasil</string>
-    <string name="file_manager_error_delete">Delete gagal</string>
-    <string name="file_manager_success_paste">Paste berhasil</string>
-    <string name="file_manager_error_paste">Paste gagal</string>
+    <string name="file_manager_clipboard_empty">Clipboard is empty</string>
+    <string name="file_manager_clipboard_copy_ready">File or folder copied. Tap PASTE to duplicate.</string>
+    <string name="file_manager_clipboard_move_ready">File or folder selected for move. Tap PASTE to move.</string>
+    <string name="file_manager_success_created">Created successfully</string>
+    <string name="file_manager_error_create">Failed to create file or folder</string>
+    <string name="file_manager_success_rename">Rename completed</string>
+    <string name="file_manager_error_rename">Rename failed</string>
+    <string name="file_manager_success_delete">Delete completed</string>
+    <string name="file_manager_error_delete">Delete failed</string>
+    <string name="file_manager_success_paste">Paste completed</string>
+    <string name="file_manager_error_paste">Paste failed</string>
 
 
     <string name="file_manager_go">GO</string>
     <string name="file_manager_path_hint">Enter path manually</string>
-    <string name="file_manager_invalid_path">Path tidak valid atau tidak bisa dibuka</string>
+    <string name="file_manager_invalid_path">Invalid path or directory cannot be opened</string>
     <string name="file_manager_action_edit_code">Edit Code</string>
 
     <string name="code_editor_title">Code Editor</string>
     <string name="code_editor_save">Save</string>
-    <string name="code_editor_saved">File berhasil disimpan</string>
-    <string name="code_editor_error_no_file">Path file tidak ditemukan</string>
-    <string name="code_editor_error_load">Gagal membuka file</string>
-    <string name="code_editor_error_save">Gagal menyimpan file</string>
+    <string name="code_editor_saved">File saved successfully</string>
+    <string name="code_editor_error_no_file">File path was not found</string>
+    <string name="code_editor_error_load">Failed to open file</string>
+    <string name="code_editor_error_save">Failed to save file</string>
+
+    <string name="file_manager_only_files_editable">Only files can be opened in the code editor</string>
+    <string name="session_action_pin">PIN</string>
+    <string name="session_action_delete">DELETE</string>
 
 </resources>

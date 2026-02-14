@@ -67,6 +67,9 @@ public class FileManagerActivity extends Activity {
         findViewById(R.id.file_manager_btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.file_manager_btn_go).setOnClickListener(v -> navigateToTypedPath());
 
+        pathView.setCursorVisible(false);
+        pathView.setOnFocusChangeListener((v, hasFocus) -> pathView.setCursorVisible(hasFocus));
+
         pathView.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_GO || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                 navigateToTypedPath();
@@ -209,34 +212,7 @@ public class FileManagerActivity extends Activity {
     }
 
     private void showEntryActionDialog(File file) {
-        String[] actions = new String[] {
-            getString(R.string.file_manager_action_rename),
-            getString(R.string.file_manager_action_delete),
-            getString(R.string.file_manager_action_copy),
-            getString(R.string.file_manager_action_move),
-            getString(R.string.file_manager_action_show_info),
-            getString(R.string.file_manager_action_edit_code)
-        };
-
-        showChoiceDialog(file.getName(), actions, which -> {
-            if (which == 0) {
-                showRenameDialog(file);
-            } else if (which == 1) {
-                showDeleteDialog(file);
-            } else if (which == 2) {
-                clipboardFile = file;
-                clipboardCutMode = false;
-                toast(getString(R.string.file_manager_clipboard_copy_ready));
-            } else if (which == 3) {
-                clipboardFile = file;
-                clipboardCutMode = true;
-                toast(getString(R.string.file_manager_clipboard_move_ready));
-            } else if (which == 4) {
-                showFileInfo(file);
-            } else if (which == 5 && file.isFile()) {
-                openCodeEditor(file);
-            }
-        });
+        showFileActionDialog(file);
     }
 
     private void showRenameDialog(File file) {
@@ -274,24 +250,50 @@ public class FileManagerActivity extends Activity {
     }
 
     private void showFileOptionsDialog(File file) {
-        String[] actions = new String[] {
-            getString(R.string.file_manager_action_edit_code),
-            getString(R.string.file_manager_action_show_info),
-            getString(R.string.file_manager_action_rename),
-            getString(R.string.file_manager_action_delete)
-        };
+        showFileActionDialog(file);
+    }
 
-        showChoiceDialog(file.getName(), actions, which -> {
-            if (which == 0) {
-                openCodeEditor(file);
-            } else if (which == 1) {
-                showFileInfo(file);
-            } else if (which == 2) {
-                showRenameDialog(file);
-            } else if (which == 3) {
-                showDeleteDialog(file);
-            }
+
+    private void showFileActionDialog(File file) {
+        View content = LayoutInflater.from(this).inflate(R.layout.file_manager_action_dialog, null, false);
+        TextView title = content.findViewById(R.id.file_action_title);
+        title.setText(file.getName());
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setView(content)
+            .create();
+
+        content.findViewById(R.id.action_rename).setOnClickListener(v -> {
+            dialog.dismiss();
+            showRenameDialog(file);
         });
+        content.findViewById(R.id.action_copy).setOnClickListener(v -> {
+            clipboardFile = file;
+            clipboardCutMode = false;
+            toast(getString(R.string.file_manager_clipboard_copy_ready));
+            dialog.dismiss();
+        });
+        content.findViewById(R.id.action_delete).setOnClickListener(v -> {
+            dialog.dismiss();
+            showDeleteDialog(file);
+        });
+        content.findViewById(R.id.action_move).setOnClickListener(v -> {
+            clipboardFile = file;
+            clipboardCutMode = true;
+            toast(getString(R.string.file_manager_clipboard_move_ready));
+            dialog.dismiss();
+        });
+        content.findViewById(R.id.action_info).setOnClickListener(v -> {
+            dialog.dismiss();
+            showFileInfo(file);
+        });
+        content.findViewById(R.id.action_edit).setOnClickListener(v -> {
+            dialog.dismiss();
+            if (file.isFile()) openCodeEditor(file);
+            else toast(getString(R.string.file_manager_only_files_editable));
+        });
+
+        showSmoothDialog(dialog);
     }
 
     private void openCodeEditor(File file) {
@@ -319,28 +321,6 @@ public class FileManagerActivity extends Activity {
         showSmoothDialog(dialog);
     }
 
-    private interface ChoiceHandler {
-        void onChoice(int which);
-    }
-
-    private void showChoiceDialog(String title, String[] actions, ChoiceHandler handler) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, actions) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text = view.findViewById(android.R.id.text1);
-                text.setTextColor(Color.WHITE);
-                text.setTextSize(20f);
-                return view;
-            }
-        };
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setTitle(title)
-            .setAdapter(adapter, (d, which) -> handler.onChoice(which))
-            .create();
-        showSmoothDialog(dialog);
-    }
 
     private EditText createDialogInput() {
         EditText input = new EditText(this);
@@ -358,10 +338,7 @@ public class FileManagerActivity extends Activity {
             return;
         }
 
-        File destination = new File(currentDirectory, clipboardFile.getName());
-        if (destination.equals(clipboardFile)) {
-            destination = new File(currentDirectory, clipboardFile.getName() + "_copy");
-        }
+        File destination = buildCopyDestination(clipboardFile, currentDirectory);
 
         boolean success;
         if (clipboardCutMode) {
@@ -412,11 +389,37 @@ public class FileManagerActivity extends Activity {
         }
     }
 
+
+    private File buildCopyDestination(File source, File directory) {
+        String name = source.getName();
+        int dot = name.lastIndexOf('.');
+        String base = dot > 0 ? name.substring(0, dot) : name;
+        String ext = dot > 0 ? name.substring(dot) : "";
+
+        File candidate = new File(directory, base + "_copy" + ext);
+        int index = 2;
+        while (candidate.exists() || candidate.equals(source)) {
+            candidate = new File(directory, base + "_copy" + index + ext);
+            index++;
+        }
+        return candidate;
+    }
+
     private void showSmoothDialog(AlertDialog dialog) {
         dialog.show();
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
+        TextView title = dialog.findViewById(getResources().getIdentifier("alertTitle", "id", "android"));
+        if (title != null) title.setTextColor(Color.WHITE);
+        TextView message = dialog.findViewById(android.R.id.message);
+        if (message != null) message.setTextColor(Color.WHITE);
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
+        if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
+        if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null)
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.WHITE);
     }
 
     private void toast(String message) {

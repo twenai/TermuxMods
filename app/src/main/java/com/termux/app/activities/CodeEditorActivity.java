@@ -56,20 +56,14 @@ public class CodeEditorActivity extends Activity {
 
         editorInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
-            public void afterTextChanged(Editable s) {
-                applyMarkdownHighlight(s);
-            }
+            public void afterTextChanged(Editable s) { applySyntaxHighlight(s); }
         });
 
-        applyMarkdownHighlight(editorInput.getText());
+        applySyntaxHighlight(editorInput.getText());
     }
 
     private void loadFile() {
@@ -80,9 +74,7 @@ public class CodeEditorActivity extends Activity {
             FileInputStream in = new FileInputStream(targetFile);
             byte[] data = new byte[8192];
             int read;
-            while ((read = in.read(data)) != -1) {
-                buffer.write(data, 0, read);
-            }
+            while ((read = in.read(data)) != -1) buffer.write(data, 0, read);
             in.close();
 
             editorInput.setText(new String(buffer.toByteArray(), StandardCharsets.UTF_8));
@@ -103,25 +95,84 @@ public class CodeEditorActivity extends Activity {
         }
     }
 
-    private void applyMarkdownHighlight(Editable editable) {
+    private void applySyntaxHighlight(Editable editable) {
         if (formatting || editable == null) return;
         formatting = true;
 
         ForegroundColorSpan[] spans = editable.getSpans(0, editable.length(), ForegroundColorSpan.class);
         for (ForegroundColorSpan span : spans) editable.removeSpan(span);
 
-        applyPattern(editable, "(?m)^#{1,6}\\s.*$", Color.parseColor("#4FC3F7"));
-        applyPattern(editable, "(?m)^```[\\s\\S]*?^```$", Color.parseColor("#81C784"));
-        applyPattern(editable, "`[^`]+`", Color.parseColor("#AED581"));
-        applyPattern(editable, "\\*\\*[^*]+\\*\\*", Color.parseColor("#FFCC80"));
-        applyPattern(editable, "_[^_]+_", Color.parseColor("#CE93D8"));
-        applyPattern(editable, "\\[[^\\]]+\\]\\([^\\)]+\\)", Color.parseColor("#90CAF9"));
+        String name = targetFile.getName().toLowerCase();
+        if (name.endsWith(".py")) {
+            highlightPython(editable);
+        } else if (name.endsWith(".js") || name.endsWith(".ts")) {
+            highlightJavaScript(editable);
+        } else if (name.endsWith(".java") || name.endsWith(".kt")) {
+            highlightJavaLike(editable);
+        } else if (name.endsWith(".xml") || name.endsWith(".html")) {
+            highlightXml(editable);
+        } else if (name.endsWith(".sh") || name.endsWith(".bash")) {
+            highlightShell(editable);
+        } else {
+            highlightMarkdown(editable);
+        }
 
         formatting = false;
     }
 
-    private void applyPattern(Spannable text, String regex, int color) {
+    private void highlightPython(Editable text) {
+        applyPattern(text, "(?m)#.*$", "#6A9955");
+        applyPattern(text, "\"\"\"[\\s\\S]*?\"\"\"|'\'\'[\\s\\S]*?'\'\'", "#CE9178");
+        applyPattern(text, "\"[^\"\\n]*\"|'[^'\\n]*'", "#CE9178");
+        applyPattern(text, "\\b(def|class|import|from|as|if|elif|else|for|while|try|except|finally|with|return|yield|pass|break|continue|lambda|global|nonlocal|assert|in|is|and|or|not|None|True|False)\\b", "#C586C0");
+        applyPattern(text, "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()", "#DCDCAA");
+        applyPattern(text, "\\b\\d+(\\.\\d+)?\\b", "#B5CEA8");
+    }
+
+    private void highlightJavaScript(Editable text) {
+        applyPattern(text, "(?m)//.*$", "#6A9955");
+        applyPattern(text, "/\\*[\\s\\S]*?\\*/", "#6A9955");
+        applyPattern(text, "\"[^\"\\n]*\"|'[^'\\n]*'|`[^`]*`", "#CE9178");
+        applyPattern(text, "\\b(function|const|let|var|if|else|for|while|switch|case|break|continue|return|class|extends|import|export|from|async|await|try|catch|finally|new|this|true|false|null|undefined)\\b", "#C586C0");
+        applyPattern(text, "\\b([A-Za-z_$][A-Za-z0-9_$]*)\\s*(?=\\()", "#DCDCAA");
+        applyPattern(text, "\\b\\d+(\\.\\d+)?\\b", "#B5CEA8");
+    }
+
+    private void highlightJavaLike(Editable text) {
+        applyPattern(text, "(?m)//.*$", "#6A9955");
+        applyPattern(text, "/\\*[\\s\\S]*?\\*/", "#6A9955");
+        applyPattern(text, "\"[^\"\\n]*\"", "#CE9178");
+        applyPattern(text, "\\b(public|private|protected|class|interface|enum|static|final|void|new|if|else|for|while|switch|case|break|continue|return|try|catch|finally|throws|import|package|extends|implements|this|super|true|false|null)\\b", "#C586C0");
+        applyPattern(text, "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()", "#DCDCAA");
+        applyPattern(text, "\\b\\d+(\\.\\d+)?\\b", "#B5CEA8");
+    }
+
+    private void highlightXml(Editable text) {
+        applyPattern(text, "</?[A-Za-z0-9:_-]+", "#569CD6");
+        applyPattern(text, "\\b[A-Za-z_:][-A-Za-z0-9_:.]*(?=\\=)", "#9CDCFE");
+        applyPattern(text, "\"[^\"]*\"", "#CE9178");
+        applyPattern(text, "<!--([\\s\\S]*?)-->", "#6A9955");
+    }
+
+    private void highlightShell(Editable text) {
+        applyPattern(text, "(?m)#.*$", "#6A9955");
+        applyPattern(text, "\"[^\"\\n]*\"|'[^'\\n]*'", "#CE9178");
+        applyPattern(text, "\\$(\\{[A-Za-z0-9_]+\\}|[A-Za-z0-9_]+)", "#4EC9B0");
+        applyPattern(text, "\\b(if|then|else|fi|for|in|do|done|while|case|esac|function|return|export|local)\\b", "#C586C0");
+    }
+
+    private void highlightMarkdown(Editable text) {
+        applyPattern(text, "(?m)^#{1,6}\\s.*$", "#4FC3F7");
+        applyPattern(text, "(?m)^```[\\s\\S]*?^```$", "#81C784");
+        applyPattern(text, "`[^`]+`", "#AED581");
+        applyPattern(text, "\\*\\*[^*]+\\*\\*", "#FFCC80");
+        applyPattern(text, "_[^_]+_", "#CE93D8");
+        applyPattern(text, "\\[[^\\]]+\\]\\([^\\)]+\\)", "#90CAF9");
+    }
+
+    private void applyPattern(Spannable text, String regex, String colorHex) {
         Matcher matcher = Pattern.compile(regex, Pattern.MULTILINE).matcher(text);
+        int color = Color.parseColor(colorHex);
         while (matcher.find()) {
             text.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
