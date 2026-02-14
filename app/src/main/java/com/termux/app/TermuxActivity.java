@@ -422,8 +422,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     private void setDrawerTheme() {
         if (mProperties.isUsingBlackUI()) {
-            findViewById(R.id.left_drawer).setBackgroundColor(ContextCompat.getColor(this,
-                android.R.color.background_dark));
+            findViewById(R.id.left_drawer).setBackgroundResource(R.drawable.sidebar_left_glass_bg);
             ((ImageButton) findViewById(R.id.settings_button)).setColorFilter(Color.WHITE);
         }
     }
@@ -777,13 +776,78 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         String script = "";
         switch (part) {
             case "prompt":
-                script = "PS1='\\[\\e[1;32m\\]┌──(\\[\\e[1;34m\\]Termux㉿localhost\\[\\e[1;32m\\])-[\\[\\e[1;37;1m\\]\\w\\[\\e[1;32m\\]]\\n\\[\\e[1;32m\\]└─\\[\\e[1;34;1m\\]$ \\[\\e[37;1m\\]'\n";
+                script = "mv ~/.bashrc ~/.bashrc.bak.$(date +%s) 2>/dev/null; " +
+                        "cat > ~/.bashrc << 'EOF'\n" +
+                        "PS1='\\[\\e[1;32m\\]┌──(\\[\\e[1;34m\\]Termux㉿localhost\\[\\e[1;32m\\])-[\\[\\e[1;37;1m\\]\\w\\[\\e[1;32m\\]]\\n\\[\\e[1;32m\\]└─\\[\\e[1;34;1m\\]$ \\[\\e[37;1m\\]'\n" +
+                        "command_not_found_handle() {\n" +
+                        "    local PKG=\"$1\"\n" +
+                        "    shift\n" +
+                        "    if pkg search \"^${PKG}\\$\" 2>/dev/null | grep -q \"^${PKG}/\"; then\n" +
+                        "        printf \"\\033[1;32m[+] Installing %s...\\033[0m\\n\" \"$PKG\"\n" +
+                        "        if pkg install -y \"$PKG\"; then\n" +
+                        "            if command -v \"$PKG\" >/dev/null 2>&1; then\n" +
+                        "                printf \"\\033[1;32m[✓] Installed successfully.\\033[0m\\n\"\n" +
+                        "                \"$PKG\" \"$@\"\n" +
+                        "            else\n" +
+                        "                printf \"\\033[1;33m[!] Installed but no executable found.\\033[0m\\n\"\n" +
+                        "            fi\n" +
+                        "        else\n" +
+                        "            printf \"\\033[1;31m[✗] Failed to install %s.\\033[0m\\n\" \"$PKG\"\n" +
+                        "        fi\n" +
+                        "    else\n" +
+                        "        printf \"\\033[1;31m[!] Not found in repo: %s\\033[0m\\n\" \"$PKG\"\n" +
+                        "    fi\n" +
+                        "}\n" +
+                        "EOF\n" +
+                        "source ~/.bashrc\n";
                 break;
             case "logo":
-                script = "pkg install -y neofetch lolcat && mkdir -p ~/.config/neofetch && printf \"print_info() {\\n    info \\\"OS\\\" distro\\n    info \\\"Host\\\" model\\n    info \\\"Kernel\\\" kernel\\n    info \\\"Uptime\\\" uptime\\n    info \\\"Packages\\\" packages\\n    info \\\"Shell\\\" shell\\n    info \\\"Terminal\\\" term\\n    info \\\"CPU\\\" cpu\\n    info \\\"Memory\\\" memory\\n}\\nimage_backend=\\\"ascii\\\"\\nascii_art() {\\n    cat ~/.config/neofetch/vip-art.txt | lolcat -a -d 3\\n}\\nimage_source=\\\"~/.config/neofetch/vip-art.txt\\\"\\nimage_size=\\\"auto\\\"\\n\" > ~/.config/neofetch/config.conf && printf \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀\\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⡋⠁⠀⠀⠀⠀⢀⣀⣀⡀\\n⠀⠀⠀⠀⠀⠠⠒⣶⣶⣿⣿⣷⣾⣿⣿⣿⣿⣛⣋⣉⠀⠀\\n⠀⠀⠀⠀⢀⣤⣞⣫⣿⣿⣿⡻⢿⣿⣿⣿⣿⣿⣦⡀⠀⠀\\n⠀⠀⣶⣾⡿⠿⠿⠿⠿⠋⠈⠀⣸⣿⣿⣿⣿⣷⡈⠙⢆⠀\\n⠀⠀⠉⠁⠀⠤⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⠿⣿⣷⠀⠀⠀\\n⠀⠀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⢹⣿⠀⠀⠀\\n ⣾⣿⣿⣿⣿⠟⠋⠉⠛⠋⠉⠁⣀⠀⠀⠀⠸⠃⠀⠀⠀\\n ⣿⣿⣿⠹⣇⠀⠀⠀⠀⢀⡀⠀⢀⡙⢷⣦⣄⡀⠀⠀⠀\\n ⢿⣿⣿⣷⣦⠤⠤⠀⠀⣠⣿⣶⣶⣿⣿⣿⣿⣿⣷⣄⠀\\n  ⣿⡿⢿⣿⣿⣷⣿⣿⡿⢿⣿⣿⣁⡀⠀⠀⠉⢻⣿⣧\\n⠀ ⡟⠀⠀⠉⠛⠙⠻⢿⣦⡀⠙⠛⠯⠤⠄⠀⠀⠈⠈⣿\\n⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡆⠀⠀⠀⠀⠀⠀⠀⢀⠟\" > ~/.config/neofetch/vip-art.txt && neofetch --source ~/.config/neofetch/vip-art.txt --ascii\n";
+                script = "pkg update -y && pkg upgrade -y && pkg install -y bash git curl make ruby neofetch lolcat && " +
+                        "rm -rf ~/.config/neofetch && mkdir -p ~/.config/neofetch && " +
+                        "cat > ~/.config/neofetch/vip-art.txt <<'EOF'\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
+                        "⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⡋⠁⠀⠀⠀⠀⢀⣀⣀⡀\n" +
+                        "⠀⠀⠀⠀⠀⠠⠒⣶⣶⣿⣿⣷⣾⣿⣿⣿⣿⣛⣋⣉⠀⠀\n" +
+                        "⠀⠀⠀⠀⢀⣤⣞⣫⣿⣿⣿⡻⢿⣿⣿⣿⣿⣿⣦⡀⠀⠀\n" +
+                        "⠀⠀⣶⣾⡿⠿⠿⠿⠿⠋⠈⠀⣸⣿⣿⣿⣿⣷⡈⠙⢆⠀\n" +
+                        "⠀⠀⠉⠁⠀⠤⣤⣤⣤⣤⣶⣾⣿⣿⣿⣿⠿⣿⣷⠀⠀⠀\n" +
+                        "⠀⠀⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⢹⣿⠀⠀⠀\n" +
+                        " ⣾⣿⣿⣿⣿⠟⠋⠉⠛⠋⠉⠁⣀⠀⠀⠀⠸⠃⠀⠀⠀\n" +
+                        " ⣿⣿⣿⠹⣇⠀⠀⠀⠀⢀⡀⠀⢀⡙⢷⣦⡀⠀⠀⠀\n" +
+                        " ⢿⣿⣿⣷⣦⠤⠤⠀⠀⣠⣿⣶⣶⣿⣿⣿⣿⣿⣷⣄⠀\n" +
+                        "  ⣿⡿⢿⣿⣿⣷⣿⣿⡿⢿⣿⣿⣁⡀⠀⠀⠉⢻⣿⣧\n" +
+                        "⠀ ⡟⠀⠀⠉⠛⠙⠻⢿⣦⡀⠙⠛⠯⠤⠄⠀⠀⠈⠈⣿\n" +
+                        "⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⡆⠀⠀⠀⠀⠀⠀⠀⢀⠟\n" +
+                        "EOF\n" +
+                        "cat > ~/.config/neofetch/config.conf <<'CONF'\n" +
+                        "print_info() {\n" +
+                        "    info \"OS\" distro\n" +
+                        "    info \"Host\" model\n" +
+                        "    info \"Kernel\" kernel\n" +
+                        "    info \"Uptime\" uptime\n" +
+                        "    info \"Packages\" packages\n" +
+                        "    info \"Shell\" shell\n" +
+                        "    info \"Terminal\" term\n" +
+                        "    info \"CPU\" cpu\n" +
+                        "    info \"Memory\" memory\n" +
+                        "}\n" +
+                        "image_backend=\"ascii\"\n" +
+                        "ascii_art() {\n" +
+                        "    cat ~/.config/neofetch/vip-art.txt | lolcat -a -d 3\n" +
+                        "}\n" +
+                        "image_source=\"~/.config/neofetch/vip-art.txt\"\n" +
+                        "image_size=\"auto\"\n" +
+                        "CONF\n" +
+                        "grep -qxF 'neofetch --source ~/.config/neofetch/vip-art.txt --ascii' ~/.bashrc || " +
+                        "echo 'neofetch --source ~/.config/neofetch/vip-art.txt --ascii' >> ~/.bashrc && " +
+                        "neofetch --source ~/.config/neofetch/vip-art.txt --ascii\n";
                 break;
             case "reset":
-                script = "rm -rf ~/.config/neofetch && PS1='$ '\n";
+                script = "if [ -f ~/.bashrc.bak.* ]; then cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; fi; " +
+                        "rm -rf ~/.config/neofetch; " +
+                        "sed -i '/neofetch --source/d' ~/.bashrc; " +
+                        "source ~/.bashrc; " +
+                        "echo 'Reset complete';\n";
                 setTerminalBackground(null);
                 break;
         }
@@ -902,9 +966,28 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         btn.setAllCaps(false);
         btn.setTextColor(Color.WHITE);
         btn.setBackgroundResource(R.drawable.btn_glass_rounded);
-        btn.setPadding(16, 24, 16, 24);
+        btn.setPadding(12, 16, 12, 16);
+        btn.setTextSize(12);
         btn.setGravity(Gravity.CENTER);
-        if (isRoot) {
+        
+        int iconRes = 0;
+        switch (label.toLowerCase()) {
+            case "list": iconRes = R.drawable.ic_list; break;
+            case "storage": iconRes = R.drawable.ic_storage; break;
+            case "update": iconRes = R.drawable.ic_update; break;
+            case "python": iconRes = R.drawable.ic_python; break;
+            case "git": iconRes = R.drawable.ic_git; break;
+            case "nodejs": iconRes = R.drawable.ic_node; break;
+            case "top": iconRes = R.drawable.ic_system; break;
+            case "network": iconRes = R.drawable.ic_network; break;
+            case "tsu": iconRes = R.drawable.ic_root; break;
+            case "mount": iconRes = R.drawable.ic_storage; break;
+        }
+        
+        if (iconRes != 0) {
+            btn.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
+            btn.setCompoundDrawablePadding(8);
+        } else if (isRoot) {
             btn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_root, 0);
         }
         return btn;
