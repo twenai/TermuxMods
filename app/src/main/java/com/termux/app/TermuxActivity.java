@@ -38,6 +38,7 @@ import com.termux.shared.packages.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
+import com.termux.app.activities.FileManagerActivity;
 import com.termux.app.activities.HelpActivity;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.settings.preferences.TermuxAppSharedPreferences;
@@ -979,20 +980,11 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void openFileManager() {
-        Intent[] intents = new Intent[] {
-            new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_FILES),
-            new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        };
-
-        for (Intent intent : intents) {
-            try {
-                startActivity(intent);
-                return;
-            } catch (ActivityNotFoundException ignored) {
-            }
+        try {
+            startActivity(new Intent(this, FileManagerActivity.class));
+        } catch (ActivityNotFoundException e) {
+            showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
         }
-
-        showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
     }
 
     private void showTermuxInfoDialog() {

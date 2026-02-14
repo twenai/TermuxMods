@@ -265,4 +265,39 @@
     <string name="termuxmods_action_openssl">OPENSSL</string>
     <string name="termuxmods_action_more_pkg">MORE</string>
 
+
+    <!-- Termux File Manager -->
+    <string name="file_manager_title">Termux File Manager</string>
+    <string name="file_manager_current_path">Path: %1$s</string>
+    <string name="file_manager_up">UP</string>
+    <string name="file_manager_home">HOME</string>
+    <string name="file_manager_new_folder">NEW FOLDER</string>
+    <string name="file_manager_new_file">NEW FILE</string>
+    <string name="file_manager_paste">PASTE</string>
+    <string name="file_manager_refresh">REFRESH</string>
+    <string name="file_manager_folder_details">Folder • %1$d item</string>
+    <string name="file_manager_file_details">File • %1$s</string>
+    <string name="file_manager_dialog_new_folder">Create folder</string>
+    <string name="file_manager_dialog_new_file">Create file</string>
+    <string name="file_manager_action_rename">Rename</string>
+    <string name="file_manager_action_delete">Delete</string>
+    <string name="file_manager_action_copy">Copy</string>
+    <string name="file_manager_action_move">Move</string>
+    <string name="file_manager_action_show_info">Show info</string>
+    <string name="file_manager_delete_confirm">Delete %1$s ?</string>
+    <string name="file_manager_file_info">Path: %1$s
+Size: %2$s
+Last modified: %3$s</string>
+    <string name="file_manager_clipboard_empty">Clipboard kosong</string>
+    <string name="file_manager_clipboard_copy_ready">File/folder siap di-copy, tekan PASTE.</string>
+    <string name="file_manager_clipboard_move_ready">File/folder siap di-move, tekan PASTE.</string>
+    <string name="file_manager_success_created">Berhasil dibuat</string>
+    <string name="file_manager_error_create">Gagal membuat file/folder</string>
+    <string name="file_manager_success_rename">Rename berhasil</string>
+    <string name="file_manager_error_rename">Rename gagal</string>
+    <string name="file_manager_success_delete">Delete berhasil</string>
+    <string name="file_manager_error_delete">Delete gagal</string>
+    <string name="file_manager_success_paste">Paste berhasil</string>
+    <string name="file_manager_error_paste">Paste gagal</string>
+
 </resources>
