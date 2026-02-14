@@ -863,16 +863,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    private void setCustomBackground() {
-        if (mTerminalView != null) {
-            android.graphics.drawable.Drawable drawable = ContextCompat.getDrawable(this, R.drawable.terminal_bg_custom);
-            if (drawable != null) {
-                setTerminalBackground(drawable);
-            }
-        }
-    }
-
-    private void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
+    public void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
         if (mTerminalView != null) {
             if (drawable == null) {
                 mTerminalView.setBackgroundColor(Color.BLACK);
@@ -880,17 +871,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 mTerminalView.setBackground(drawable);
             }
         }
-    }
-
-    private void showInstallationDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        View view = getLayoutInflater().inflate(R.layout.dialog_installing_bootstrap, null);
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-        dialog.show();
-        
-        new android.os.Handler().postDelayed(dialog::dismiss, 3000);
     }
 
     public View getTermuxActivityBottomSpaceView() {
@@ -993,48 +973,27 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         session.write(script);
     }
 
-    private void setCustomBackground() {
-        if (mTerminalView != null) {
-            android.graphics.drawable.Drawable drawable = ContextCompat.getDrawable(this, R.drawable.terminal_bg_custom);
-            if (drawable != null) {
-                setTerminalBackground(drawable);
-            }
-        }
-    }
-
-    private void setTerminalBackground(android.graphics.drawable.Drawable drawable) {
-        if (mTerminalView != null) {
-            if (drawable == null) {
-                mTerminalView.setBackgroundColor(Color.BLACK);
-            } else {
-                mTerminalView.setBackground(drawable);
-            }
-        }
-    }
-
-    private void showInstallationDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        View view = getLayoutInflater().inflate(R.layout.dialog_installing_bootstrap, null);
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-        dialog.show();
-        
-        new android.os.Handler().postDelayed(dialog::dismiss, 3000);
-    }
-
     private void setupRightSidebar() {
-        GridLayout container = findViewById(R.id.commands_container);
+        int containerId = getResources().getIdentifier("commands_container", "id", getPackageName());
+        GridLayout container = containerId != 0 ? findViewById(containerId) : null;
+        
         if (container == null) {
             // Fallback for old sidebar buttons if container is missing
-            Button btnPrompt = findViewById(R.id.btn_prompt);
+            int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
+            Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
             if (btnPrompt != null) {
                 btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-                Button btnLogo = findViewById(R.id.btn_logo);
+                
+                int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
+                Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
                 if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-                Button btnBackground = findViewById(R.id.btn_background);
+                
+                int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
+                Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
                 if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-                Button btnReset = findViewById(R.id.btn_reset);
+                
+                int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
+                Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
                 if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             }
             return;
