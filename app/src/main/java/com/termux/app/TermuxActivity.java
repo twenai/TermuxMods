@@ -754,57 +754,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return mTermuxActivityRootView;
     }
 
-                        "if [ -f ~/.bashrc.bak.* ]; then " +
-                        "  cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; " +
-                        "  echo \"✅ Bash prompt restored\"; " +
-                        "fi; " +
-                        "rm -rf ~/.config/neofetch; " +
-                        "echo \"✅ Neofetch removed\"; " +
-                        "echo \"✅ Done! Restart Termux\"";
-                break;
-        }
-
-        if (!script.isEmpty()) {
-                mTerminalView.setBackground(drawable);
-            }
-        }
-    }
-
-    private void showInstallationDialog(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-        int layoutId = getResources().getIdentifier("dialog_installing_bootstrap", "layout", getPackageName());
-        View view = layoutId != 0 ? getLayoutInflater().inflate(layoutId, null) : null;
-        if (view != null) {
-            builder.setView(view);
-            AlertDialog dialog = builder.create();
-            dialog.getWindow().getAttributes().windowAnimations = android.R.style.Animation_Dialog;
-            dialog.show();
-            new android.os.Handler().postDelayed(dialog::dismiss, 3000);
-        }
-    }
-
-    private void setCustomBackground() {
-        if (mTerminalView != null) {
-            int drawableId = getResources().getIdentifier("terminal_bg_custom", "drawable", getPackageName());
-            android.graphics.drawable.Drawable drawable = drawableId != 0 ? ContextCompat.getDrawable(this, drawableId) : null;
-            if (drawable != null) {
-                setTerminalBackground(drawable);
-            }
-        }
-    }
-
-    public View getTermuxActivityBottomSpaceView() {
-        return mTermuxActivityBottomSpaceView;
-    }
-
-    public ExtraKeysView getExtraKeysView() {
-        return mExtraKeysView;
-    }
-
-    public void setExtraKeysView(ExtraKeysView extraKeysView) {
-        mExtraKeysView = extraKeysView;
-    }
-
     private void executeScriptPart(String part) {
         TerminalSession session = getCurrentSession();
         if (session == null) return;
@@ -889,6 +838,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 setTerminalBackground(null);
                 break;
         }
+        session.write(script);
+    }
         session.write(script);
     }
 
