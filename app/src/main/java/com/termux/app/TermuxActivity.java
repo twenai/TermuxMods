@@ -971,6 +971,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         btn.setGravity(Gravity.CENTER);
         
         int iconRes = 0;
+        /*
         switch (label.toLowerCase()) {
             case "list": iconRes = R.drawable.ic_list; break;
             case "storage": iconRes = R.drawable.ic_storage; break;
@@ -983,6 +984,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             case "tsu": iconRes = R.drawable.ic_root; break;
             case "mount": iconRes = R.drawable.ic_storage; break;
         }
+        */
+        
+        // Map labels to existing icons safely
+        String lowerLabel = label.toLowerCase();
+        if (lowerLabel.contains("pkg") || lowerLabel.contains("list")) iconRes = R.drawable.ic_pkg;
+        else if (lowerLabel.contains("system") || lowerLabel.contains("top")) iconRes = R.drawable.ic_system;
+        else if (lowerLabel.equalsIgnoreCase("tsu")) iconRes = R.drawable.ic_root;
         
         if (iconRes != 0) {
             btn.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
