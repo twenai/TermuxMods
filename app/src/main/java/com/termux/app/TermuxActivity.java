@@ -858,16 +858,31 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 break;
         }
 
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle("Termux Mods")
             .setMessage(message)
             .setPositiveButton(android.R.string.ok, null)
-            .show();
+            .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setWindowAnimations(android.R.style.Animation_Dialog);
+        }
+        dialog.show();
     }
 
     private void setCustomBackground() {
         setTerminalBackground(null);
         showToast("Background reset to default", false);
+    }
+
+    private void animateSidebarTap(View view) {
+        if (view == null) return;
+        view.animate().cancel();
+        view.animate()
+            .scaleX(0.96f)
+            .scaleY(0.96f)
+            .setDuration(80)
+            .withEndAction(() -> view.animate().scaleX(1f).scaleY(1f).setDuration(120).start())
+            .start();
     }
 
     private void executeScriptPart(String part) {
@@ -969,6 +984,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         View developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
         if (developerInfoLink != null) {
             developerInfoLink.setOnClickListener(v -> {
+                animateSidebarTap(v);
                 Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
                 try {
                     startActivity(youtubeIntent);
@@ -981,49 +997,49 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
         Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
         if (btnPrompt != null) {
-            btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
+            btnPrompt.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("prompt"); });
         }
 
         int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
         Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
         if (btnLogo != null) {
-            btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
+            btnLogo.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("logo"); });
         }
 
         int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
         Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
         if (btnBackground != null) {
-            btnBackground.setOnClickListener(v -> setCustomBackground());
+            btnBackground.setOnClickListener(v -> { animateSidebarTap(v); setCustomBackground(); });
         }
 
         int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
         Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
         if (btnReset != null) {
-            btnReset.setOnClickListener(v -> executeScriptPart("reset"));
+            btnReset.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("reset"); });
         }
 
         int btnUpdateId = getResources().getIdentifier("btn_update", "id", getPackageName());
         Button btnUpdate = btnUpdateId != 0 ? findViewById(btnUpdateId) : null;
         if (btnUpdate != null) {
-            btnUpdate.setOnClickListener(v -> runTerminalCommand("pkg update -y"));
+            btnUpdate.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg update -y"); });
         }
 
         int btnUpgradeId = getResources().getIdentifier("btn_upgrade", "id", getPackageName());
         Button btnUpgrade = btnUpgradeId != 0 ? findViewById(btnUpgradeId) : null;
         if (btnUpgrade != null) {
-            btnUpgrade.setOnClickListener(v -> runTerminalCommand("pkg upgrade -y"));
+            btnUpgrade.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg upgrade -y"); });
         }
 
         int btnClearTerminalId = getResources().getIdentifier("btn_clear_terminal", "id", getPackageName());
         Button btnClearTerminal = btnClearTerminalId != 0 ? findViewById(btnClearTerminalId) : null;
         if (btnClearTerminal != null) {
-            btnClearTerminal.setOnClickListener(v -> runTerminalCommand("clear && printf '\\e[3J'"));
+            btnClearTerminal.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("clear && printf '\\e[3J'"); });
         }
 
         int btnRemoveCacheId = getResources().getIdentifier("btn_remove_cache", "id", getPackageName());
         Button btnRemoveCache = btnRemoveCacheId != 0 ? findViewById(btnRemoveCacheId) : null;
         if (btnRemoveCache != null) {
-            btnRemoveCache.setOnClickListener(v -> runTerminalCommand("rm -rf ~/.cache/* && rm -rf $PREFIX/tmp/* && echo 'Cache removed'"));
+            btnRemoveCache.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("rm -rf ~/.cache/* && rm -rf $PREFIX/tmp/* && echo 'Cache removed'"); });
         }
     }
 
