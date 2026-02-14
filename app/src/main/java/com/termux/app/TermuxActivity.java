@@ -954,7 +954,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         String lowerLabel = label.toLowerCase();
         if (lowerLabel.contains("pkg") || lowerLabel.contains("list")) iconRes = R.drawable.ic_pkg;
         else if (lowerLabel.contains("system") || lowerLabel.contains("top")) iconRes = R.drawable.ic_system;
-        registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter);
+        
+        return btn;
     }
 
     private void unregisterTermuxActivityBroadcastReceiever() {
