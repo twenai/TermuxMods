@@ -22,9 +22,9 @@ args = "SystemStatus"
 name = "SystemStatus"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "echo 'Replit build is disabled by user request'"
-
-[workflows.workflow.metadata]
-outputType = "console"
