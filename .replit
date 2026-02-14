@@ -21,9 +21,9 @@ args = "Build Android App"
 name = "Build Android App"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "./gradlew assembleDebug"
-
-[workflows.workflow.metadata]
-outputType = "console"
