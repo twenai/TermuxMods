@@ -245,6 +245,7 @@
     <string name="termuxmods_action_file_manager">FILE MANAGER</string>
     <string name="termuxmods_action_info_termux">INFO TERMUX</string>
     <string name="termuxmods_action_sidebar_settings">SETTING</string>
+    <string name="termuxmods_action_sidebar_profile">PROFILE</string>
     <string name="termuxmods_toast_no_file_manager">No file manager app found</string>
     <string name="termuxmods_toast_no_browser">No browser app found</string>
     <string name="termuxmods_info_title">Info Termux</string>
@@ -258,7 +259,7 @@ Created By Kz.tutorial
 
 File Manager opens internal Termux storage.
 Info Termux shows application details.
-Setting opens the settings page.</string>
+Profile opens Supabase account page (login/signup/reset password and account details).</string>
 
 
     <string name="termuxmods_packages">PACKAGES</string>
@@ -326,5 +327,31 @@ Last modified: %3$s</string>
     <string name="session_action_delete">DELETE</string>
     <string name="session_action_delete_confirm_title">Delete Session</string>
     <string name="session_action_delete_confirm_message">Are you sure you want to delete this session?</string>
+
+    <string name="profile_subtitle">Kelola akun Supabase kamu dengan tampilan modern.</string>
+    <string name="profile_hint_email">Email</string>
+    <string name="profile_hint_password">Password</string>
+    <string name="profile_hint_username">Username (default dari email)</string>
+    <string name="profile_hint_avatar">Avatar URL</string>
+    <string name="profile_action_login">LOGIN</string>
+    <string name="profile_action_signup">SIGN UP</string>
+    <string name="profile_action_reset">RESET PASS</string>
+    <string name="profile_action_logout">LOGOUT</string>
+    <string name="profile_action_save">SAVE PROFILE</string>
+    <string name="profile_action_refresh">REFRESH PROFILE</string>
+    <string name="profile_status_logged_out">Status: Belum login</string>
+    <string name="profile_status_logged_in">Status: Login sebagai %1$s</string>
+    <string name="profile_role_default">Role: -</string>
+    <string name="profile_role_format">Role: %1$s</string>
+    <string name="profile_msg_email_password_required">Email dan password wajib diisi.</string>
+    <string name="profile_msg_email_required">Masukkan email terlebih dahulu.</string>
+    <string name="profile_msg_auth_failed">Autentikasi gagal.</string>
+    <string name="profile_msg_signup_success">Sign up berhasil. Cek email untuk verifikasi jika diperlukan.</string>
+    <string name="profile_msg_login_success">Login berhasil.</string>
+    <string name="profile_msg_reset_sent">Link reset password sudah dikirim.</string>
+    <string name="profile_msg_login_first">Silakan login dulu.</string>
+    <string name="profile_msg_saved">Profil berhasil disimpan.</string>
+    <string name="profile_error_title">Supabase Error</string>
+    <string name="profile_msg_request_failed">Permintaan Supabase gagal.</string>
 
 </resources>

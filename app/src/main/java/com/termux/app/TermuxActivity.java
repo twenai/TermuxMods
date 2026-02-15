@@ -41,6 +41,7 @@ import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
 import com.termux.app.activities.FileManagerActivity;
 import com.termux.app.activities.HelpActivity;
+import com.termux.app.activities.ProfileActivity;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.settings.preferences.TermuxAppSharedPreferences;
 import com.termux.app.terminal.TermuxSessionsListViewController;
@@ -1045,8 +1046,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    private void openSidebarSettings() {
-        startActivity(new Intent(this, SettingsActivity.class));
+    private void openSidebarProfile() {
+        startActivity(new Intent(this, ProfileActivity.class));
     }
 
     private void setupRightSidebar() {
@@ -1068,12 +1069,12 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             });
         }
 
-        int btnSidebarSettingsId = getResources().getIdentifier("btn_sidebar_settings", "id", getPackageName());
-        View btnSidebarSettings = btnSidebarSettingsId != 0 ? findViewById(btnSidebarSettingsId) : null;
-        if (btnSidebarSettings != null) {
-            btnSidebarSettings.setOnClickListener(v -> {
+        int btnSidebarProfileId = getResources().getIdentifier("btn_sidebar_profile", "id", getPackageName());
+        View btnSidebarProfile = btnSidebarProfileId != 0 ? findViewById(btnSidebarProfileId) : null;
+        if (btnSidebarProfile != null) {
+            btnSidebarProfile.setOnClickListener(v -> {
                 animateSidebarTap(v);
-                openSidebarSettings();
+                openSidebarProfile();
             });
         }
 

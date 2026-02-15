@@ -236,7 +236,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/btn_sidebar_settings"
+                        android:id="@+id/btn_sidebar_profile"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -251,10 +251,10 @@
                         <ImageButton
                             android:layout_width="34dp"
                             android:layout_height="34dp"
-                            android:src="@drawable/ic_settings"
+                            android:src="@drawable/ic_profile"
                             android:background="@android:color/transparent"
                             android:tint="#80ED99"
-                            android:contentDescription="@string/termuxmods_action_sidebar_settings" />
+                            android:contentDescription="@string/termuxmods_action_sidebar_profile" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -264,7 +264,7 @@
                             android:gravity="center"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:text="@string/termuxmods_action_sidebar_settings"
+                            android:text="@string/termuxmods_action_sidebar_profile"
                             android:textColor="#1B1B1B"
                             android:textSize="10sp" />
                     </LinearLayout>
