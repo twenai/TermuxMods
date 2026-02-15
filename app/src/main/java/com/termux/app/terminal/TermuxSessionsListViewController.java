@@ -122,7 +122,7 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
 
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
     }
 
@@ -139,7 +139,7 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             .create();
         confirm.show();
         if (confirm.getWindow() != null) {
-            confirm.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
+            confirm.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
     }
 

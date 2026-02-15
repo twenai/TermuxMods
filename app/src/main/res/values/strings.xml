@@ -229,6 +229,12 @@
 
 
     <!-- TermuxMods Right Sidebar -->
+    <string name="termuxmods_left_drawer_title">Terminal Sessions</string>
+    <string name="termuxmods_left_drawer_subtitle">Swipe a row for Pin/Delete actions</string>
+    <string name="termuxmods_right_drawer_title">TermuxMods Panel</string>
+    <string name="termuxmods_right_drawer_subtitle">Quick tools, profile and package actions</string>
+    <string name="termuxmods_section_shortcuts">SHORTCUTS</string>
+    <string name="termuxmods_section_customize">CUSTOMIZE</string>
     <string name="termuxmods_update_system">UPDATE SYSTEM</string>
     <string name="termuxmods_cleanup">CLEAN UP</string>
     <string name="termuxmods_action_prompt">PROMPT</string>

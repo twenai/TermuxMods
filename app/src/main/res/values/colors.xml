@@ -7,6 +7,9 @@
     <color name="text_white">#FFFFFF</color>
     <color name="text_secondary">#B3C7D9</color>
     <color name="accent_color">#57C7FF</color>
+    <color name="sidebar_title">#E6F5FF</color>
+    <color name="sidebar_subtitle">#A9C5DE</color>
+    <color name="sidebar_section_title">#8FDDFF</color>
 
     <color name="profile_hero_card_bg">#1E182330</color>
     <color name="profile_glass_card_bg">#1AFFFFFF</color>

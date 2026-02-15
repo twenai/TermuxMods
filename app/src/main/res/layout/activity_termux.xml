@@ -82,8 +82,35 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/sidebar_section_card"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/termuxmods_left_drawer_title"
+                            android:textColor="@color/sidebar_title"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/termuxmods_left_drawer_subtitle"
+                            android:textColor="@color/sidebar_subtitle"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
                     <ImageButton
                         android:id="@+id/settings_button"
                         android:layout_width="40dp"
@@ -105,6 +132,9 @@
                     android:choiceMode="singleChoice"
                     android:divider="@color/glass_card_stroke"
                     android:dividerHeight="1dp"
+                    android:listSelector="@drawable/session_ripple"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:longClickable="true" />
 
                 <LinearLayout
@@ -163,8 +193,42 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/sidebar_section_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/termuxmods_right_drawer_title"
+                        android:textColor="@color/sidebar_title"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/termuxmods_right_drawer_subtitle"
+                        android:textColor="@color/sidebar_subtitle"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_section_shortcuts"
+                    android:textColor="@color/sidebar_section_title"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="20dp"
                     android:gravity="center">
 
                     <LinearLayout
@@ -270,6 +334,15 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_section_customize"
+                    android:textColor="@color/sidebar_section_title"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -281,7 +354,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_prompt"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -291,7 +364,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_reset"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -318,7 +391,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_update"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -328,7 +401,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_upgrade"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -355,7 +428,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_git"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -365,7 +438,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_curl"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
                         android:background="@drawable/btn_glass_rounded"
@@ -376,7 +449,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_wget"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -393,7 +466,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_python"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -403,7 +476,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_pip"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
                         android:background="@drawable/btn_glass_rounded"
@@ -414,7 +487,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_nodejs"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -431,7 +504,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_openssh"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -441,7 +514,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_openssl"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="2dp"
                         android:layout_marginEnd="2dp"
                         android:background="@drawable/btn_glass_rounded"
@@ -452,7 +525,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_more_pkg"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -477,7 +550,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_clear"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -487,7 +560,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/termuxmods_action_remove_cache"
-                        android:textAllCaps="true"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
