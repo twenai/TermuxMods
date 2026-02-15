@@ -1,9 +1,11 @@
 package com.termux.app.activities;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -11,6 +13,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -29,7 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "secure_supabase_auth";
     private static final String KEY_ACCESS_TOKEN = "access_token";
@@ -42,6 +47,7 @@ public class ProfileActivity extends Activity {
     private View authCard;
     private View loggedInContainer;
     private View loadingView;
+    private View loginLoading;
 
     private EditText emailInput;
     private EditText passwordInput;
@@ -79,6 +85,10 @@ public class ProfileActivity extends Activity {
         authCard = findViewById(R.id.card_auth);
         loggedInContainer = findViewById(R.id.profile_logged_in_container);
         loadingView = findViewById(R.id.profile_loading);
+        loginLoading = findViewById(R.id.profile_login_loading);
+
+        MaterialToolbar toolbar = findViewById(R.id.profile_top_app_bar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         emailInput = findViewById(R.id.profile_email);
         passwordInput = findViewById(R.id.profile_password);
@@ -109,10 +119,18 @@ public class ProfileActivity extends Activity {
         refreshButton.setOnClickListener(v -> fetchUser(false));
         logoutButton.setOnClickListener(v -> logout());
 
+        applyGlassBlur(authCard);
+
         String token = prefs.getString(KEY_ACCESS_TOKEN, null);
         updateUiState(!TextUtils.isEmpty(token));
         if (!TextUtils.isEmpty(token)) {
             fetchUser(false);
+        }
+    }
+
+    private void applyGlassBlur(View target) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && target != null) {
+            target.setRenderEffect(RenderEffect.createBlurEffect(18f, 18f, Shader.TileMode.CLAMP));
         }
     }
 
@@ -124,6 +142,8 @@ public class ProfileActivity extends Activity {
 
     private void setLoading(boolean loading) {
         loadingView.setVisibility(loading ? View.VISIBLE : View.GONE);
+        loginLoading.setVisibility((loading && !isLoggedIn) ? View.VISIBLE : View.GONE);
+
         loginButton.setEnabled(!loading);
         signupButton.setEnabled(!loading);
         resetButton.setEnabled(!loading);
@@ -239,13 +259,16 @@ public class ProfileActivity extends Activity {
                 runOnUiThread(() -> {
                     usernameInput.setText(finalUsername);
                     avatarInput.setText(finalAvatar);
-                    authStatus.setText(finalEmail);
-                    roleStatus.setText(getString(R.string.profile_role_format, finalRole));
+
+                    authStatus.setText(finalUsername);
+                    roleStatus.setText(finalEmail);
                     authChip.setText(R.string.profile_chip_authenticated);
                     connectionStatus.setText(R.string.profile_connected);
-                    sessionUserId.setText(getString(R.string.profile_session_user_id_format, finalUserId));
-                    sessionLastLogin.setText(getString(R.string.profile_session_last_login_format, finalLastSignInAt));
-                    sessionExpiry.setText(getString(R.string.profile_session_expiry_format, finalExpiryLabel));
+
+                    sessionUserId.setText(finalUserId);
+                    sessionLastLogin.setText(finalLastSignInAt);
+                    sessionExpiry.setText(finalExpiryLabel);
+
                     updateAvatar(finalAvatar);
 
                     if (switchToLoggedInState || !isLoggedIn) updateUiState(true);
@@ -268,7 +291,7 @@ public class ProfileActivity extends Activity {
             return;
         }
 
-        final String email = authStatus.getText().toString().trim();
+        final String email = roleStatus.getText().toString().trim();
         String username = usernameInput.getText().toString().trim();
         final String avatar = avatarInput.getText().toString().trim();
 

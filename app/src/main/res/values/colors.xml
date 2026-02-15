@@ -5,6 +5,13 @@
     <color name="glass_card">#22FFFFFF</color>
     <color name="glass_card_stroke">#11FFFFFF</color>
     <color name="text_white">#FFFFFF</color>
-    <color name="text_secondary">#BDBDBD</color>
-    <color name="accent_color">#00E5FF</color>
+    <color name="text_secondary">#B3C7D9</color>
+    <color name="accent_color">#57C7FF</color>
+
+    <color name="profile_hero_card_bg">#1E182330</color>
+    <color name="profile_glass_card_bg">#1AFFFFFF</color>
+    <color name="profile_glass_stroke">#33FFFFFF</color>
+    <color name="profile_chip_bg">#22489BFF</color>
+    <color name="profile_input_bg">#0DFFFFFF</color>
+    <color name="profile_divider">#26FFFFFF</color>
 </resources>

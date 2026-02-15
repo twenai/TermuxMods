@@ -30,9 +30,9 @@ public final class TextInputDialogUtils {
                                  final DialogInterface.OnDismissListener onDismiss) {
         final EditText input = new EditText(activity);
         input.setSingleLine();
-        input.setTextColor(Color.parseColor("#1B1B1B"));
-        input.setHintTextColor(Color.parseColor("#66000000"));
-        int inputBgRes = activity.getResources().getIdentifier("dialog_input_light", "drawable", activity.getPackageName());
+        input.setTextColor(Color.parseColor("#FFFFFF"));
+        input.setHintTextColor(Color.parseColor("#99FFFFFF"));
+        int inputBgRes = activity.getResources().getIdentifier("dialog_input_glass", "drawable", activity.getPackageName());
         if (inputBgRes != 0) input.setBackgroundResource(inputBgRes);
         if (initialText != null) {
             input.setText(initialText);
@@ -78,7 +78,7 @@ public final class TextInputDialogUtils {
         dialogHolder[0] = builder.create();
         dialogHolder[0].setCanceledOnTouchOutside(false);
         dialogHolder[0].show();
-        int dialogBgRes = activity.getResources().getIdentifier("dialog_light_bg", "drawable", activity.getPackageName());
+        int dialogBgRes = activity.getResources().getIdentifier("dialog_glass_bg", "drawable", activity.getPackageName());
         if (dialogBgRes != 0 && dialogHolder[0].getWindow() != null) {
             dialogHolder[0].getWindow().setBackgroundDrawableResource(dialogBgRes);
         }
