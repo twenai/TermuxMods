@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String SUPABASE_URL = BuildConfig.SUPABASE_URL;
     private static final String SUPABASE_ANON_KEY = BuildConfig.SUPABASE_ANON_KEY;
+    private static final int NETWORK_TIMEOUT_MS = 15000;
 
     private View root;
     private View authCard;
@@ -198,7 +199,10 @@ public class ProfileActivity extends AppCompatActivity {
                 if (signup) {
                     updateUserMetadata(accessToken, defaultUsernameFromEmail(email), "");
                 }
-                runOnUiThread(() -> showSnack(getString(R.string.profile_snackbar_logged_in)));
+                runOnUiThread(() -> {
+                    passwordInput.setText("");
+                    showSnack(getString(R.string.profile_snackbar_logged_in));
+                });
                 fetchUser(true);
             } catch (Exception e) {
                 showError(e.getMessage());
@@ -371,16 +375,24 @@ public class ProfileActivity extends AppCompatActivity {
 
     private JSONObject request(String method, String endpoint, JSONObject payload, String bearerToken) throws Exception {
         if (TextUtils.isEmpty(SUPABASE_URL) || TextUtils.isEmpty(SUPABASE_ANON_KEY)) {
-            throw new IllegalStateException("Supabase configuration is missing.");
+            throw new IllegalStateException(getString(R.string.profile_msg_missing_config));
         }
         if (TextUtils.isEmpty(endpoint)) {
-            throw new IllegalStateException("Supabase endpoint is missing.");
+            throw new IllegalStateException(getString(R.string.profile_msg_missing_endpoint));
         }
 
+        if (!SUPABASE_URL.startsWith("http://") && !SUPABASE_URL.startsWith("https://")) {
+            throw new IllegalStateException(getString(R.string.profile_msg_invalid_url));
+        }
         URL url = new URL(SUPABASE_URL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(NETWORK_TIMEOUT_MS);
+        connection.setReadTimeout(NETWORK_TIMEOUT_MS);
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
         connection.setRequestMethod(method);
         connection.setRequestProperty("apikey", SUPABASE_ANON_KEY);
+        connection.setRequestProperty("Accept", "application/json");
         connection.setRequestProperty("Content-Type", "application/json");
         if (!TextUtils.isEmpty(bearerToken)) {
             connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
@@ -393,16 +405,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        int code = connection.getResponseCode();
-        InputStream stream = code >= 200 && code < 300 ? connection.getInputStream() : connection.getErrorStream();
-        String body = readStream(stream);
+        try {
+            int code = connection.getResponseCode();
+            InputStream stream = code >= 200 && code < 300 ? connection.getInputStream() : connection.getErrorStream();
+            String body = readStream(stream);
 
-        if (code < 200 || code >= 300) {
-            throw new IllegalStateException("HTTP " + code + ": " + body);
+            if (code < 200 || code >= 300) {
+                throw new IllegalStateException("HTTP " + code + ": " + body);
+            }
+
+            if (TextUtils.isEmpty(body)) return new JSONObject();
+            return new JSONObject(body);
+        } finally {
+            connection.disconnect();
         }
-
-        if (TextUtils.isEmpty(body)) return new JSONObject();
-        return new JSONObject(body);
     }
 
     private String readStream(InputStream stream) throws Exception {

@@ -31,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.termux.R;
 import com.termux.app.terminal.TermuxActivityRootView;
@@ -75,8 +76,6 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.Button;
-
 public final class TermuxActivity extends Activity implements ServiceConnection {
 
     /**

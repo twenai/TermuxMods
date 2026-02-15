@@ -341,7 +341,6 @@ Last modified: %3$s</string>
     <string name="profile_action_save">Save profile</string>
     <string name="profile_action_refresh">Refresh profile</string>
     <string name="profile_role_default">Authenticated account</string>
-    <string name="profile_role_format">Role: %1$s</string>
     <string name="profile_msg_email_password_required">Email and password are required.</string>
     <string name="profile_msg_email_required">Enter your email first.</string>
     <string name="profile_msg_auth_failed">Authentication failed.</string>
@@ -352,6 +351,9 @@ Last modified: %3$s</string>
     <string name="profile_msg_saved">Profile saved.</string>
     <string name="profile_error_title">Supabase Error</string>
     <string name="profile_msg_request_failed">Supabase request failed.</string>
+    <string name="profile_msg_missing_config">Supabase configuration is missing. Set TERMUXMODS_SUPABASE_URL and TERMUXMODS_SUPABASE_ANON_KEY.</string>
+    <string name="profile_msg_missing_endpoint">Supabase endpoint is missing.</string>
+    <string name="profile_msg_invalid_url">Supabase URL must start with http:// or https://.</string>
 
     <string name="profile_screen_title">Profile</string>
     <string name="profile_auth_title">Supabase account</string>
