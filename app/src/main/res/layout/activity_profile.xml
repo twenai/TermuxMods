@@ -169,20 +169,14 @@
                                     android:layout_height="wrap_content" />
                             </com.google.android.material.textfield.TextInputLayout>
 
-                            <com.google.android.material.textfield.TextInputLayout
-                                style="@style/ProfileTextInputLayout"
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/profile_btn_change_avatar"
+                                style="@style/ProfileButtonOutlined"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:hint="@string/profile_hint_avatar">
-
-                                <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/profile_avatar_url"
-                                    style="@style/ProfileTextInputText"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="textUri" />
-                            </com.google.android.material.textfield.TextInputLayout>
+                                android:minHeight="48dp"
+                                android:text="@string/profile_action_change_avatar" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/profile_btn_save"

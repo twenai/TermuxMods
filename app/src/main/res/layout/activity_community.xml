@@ -23,14 +23,29 @@
             android:contentDescription="@string/file_manager_back"
             android:padding="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="@string/community_title"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/text_white"/>
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_title"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/text_white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_subtitle"
+                android:textColor="@color/sidebar_subtitle"
+                android:textSize="11sp"/>
+        </LinearLayout>
     </LinearLayout>
 
     <ListView

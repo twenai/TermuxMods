@@ -1,6 +1,7 @@
 package com.termux.app.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,10 +28,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class CommunityActivity extends Activity {
 
@@ -53,6 +59,13 @@ public class CommunityActivity extends Activity {
         setContentView(R.layout.activity_community);
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = prefs.getString(KEY_ACCESS_TOKEN, null);
+        if (TextUtils.isEmpty(token)) {
+            toast(getString(R.string.community_login_required));
+            startActivity(new Intent(this, ProfileActivity.class));
+            finish();
+            return;
+        }
 
         findViewById(R.id.community_btn_back).setOnClickListener(v -> finish());
         input = findViewById(R.id.community_input);
@@ -73,7 +86,7 @@ public class CommunityActivity extends Activity {
                 if (item != null) {
                     user.setText(item.username);
                     body.setText(item.message);
-                    meta.setText(item.termuxId);
+                    meta.setText(getString(R.string.community_meta_format, item.termuxId, item.createdAt));
                 }
                 return view;
             }
@@ -115,7 +128,8 @@ public class CommunityActivity extends Activity {
     private void fetchMessages() {
         new Thread(() -> {
             try {
-                JSONArray array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,created_at&order=created_at.desc&limit=80", null, null);
+                String token = prefs.getString(KEY_ACCESS_TOKEN, null);
+                JSONArray array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,created_at&order=created_at.desc&limit=100", null, token);
                 List<ChatMessage> fresh = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject obj = array.optJSONObject(i);
@@ -125,6 +139,7 @@ public class CommunityActivity extends Activity {
                     m.username = obj.optString("username", "user");
                     m.message = obj.optString("message", "");
                     m.termuxId = obj.optString("termux_id", "TMX-LOCAL");
+                    m.createdAt = obj.optString("created_at", "-");
                     fresh.add(m);
                 }
                 Collections.reverse(fresh);
@@ -144,35 +159,38 @@ public class CommunityActivity extends Activity {
         final String text = input.getText().toString().trim();
         if (text.isEmpty()) return;
 
+        final String token = prefs.getString(KEY_ACCESS_TOKEN, null);
+        if (TextUtils.isEmpty(token)) {
+            toast(getString(R.string.community_login_required));
+            startActivity(new Intent(this, ProfileActivity.class));
+            finish();
+            return;
+        }
+
         input.setEnabled(false);
         findViewById(R.id.community_btn_send).setEnabled(false);
 
         new Thread(() -> {
             try {
-                String token = prefs.getString(KEY_ACCESS_TOKEN, null);
-                JSONObject user = null;
+                JSONObject user = requestObject("GET", "/auth/v1/user", null, token);
                 String username = "user";
                 String termuxId = "TMX-LOCAL";
-                if (!TextUtils.isEmpty(token)) {
-                    user = requestObject("GET", "/auth/v1/user", null, token);
+
+                String email = user.optString("email", "user");
+                JSONObject metadata = user.optJSONObject("user_metadata");
+                if (metadata != null) {
+                    username = metadata.optString("username", "");
+                    termuxId = metadata.optString("termux_id", "");
                 }
-                if (user != null) {
-                    String email = user.optString("email", "user");
-                    JSONObject metadata = user.optJSONObject("user_metadata");
-                    if (metadata != null) {
-                        username = metadata.optString("username", "");
-                        termuxId = metadata.optString("termux_id", "");
-                    }
-                    if (TextUtils.isEmpty(username)) {
-                        int idx = email.indexOf('@');
-                        username = idx > 0 ? email.substring(0, idx) : email;
-                    }
-                    if (TextUtils.isEmpty(termuxId)) {
-                        String compact = user.optString("id", "LOCAL").replaceAll("[^A-Za-z0-9]", "");
-                        if (compact.length() > 6) compact = compact.substring(0, 6);
-                        if (compact.isEmpty()) compact = "LOCAL";
-                        termuxId = "TMX-" + compact.toUpperCase();
-                    }
+                if (TextUtils.isEmpty(username)) {
+                    int idx = email.indexOf('@');
+                    username = idx > 0 ? email.substring(0, idx) : email;
+                }
+                if (TextUtils.isEmpty(termuxId)) {
+                    String compact = user.optString("id", "LOCAL").replaceAll("[^A-Za-z0-9]", "");
+                    if (compact.length() > 6) compact = compact.substring(0, 6);
+                    if (compact.isEmpty()) compact = "LOCAL";
+                    termuxId = "TMX-" + compact.toUpperCase();
                 }
 
                 JSONObject payload = new JSONObject();
@@ -180,7 +198,7 @@ public class CommunityActivity extends Activity {
                 payload.put("message", text);
                 payload.put("termux_id", termuxId);
                 requestArray("POST", "/rest/v1/community_messages", payload, token);
-                pruneOldMessages();
+                pruneMessagesOlderThan30Minutes(token);
 
                 runOnUiThread(() -> {
                     input.setText("");
@@ -197,17 +215,14 @@ public class CommunityActivity extends Activity {
         }).start();
     }
 
-    private void pruneOldMessages() {
+    private void pruneMessagesOlderThan30Minutes(String token) {
         try {
-            JSONArray old = requestArray("GET", "/rest/v1/community_messages?select=id&order=created_at.desc&offset=100", null, null);
-            for (int i = 0; i < old.length(); i++) {
-                JSONObject obj = old.optJSONObject(i);
-                if (obj == null) continue;
-                String id = obj.optString("id", "");
-                if (!TextUtils.isEmpty(id)) {
-                    requestArray("DELETE", "/rest/v1/community_messages?id=eq." + id, null, null);
-                }
-            }
+            long cutoff = System.currentTimeMillis() - (30L * 60L * 1000L);
+            SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+            iso.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String cutoffString = iso.format(new Date(cutoff));
+            String encoded = URLEncoder.encode(cutoffString, "UTF-8");
+            requestArray("DELETE", "/rest/v1/community_messages?created_at=lt." + encoded, null, token);
         } catch (Exception ignored) {
         }
     }
@@ -282,5 +297,6 @@ public class CommunityActivity extends Activity {
         String username;
         String message;
         String termuxId;
+        String createdAt;
     }
 }

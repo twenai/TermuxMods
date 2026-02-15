@@ -346,7 +346,7 @@ public class FileManagerActivity extends Activity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setTextColor(Color.parseColor("#FFFFFF"));
         input.setHintTextColor(Color.parseColor("#99FFFFFF"));
-        input.setBackgroundResource(R.drawable.dialog_input_glass);
+        input.setBackgroundResource(R.drawable.dialog_input_gray);
         input.setPadding(20, 20, 20, 20);
         return input;
     }

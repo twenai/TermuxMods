@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -1007,6 +1008,14 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     private void openCommunity() {
+        SharedPreferences prefs = getSharedPreferences("secure_supabase_auth", MODE_PRIVATE);
+        String token = prefs.getString("access_token", null);
+        if (token == null || token.trim().isEmpty()) {
+            showToast(getString(R.string.community_login_required), true);
+            startActivity(new Intent(this, ProfileActivity.class));
+            return;
+        }
+
         try {
             startActivity(new Intent(this, CommunityActivity.class));
         } catch (ActivityNotFoundException e) {

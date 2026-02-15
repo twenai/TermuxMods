@@ -338,7 +338,6 @@ Last modified: %3$s</string>
     <string name="profile_hint_email">Email</string>
     <string name="profile_hint_password">Password</string>
     <string name="profile_hint_username">Username (default from email)</string>
-    <string name="profile_hint_avatar">Avatar URL</string>
     <string name="profile_action_login">Log in</string>
     <string name="profile_action_signup">Create account</string>
     <string name="profile_action_reset">Forgot password?</string>
@@ -390,5 +389,15 @@ Last modified: %3$s</string>
     <string name="code_editor_search_results">%1$d matches</string>
 
     <string name="profile_session_termux_id_label">Termux ID</string>
+
+    <string name="profile_action_change_avatar">Change avatar</string>
+
+    <string name="profile_snackbar_avatar_updated">Avatar updated</string>
+
+    <string name="community_login_required">Please sign in first to use Community chat.</string>
+
+    <string name="community_meta_format">%1$s • %2$s</string>
+
+    <string name="community_subtitle">Live chat with TermuxMods users</string>
 
 </resources>

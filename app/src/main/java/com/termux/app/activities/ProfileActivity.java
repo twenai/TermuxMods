@@ -1,8 +1,10 @@
 package com.termux.app.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -51,7 +53,6 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText emailInput;
     private EditText passwordInput;
     private EditText usernameInput;
-    private EditText avatarInput;
 
     private TextView authStatus;
     private TextView roleStatus;
@@ -70,10 +71,15 @@ public class ProfileActivity extends AppCompatActivity {
     private MaterialButton saveButton;
     private MaterialButton refreshButton;
     private MaterialButton logoutButton;
+    private MaterialButton changeAvatarButton;
+
+    private static final int REQUEST_PICK_AVATAR = 2201;
 
     private SharedPreferences prefs;
     private boolean isLoggedIn = false;
     private String currentUserEmail = "";
+    private String currentUserId = "";
+    private String currentAvatarUrl = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,6 @@ public class ProfileActivity extends AppCompatActivity {
         emailInput = findViewById(R.id.profile_email);
         passwordInput = findViewById(R.id.profile_password);
         usernameInput = findViewById(R.id.profile_username);
-        avatarInput = findViewById(R.id.profile_avatar_url);
 
         authStatus = findViewById(R.id.profile_auth_status);
         roleStatus = findViewById(R.id.profile_role_status);
@@ -113,6 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.profile_btn_save);
         refreshButton = findViewById(R.id.profile_btn_refresh);
         logoutButton = findViewById(R.id.profile_btn_logout);
+        changeAvatarButton = findViewById(R.id.profile_btn_change_avatar);
 
         loginButton.setOnClickListener(v -> login(false));
         signupButton.setOnClickListener(v -> login(true));
@@ -120,6 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> saveProfile());
         refreshButton.setOnClickListener(v -> fetchUser(false));
         logoutButton.setOnClickListener(v -> logout());
+        changeAvatarButton.setOnClickListener(v -> pickAvatarImage());
 
         String token = prefs.getString(KEY_ACCESS_TOKEN, null);
         updateUiState(!TextUtils.isEmpty(token));
@@ -144,6 +151,7 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setEnabled(!loading);
         refreshButton.setEnabled(!loading);
         logoutButton.setEnabled(!loading);
+        changeAvatarButton.setEnabled(!loading);
     }
 
     private void login(boolean signup) {
@@ -266,10 +274,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     usernameInput.setText(finalUsername);
-                    avatarInput.setText(finalAvatar);
-
                     authStatus.setText(finalUsername);
                     currentUserEmail = finalEmail;
+                    currentUserId = finalUserId;
+                    currentAvatarUrl = finalAvatar;
                     roleStatus.setText(finalEmail);
                     authChip.setText(R.string.profile_chip_authenticated);
                     connectionStatus.setText(R.string.profile_connected);
@@ -303,7 +311,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         final String email = TextUtils.isEmpty(currentUserEmail) ? roleStatus.getText().toString().trim() : currentUserEmail;
         String username = usernameInput.getText().toString().trim();
-        final String avatar = avatarInput.getText().toString().trim();
+        final String avatar = currentAvatarUrl;
 
         if (TextUtils.isEmpty(username)) {
             username = defaultUsernameFromEmail(email);
@@ -338,6 +346,8 @@ public class ProfileActivity extends AppCompatActivity {
         updateUiState(false);
         passwordInput.setText("");
         currentUserEmail = "";
+        currentUserId = "";
+        currentAvatarUrl = "";
         setLoading(false);
         showSnack(getString(R.string.profile_snackbar_logged_out));
     }
@@ -361,6 +371,95 @@ public class ProfileActivity extends AppCompatActivity {
                 // Keep placeholder icon if loading fails.
             }
         }).start();
+    }
+
+    private void pickAvatarImage() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.profile_action_change_avatar)), REQUEST_PICK_AVATAR);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_PICK_AVATAR || resultCode != RESULT_OK || data == null) return;
+
+        Uri uri = data.getData();
+        if (uri == null) return;
+
+        final String token = prefs.getString(KEY_ACCESS_TOKEN, null);
+        if (TextUtils.isEmpty(token)) {
+            showSnack(getString(R.string.profile_msg_login_first));
+            return;
+        }
+
+        final String userId = TextUtils.isEmpty(currentUserId) ? sessionUserId.getText().toString().trim() : currentUserId;
+        final String username = usernameInput.getText().toString().trim();
+        final String termuxId = TextUtils.isEmpty(sessionTermuxId.getText().toString().trim())
+            ? defaultTermuxId(userId) : sessionTermuxId.getText().toString().trim();
+
+        setLoading(true);
+        new Thread(() -> {
+            try {
+                String uploadedUrl = uploadAvatarToBucket(token, userId, uri);
+                String finalUsername = TextUtils.isEmpty(username) ? defaultUsernameFromEmail(currentUserEmail) : username;
+                updateUserMetadata(token, finalUsername, uploadedUrl, termuxId);
+                currentAvatarUrl = uploadedUrl;
+                runOnUiThread(() -> {
+                    updateAvatar(uploadedUrl);
+                    showSnack(getString(R.string.profile_snackbar_avatar_updated));
+                });
+                fetchUser(false);
+            } catch (Exception e) {
+                showError(e.getMessage());
+            } finally {
+                runOnUiThread(() -> setLoading(false));
+            }
+        }).start();
+    }
+
+    private String uploadAvatarToBucket(String token, String userId, Uri uri) throws Exception {
+        String safeUserId = TextUtils.isEmpty(userId) ? "local" : userId.replaceAll("[^A-Za-z0-9_-]", "");
+        String objectPath = safeUserId + "_" + System.currentTimeMillis() + ".jpg";
+
+        byte[] bytes;
+        try (InputStream stream = getContentResolver().openInputStream(uri)) {
+            if (stream == null) throw new IllegalStateException("Unable to read selected image");
+            java.io.ByteArrayOutputStream output = new java.io.ByteArrayOutputStream();
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = stream.read(buffer)) != -1) output.write(buffer, 0, read);
+            bytes = output.toByteArray();
+        }
+
+        URL uploadUrl = new URL(SUPABASE_URL + "/storage/v1/object/avatars/" + objectPath);
+        HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
+        connection.setConnectTimeout(NETWORK_TIMEOUT_MS);
+        connection.setReadTimeout(NETWORK_TIMEOUT_MS);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("apikey", SUPABASE_ANON_KEY);
+        connection.setRequestProperty("Authorization", "Bearer " + token);
+        connection.setRequestProperty("Content-Type", "image/jpeg");
+        connection.setRequestProperty("x-upsert", "true");
+        connection.setDoOutput(true);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            os.write(bytes);
+        }
+
+        try {
+            int code = connection.getResponseCode();
+            InputStream responseStream = code >= 200 && code < 300 ? connection.getInputStream() : connection.getErrorStream();
+            String body = readStream(responseStream);
+            if (code < 200 || code >= 300) {
+                throw new IllegalStateException("Avatar upload failed: HTTP " + code + " " + body);
+            }
+        } finally {
+            connection.disconnect();
+        }
+
+        return SUPABASE_URL + "/storage/v1/object/public/avatars/" + objectPath;
     }
 
     private void updateUserMetadata(String token, String username, String avatar, String termuxId) throws Exception {
