@@ -176,7 +176,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginEnd="4dp"
-                        android:background="@drawable/dialog_action_button_light"
+                        android:background="@drawable/sidebar_shortcut_neon"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -185,7 +185,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_file_manager"
                             android:background="@android:color/transparent"
-                            android:tint="#66E3FF"
+                            android:tint="#74E6FF"
                             android:contentDescription="@string/termuxmods_action_file_manager" />
 
                         <TextView
@@ -197,7 +197,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_file_manager"
-                            android:textColor="#1B1B1B"
+                            android:textColor="@color/text_white"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -210,7 +210,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginHorizontal="4dp"
-                        android:background="@drawable/dialog_action_button_light"
+                        android:background="@drawable/sidebar_shortcut_neon"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -219,7 +219,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_info_termux"
                             android:background="@android:color/transparent"
-                            android:tint="#FFD166"
+                            android:tint="#FFD98A"
                             android:contentDescription="@string/termuxmods_action_info_termux" />
 
                         <TextView
@@ -231,7 +231,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_info_termux"
-                            android:textColor="#1B1B1B"
+                            android:textColor="@color/text_white"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -244,7 +244,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginStart="4dp"
-                        android:background="@drawable/dialog_action_button_light"
+                        android:background="@drawable/sidebar_shortcut_neon"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -253,7 +253,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_profile"
                             android:background="@android:color/transparent"
-                            android:tint="#80ED99"
+                            android:tint="#9BFFB1"
                             android:contentDescription="@string/termuxmods_action_sidebar_profile" />
 
                         <TextView
@@ -265,7 +265,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_sidebar_profile"
-                            android:textColor="#1B1B1B"
+                            android:textColor="@color/text_white"
                             android:textSize="10sp" />
                     </LinearLayout>
                 </LinearLayout>

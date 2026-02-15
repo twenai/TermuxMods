@@ -320,7 +320,7 @@
                     android:layout_marginTop="24dp"
                     app:cardBackgroundColor="@color/profile_glass_card_bg"
                     app:cardCornerRadius="28dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
                     app:strokeColor="@color/profile_glass_stroke"
                     app:strokeWidth="1dp">
 

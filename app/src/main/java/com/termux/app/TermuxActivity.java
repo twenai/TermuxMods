@@ -889,10 +889,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#8BE9FF"));
         }
     }
 
@@ -1036,13 +1036,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             .create();
         dialog.show();
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
         }
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#8BE9FF"));
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null) {
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#8BE9FF"));
         }
     }
 
