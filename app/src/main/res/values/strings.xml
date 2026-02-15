@@ -340,8 +340,6 @@ Last modified: %3$s</string>
     <string name="profile_action_logout">Sign out</string>
     <string name="profile_action_save">Save profile</string>
     <string name="profile_action_refresh">Refresh profile</string>
-    <string name="profile_status_logged_out">Status: Not signed in</string>
-    <string name="profile_status_logged_in">Status: Signed in as %1$s</string>
     <string name="profile_role_default">Authenticated account</string>
     <string name="profile_role_format">Role: %1$s</string>
     <string name="profile_msg_email_password_required">Email and password are required.</string>
@@ -355,7 +353,6 @@ Last modified: %3$s</string>
     <string name="profile_error_title">Supabase Error</string>
     <string name="profile_msg_request_failed">Supabase request failed.</string>
 
-    <string name="profile_auth_card_title">Supabase authentication</string>
     <string name="profile_screen_title">Profile</string>
     <string name="profile_auth_title">Supabase account</string>
     <string name="profile_placeholder_user">user</string>
@@ -368,9 +365,6 @@ Last modified: %3$s</string>
     <string name="profile_connected">Connected to Supabase</string>
     <string name="profile_data_title">Profile data</string>
     <string name="profile_session_title">Session</string>
-    <string name="profile_session_user_id_format">User ID: %1$s</string>
-    <string name="profile_session_last_login_format">Last login: %1$s</string>
-    <string name="profile_session_expiry_format">Session expiry: %1$s</string>
     <string name="profile_snackbar_logged_in">Logged in</string>
     <string name="profile_snackbar_profile_updated">Profile updated</string>
     <string name="profile_snackbar_logged_out">Logged out</string>

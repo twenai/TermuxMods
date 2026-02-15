@@ -72,6 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private boolean isLoggedIn = false;
+    private String currentUserEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +270,7 @@ public class ProfileActivity extends AppCompatActivity {
                     avatarInput.setText(finalAvatar);
 
                     authStatus.setText(finalUsername);
+                    currentUserEmail = finalEmail;
                     roleStatus.setText(finalEmail);
                     authChip.setText(R.string.profile_chip_authenticated);
                     connectionStatus.setText(R.string.profile_connected);
@@ -299,7 +301,7 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        final String email = roleStatus.getText().toString().trim();
+        final String email = TextUtils.isEmpty(currentUserEmail) ? roleStatus.getText().toString().trim() : currentUserEmail;
         String username = usernameInput.getText().toString().trim();
         final String avatar = avatarInput.getText().toString().trim();
 
@@ -331,6 +333,7 @@ public class ProfileActivity extends AppCompatActivity {
         prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply();
         updateUiState(false);
         passwordInput.setText("");
+        currentUserEmail = "";
         setLoading(false);
         showSnack(getString(R.string.profile_snackbar_logged_out));
     }
@@ -367,13 +370,16 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private JSONObject request(String method, String endpoint, JSONObject payload, String bearerToken) throws Exception {
-        URL url = new URL(SUPABASE_URL + endpoint);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(method);
         if (TextUtils.isEmpty(SUPABASE_URL) || TextUtils.isEmpty(SUPABASE_ANON_KEY)) {
             throw new IllegalStateException("Supabase configuration is missing.");
         }
+        if (TextUtils.isEmpty(endpoint)) {
+            throw new IllegalStateException("Supabase endpoint is missing.");
+        }
 
+        URL url = new URL(SUPABASE_URL + endpoint);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod(method);
         connection.setRequestProperty("apikey", SUPABASE_ANON_KEY);
         connection.setRequestProperty("Content-Type", "application/json");
         if (!TextUtils.isEmpty(bearerToken)) {
