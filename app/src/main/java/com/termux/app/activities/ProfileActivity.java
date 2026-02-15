@@ -3,8 +3,6 @@ package com.termux.app.activities;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.RenderEffect;
-import android.graphics.Shader;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -129,8 +127,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void applyGlassBlur(View target) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && target != null) {
-            target.setRenderEffect(RenderEffect.createBlurEffect(18f, 18f, Shader.TileMode.CLAMP));
+        if (target == null || Build.VERSION.SDK_INT < 31) return;
+        try {
+            Class<?> renderEffectClass = Class.forName("android.graphics.RenderEffect");
+            Class<?> tileModeClass = Class.forName("android.graphics.Shader$TileMode");
+            Object tileModeClamp = Enum.valueOf((Class<Enum>) tileModeClass.asSubclass(Enum.class), "CLAMP");
+            Object blurEffect = renderEffectClass
+                .getMethod("createBlurEffect", float.class, float.class, tileModeClass)
+                .invoke(null, 18f, 18f, tileModeClamp);
+            View.class.getMethod("setRenderEffect", renderEffectClass).invoke(target, blurEffect);
+        } catch (Throwable ignored) {
+            // Blur is an optional visual enhancement.
         }
     }
 
