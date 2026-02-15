@@ -97,6 +97,13 @@
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
         <activity
+            android:name=".app.activities.LiveChatSupportActivity"
+            android:exported="false"
+            android:label="@string/title_live_chat_support"
+            android:parentActivityName=".app.TermuxActivity"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <activity
             android:name=".shared.activities.ReportActivity"
             android:theme="@style/Theme.AppCompat.TermuxReportActivity"
             android:documentLaunchMode="intoExisting"
