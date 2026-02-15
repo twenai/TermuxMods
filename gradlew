@@ -105,6 +105,26 @@ Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
 
+# Gradle 7.2 cannot run on Java 21+ ("Unsupported class file major version 65").
+# If current Java is 21+, try falling back to a Java 17 runtime automatically.
+JAVA_MAJOR=`"$JAVACMD" -version 2>&1 | sed -n '1s/.*version "\([0-9][0-9]*\).*/\1/p'`
+if [ -n "$JAVA_MAJOR" ] && [ "$JAVA_MAJOR" -ge 21 ] 2>/dev/null ; then
+    for JAVA17_CANDIDATE in \
+        "$HOME/.local/share/mise/installs/java/17.0.2/bin/java" \
+        "$HOME/.sdkman/candidates/java/current/bin/java" \
+        "/usr/lib/jvm/java-17-openjdk-amd64/bin/java" \
+        "/usr/lib/jvm/java-17-openjdk/bin/java"; do
+        if [ -x "$JAVA17_CANDIDATE" ] ; then
+            CANDIDATE_MAJOR=`"$JAVA17_CANDIDATE" -version 2>&1 | sed -n '1s/.*version "\([0-9][0-9]*\).*/\1/p'`
+            if [ "$CANDIDATE_MAJOR" = "17" ] ; then
+                JAVACMD="$JAVA17_CANDIDATE"
+                warn "Detected Java $JAVA_MAJOR; using Java 17 runtime for Gradle: $JAVACMD"
+                break
+            fi
+        fi
+    done
+fi
+
 # Increase the maximum file descriptors if we can.
 if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
     MAX_FD_LIMIT=`ulimit -H -n`
