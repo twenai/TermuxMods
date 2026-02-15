@@ -2,6 +2,8 @@ package com.termux.app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +83,7 @@ public class CommunityActivity extends Activity {
                     view = LayoutInflater.from(getContext()).inflate(R.layout.community_list_item, parent, false);
                 }
                 ChatMessage item = getItem(position);
+                ImageView avatar = view.findViewById(R.id.community_item_avatar);
                 TextView user = view.findViewById(R.id.community_item_user);
                 TextView body = view.findViewById(R.id.community_item_body);
                 TextView meta = view.findViewById(R.id.community_item_meta);
@@ -87,6 +91,7 @@ public class CommunityActivity extends Activity {
                     user.setText(item.username);
                     body.setText(item.message);
                     meta.setText(getString(R.string.community_meta_format, item.termuxId, item.createdAt));
+                    loadAvatarInto(avatar, item.avatarUrl);
                 }
                 return view;
             }
@@ -129,7 +134,7 @@ public class CommunityActivity extends Activity {
         new Thread(() -> {
             try {
                 String token = prefs.getString(KEY_ACCESS_TOKEN, null);
-                JSONArray array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,created_at&order=created_at.desc&limit=100", null, token);
+                JSONArray array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,avatar_url,created_at&order=created_at.desc&limit=100", null, token);
                 List<ChatMessage> fresh = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject obj = array.optJSONObject(i);
@@ -139,6 +144,7 @@ public class CommunityActivity extends Activity {
                     m.username = obj.optString("username", "user");
                     m.message = obj.optString("message", "");
                     m.termuxId = obj.optString("termux_id", "TMX-LOCAL");
+                    m.avatarUrl = obj.optString("avatar_url", "");
                     m.createdAt = obj.optString("created_at", "-");
                     fresh.add(m);
                 }
@@ -175,12 +181,14 @@ public class CommunityActivity extends Activity {
                 JSONObject user = requestObject("GET", "/auth/v1/user", null, token);
                 String username = "user";
                 String termuxId = "TMX-LOCAL";
+                String avatarUrl = "";
 
                 String email = user.optString("email", "user");
                 JSONObject metadata = user.optJSONObject("user_metadata");
                 if (metadata != null) {
                     username = metadata.optString("username", "");
                     termuxId = metadata.optString("termux_id", "");
+                    avatarUrl = metadata.optString("avatar_url", "");
                 }
                 if (TextUtils.isEmpty(username)) {
                     int idx = email.indexOf('@');
@@ -203,6 +211,7 @@ public class CommunityActivity extends Activity {
                 payload.put("username", username);
                 payload.put("message", text);
                 payload.put("termux_id", termuxId);
+                payload.put("avatar_url", avatarUrl);
                 requestArray("POST", "/rest/v1/community_messages", payload, token);
                 pruneMessagesOlderThan30Minutes(token);
 
@@ -294,6 +303,37 @@ public class CommunityActivity extends Activity {
         return builder.toString();
     }
 
+
+    private void loadAvatarInto(ImageView avatarView, String avatarUrl) {
+        avatarView.setImageResource(R.drawable.ic_profile);
+        avatarView.setTag(avatarUrl);
+        if (TextUtils.isEmpty(avatarUrl)) return;
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(avatarUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.setRequestMethod("GET");
+                try (InputStream stream = connection.getInputStream()) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    if (bitmap != null) {
+                        runOnUiThread(() -> {
+                            Object currentTag = avatarView.getTag();
+                            if (currentTag != null && currentTag.equals(avatarUrl)) {
+                                avatarView.setImageBitmap(bitmap);
+                            }
+                        });
+                    }
+                } finally {
+                    connection.disconnect();
+                }
+            } catch (Exception ignored) {
+            }
+        }).start();
+    }
+
     private void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -303,6 +343,7 @@ public class CommunityActivity extends Activity {
         String username;
         String message;
         String termuxId;
+        String avatarUrl;
         String createdAt;
     }
 }
