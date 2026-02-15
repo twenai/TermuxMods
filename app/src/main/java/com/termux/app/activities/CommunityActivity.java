@@ -33,6 +33,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +135,12 @@ public class CommunityActivity extends Activity {
         new Thread(() -> {
             try {
                 String token = prefs.getString(KEY_ACCESS_TOKEN, null);
-                JSONArray array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,avatar_url,created_at&order=created_at.desc&limit=100", null, token);
+                JSONArray array;
+                try {
+                    array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,avatar_url,created_at&order=created_at.desc&limit=100", null, token);
+                } catch (Exception primaryError) {
+                    array = requestArray("GET", "/rest/v1/community_messages?select=id,username,message,termux_id,created_at&order=created_at.desc&limit=100", null, token);
+                }
                 List<ChatMessage> fresh = new ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject obj = array.optJSONObject(i);
@@ -145,7 +151,7 @@ public class CommunityActivity extends Activity {
                     m.message = obj.optString("message", "");
                     m.termuxId = obj.optString("termux_id", "TMX-LOCAL");
                     m.avatarUrl = obj.optString("avatar_url", "");
-                    m.createdAt = obj.optString("created_at", "-");
+                    m.createdAt = formatCommunityDate(obj.optString("created_at", "-"));
                     fresh.add(m);
                 }
                 Collections.reverse(fresh);
@@ -303,6 +309,29 @@ public class CommunityActivity extends Activity {
         return builder.toString();
     }
 
+
+    private String formatCommunityDate(String raw) {
+        if (TextUtils.isEmpty(raw) || "-".equals(raw)) return "-";
+
+        String[] patterns = new String[] {
+            "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+            "yyyy-MM-dd'T'HH:mm:ssXXX",
+            "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        };
+
+        for (String pattern : patterns) {
+            try {
+                SimpleDateFormat parser = new SimpleDateFormat(pattern, Locale.US);
+                Date parsed = parser.parse(raw);
+                if (parsed != null) {
+                    return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(parsed);
+                }
+            } catch (ParseException ignored) {
+            }
+        }
+
+        return raw;
+    }
 
     private void loadAvatarInto(ImageView avatarView, String avatarUrl) {
         avatarView.setImageResource(R.drawable.ic_profile);

@@ -14,10 +14,12 @@
     <color name="profile_hero_card_bg">#1E182330</color>
     <color name="profile_glass_card_bg">#1AFFFFFF</color>
     <color name="profile_glass_stroke">#33FFFFFF</color>
-    <color name="profile_chip_bg">#22489BFF</color>
+    <color name="profile_chip_bg">#FF000000</color>
     <color name="profile_input_bg">#0DFFFFFF</color>
     <color name="profile_divider">#26FFFFFF</color>
     <color name="sidebar_shortcut_file_tint">#74E6FF</color>
     <color name="sidebar_shortcut_info_tint">#FFD98A</color>
     <color name="sidebar_shortcut_profile_tint">#9BFFB1</color>
+    <color name="profile_signout_stroke">#66FF6B6B</color>
+    <color name="profile_signout_bg">#22000000</color>
 </resources>

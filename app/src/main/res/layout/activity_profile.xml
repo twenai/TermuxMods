@@ -109,7 +109,7 @@
                                     <com.google.android.material.chip.Chip
                                         android:id="@+id/profile_auth_chip"
                                         style="@style/ProfileStatusChip"
-                                        android:layout_width="wrap_content"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="@string/profile_chip_authenticated" />
 
@@ -122,6 +122,7 @@
                                     <TextView
                                         android:id="@+id/profile_connection_status"
                                         style="@style/ProfileTextBodySmall"
+                                        android:textColor="@color/text_white"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="8dp"
@@ -323,11 +324,10 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/profile_btn_logout"
-                        style="@style/ProfileButtonText"
-                        android:layout_width="wrap_content"
+                        style="@style/ProfileButtonSignout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/profile_action_logout"
-                        android:textColor="@android:color/holo_red_light" />
+                        android:text="@string/profile_action_logout" />
                 </LinearLayout>
 
                 <com.google.android.material.card.MaterialCardView
