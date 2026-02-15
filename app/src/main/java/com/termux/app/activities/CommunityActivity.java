@@ -193,7 +193,13 @@ public class CommunityActivity extends Activity {
                     termuxId = "TMX-" + compact.toUpperCase();
                 }
 
+                String userId = user.optString("id", "");
+                if (TextUtils.isEmpty(userId)) {
+                    throw new IllegalStateException("Missing user id");
+                }
+
                 JSONObject payload = new JSONObject();
+                payload.put("user_id", userId);
                 payload.put("username", username);
                 payload.put("message", text);
                 payload.put("termux_id", termuxId);
