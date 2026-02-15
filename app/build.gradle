@@ -46,6 +46,11 @@ android {
         manifestPlaceholders.TERMUX_TASKER_APP_NAME = "Termux:Tasker"
         manifestPlaceholders.TERMUX_WIDGET_APP_NAME = "Termux:Widget"
 
+        def supabaseUrl = System.getenv("TERMUXMODS_SUPABASE_URL") ?: "https://qahpieeevipnklizihel.supabase.co"
+        def supabaseAnonKey = System.getenv("TERMUXMODS_SUPABASE_ANON_KEY") ?: ""
+        buildConfigField "String", "SUPABASE_URL", "\"${supabaseUrl}\""
+        buildConfigField "String", "SUPABASE_ANON_KEY", "\"${supabaseAnonKey}\""
+
         externalNativeBuild {
             ndkBuild {
                 cFlags "-std=c11", "-Wall", "-Wextra", "-Werror", "-Os", "-fno-stack-protector", "-Wl,--gc-sections"

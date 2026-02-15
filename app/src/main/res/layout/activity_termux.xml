@@ -185,7 +185,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_file_manager"
                             android:background="@android:color/transparent"
-                            android:tint="#74E6FF"
+                            android:tint="@color/sidebar_shortcut_file_tint"
                             android:contentDescription="@string/termuxmods_action_file_manager" />
 
                         <TextView
@@ -219,7 +219,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_info_termux"
                             android:background="@android:color/transparent"
-                            android:tint="#FFD98A"
+                            android:tint="@color/sidebar_shortcut_info_tint"
                             android:contentDescription="@string/termuxmods_action_info_termux" />
 
                         <TextView
@@ -253,7 +253,7 @@
                             android:layout_height="34dp"
                             android:src="@drawable/ic_profile"
                             android:background="@android:color/transparent"
-                            android:tint="#9BFFB1"
+                            android:tint="@color/sidebar_shortcut_profile_tint"
                             android:contentDescription="@string/termuxmods_action_sidebar_profile" />
 
                         <TextView

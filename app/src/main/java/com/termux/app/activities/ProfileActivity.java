@@ -18,6 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.Snackbar;
+import com.termux.BuildConfig;
 import com.termux.R;
 
 import org.json.JSONObject;
@@ -38,8 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
 
-    private static final String SUPABASE_URL = "https://qahpieeevipnklizihel.supabase.co";
-    private static final String SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaHBpZWVldmlwbmtsaXppaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODIwMzQsImV4cCI6MjA4NjY1ODAzNH0._ArXv7jnn3-9oaV5WsH-vzPjqRgp9pgWVnzLEyuiCxw";
+    private static final String SUPABASE_URL = BuildConfig.SUPABASE_URL;
+    private static final String SUPABASE_ANON_KEY = BuildConfig.SUPABASE_ANON_KEY;
 
     private View root;
     private View authCard;
@@ -369,6 +370,10 @@ public class ProfileActivity extends AppCompatActivity {
         URL url = new URL(SUPABASE_URL + endpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(method);
+        if (TextUtils.isEmpty(SUPABASE_URL) || TextUtils.isEmpty(SUPABASE_ANON_KEY)) {
+            throw new IllegalStateException("Supabase configuration is missing.");
+        }
+
         connection.setRequestProperty("apikey", SUPABASE_ANON_KEY);
         connection.setRequestProperty("Content-Type", "application/json");
         if (!TextUtils.isEmpty(bearerToken)) {
