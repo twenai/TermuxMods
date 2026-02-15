@@ -112,7 +112,7 @@
             android:name=".app.activities.ProfileActivity"
             android:exported="false"
             android:label="@string/termuxmods_action_sidebar_profile"
-            android:theme="@style/Theme.Termux" />
+            android:theme="@style/Theme.Termux.Profile" />
 
         <activity
             android:name=".shared.activities.ReportActivity"

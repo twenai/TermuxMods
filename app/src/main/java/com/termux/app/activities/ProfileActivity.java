@@ -1,16 +1,20 @@
 package com.termux.app.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.snackbar.Snackbar;
 import com.termux.R;
 
 import org.json.JSONObject;
@@ -22,6 +26,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Date;
 
 public class ProfileActivity extends Activity {
 
@@ -32,15 +38,35 @@ public class ProfileActivity extends Activity {
     private static final String SUPABASE_URL = "https://qahpieeevipnklizihel.supabase.co";
     private static final String SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaHBpZWVldmlwbmtsaXppaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODIwMzQsImV4cCI6MjA4NjY1ODAzNH0._ArXv7jnn3-9oaV5WsH-vzPjqRgp9pgWVnzLEyuiCxw";
 
+    private View root;
+    private View authCard;
+    private View loggedInContainer;
+    private View loadingView;
+
     private EditText emailInput;
     private EditText passwordInput;
     private EditText usernameInput;
     private EditText avatarInput;
+
     private TextView authStatus;
     private TextView roleStatus;
-    private TextView usernamePreview;
+    private TextView sessionUserId;
+    private TextView sessionLastLogin;
+    private TextView sessionExpiry;
+    private TextView connectionStatus;
+
+    private ShapeableImageView avatarView;
+    private Chip authChip;
+
+    private MaterialButton loginButton;
+    private MaterialButton signupButton;
+    private MaterialButton resetButton;
+    private MaterialButton saveButton;
+    private MaterialButton refreshButton;
+    private MaterialButton logoutButton;
 
     private SharedPreferences prefs;
+    private boolean isLoggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,43 +75,68 @@ public class ProfileActivity extends Activity {
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
+        root = findViewById(R.id.profile_root);
+        authCard = findViewById(R.id.card_auth);
+        loggedInContainer = findViewById(R.id.profile_logged_in_container);
+        loadingView = findViewById(R.id.profile_loading);
+
         emailInput = findViewById(R.id.profile_email);
         passwordInput = findViewById(R.id.profile_password);
         usernameInput = findViewById(R.id.profile_username);
         avatarInput = findViewById(R.id.profile_avatar_url);
+
         authStatus = findViewById(R.id.profile_auth_status);
         roleStatus = findViewById(R.id.profile_role_status);
-        usernamePreview = findViewById(R.id.profile_username_preview);
+        sessionUserId = findViewById(R.id.profile_session_user_id);
+        sessionLastLogin = findViewById(R.id.profile_session_last_login);
+        sessionExpiry = findViewById(R.id.profile_session_expiry);
+        connectionStatus = findViewById(R.id.profile_connection_status);
 
-        Button login = findViewById(R.id.profile_btn_login);
-        Button signup = findViewById(R.id.profile_btn_signup);
-        Button reset = findViewById(R.id.profile_btn_reset_pass);
-        Button saveProfile = findViewById(R.id.profile_btn_save);
-        Button refreshProfile = findViewById(R.id.profile_btn_refresh);
-        Button logout = findViewById(R.id.profile_btn_logout);
+        avatarView = findViewById(R.id.profile_avatar);
+        authChip = findViewById(R.id.profile_auth_chip);
 
-        login.setOnClickListener(v -> login(false));
-        signup.setOnClickListener(v -> login(true));
-        reset.setOnClickListener(v -> resetPassword());
-        saveProfile.setOnClickListener(v -> saveProfile());
-        refreshProfile.setOnClickListener(v -> fetchUser());
-        logout.setOnClickListener(v -> {
-            prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply();
-            authStatus.setText(R.string.profile_status_logged_out);
-            roleStatus.setText(R.string.profile_role_default);
-        });
+        loginButton = findViewById(R.id.profile_btn_login);
+        signupButton = findViewById(R.id.profile_btn_signup);
+        resetButton = findViewById(R.id.profile_btn_reset_pass);
+        saveButton = findViewById(R.id.profile_btn_save);
+        refreshButton = findViewById(R.id.profile_btn_refresh);
+        logoutButton = findViewById(R.id.profile_btn_logout);
+
+        loginButton.setOnClickListener(v -> login(false));
+        signupButton.setOnClickListener(v -> login(true));
+        resetButton.setOnClickListener(v -> resetPassword());
+        saveButton.setOnClickListener(v -> saveProfile());
+        refreshButton.setOnClickListener(v -> fetchUser(false));
+        logoutButton.setOnClickListener(v -> logout());
 
         String token = prefs.getString(KEY_ACCESS_TOKEN, null);
+        updateUiState(!TextUtils.isEmpty(token));
         if (!TextUtils.isEmpty(token)) {
-            fetchUser();
+            fetchUser(false);
         }
+    }
+
+    private void updateUiState(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+        authCard.setVisibility(loggedIn ? View.GONE : View.VISIBLE);
+        loggedInContainer.setVisibility(loggedIn ? View.VISIBLE : View.GONE);
+    }
+
+    private void setLoading(boolean loading) {
+        loadingView.setVisibility(loading ? View.VISIBLE : View.GONE);
+        loginButton.setEnabled(!loading);
+        signupButton.setEnabled(!loading);
+        resetButton.setEnabled(!loading);
+        saveButton.setEnabled(!loading);
+        refreshButton.setEnabled(!loading);
+        logoutButton.setEnabled(!loading);
     }
 
     private void login(boolean signup) {
         final String email = emailInput.getText().toString().trim();
         final String password = passwordInput.getText().toString();
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            toast(getString(R.string.profile_msg_email_password_required));
+            showSnack(getString(R.string.profile_msg_email_password_required));
             return;
         }
 
@@ -109,20 +160,17 @@ public class ProfileActivity extends Activity {
                     }
                 }
 
-                if (!TextUtils.isEmpty(accessToken)) {
-                    prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).putString(KEY_REFRESH_TOKEN, refreshToken).apply();
-                    if (signup) {
-                        updateUserMetadata(accessToken, defaultUsernameFromEmail(email), "");
-                    }
-                    runOnUiThread(() -> {
-                        authStatus.setText(getString(R.string.profile_status_logged_in, email));
-                        toast(getString(signup ? R.string.profile_msg_signup_success : R.string.profile_msg_login_success));
-                    });
-                    fetchUser();
-                } else {
+                if (TextUtils.isEmpty(accessToken)) {
                     String message = response.optString("msg", response.optString("message", getString(R.string.profile_msg_auth_failed)));
-                    showError(message);
+                    throw new IllegalStateException(message);
                 }
+
+                prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).putString(KEY_REFRESH_TOKEN, refreshToken).apply();
+                if (signup) {
+                    updateUserMetadata(accessToken, defaultUsernameFromEmail(email), "");
+                }
+                runOnUiThread(() -> showSnack(getString(R.string.profile_snackbar_logged_in)));
+                fetchUser(true);
             } catch (Exception e) {
                 showError(e.getMessage());
             } finally {
@@ -134,7 +182,7 @@ public class ProfileActivity extends Activity {
     private void resetPassword() {
         final String email = emailInput.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
-            toast(getString(R.string.profile_msg_email_required));
+            showSnack(getString(R.string.profile_msg_email_required));
             return;
         }
 
@@ -144,7 +192,7 @@ public class ProfileActivity extends Activity {
                 JSONObject payload = new JSONObject();
                 payload.put("email", email);
                 request("POST", "/auth/v1/recover", payload, null);
-                runOnUiThread(() -> toast(getString(R.string.profile_msg_reset_sent)));
+                runOnUiThread(() -> showSnack(getString(R.string.profile_msg_reset_sent)));
             } catch (Exception e) {
                 showError(e.getMessage());
             } finally {
@@ -153,36 +201,58 @@ public class ProfileActivity extends Activity {
         }).start();
     }
 
-    private void fetchUser() {
+    private void fetchUser(boolean switchToLoggedInState) {
         final String token = prefs.getString(KEY_ACCESS_TOKEN, null);
-        if (TextUtils.isEmpty(token)) return;
+        if (TextUtils.isEmpty(token)) {
+            updateUiState(false);
+            return;
+        }
 
         setLoading(true);
         new Thread(() -> {
             try {
                 JSONObject user = request("GET", "/auth/v1/user", null, token);
 
-                String email = user.optString("email");
+                String email = user.optString("email", "-");
                 String role = user.optString("role", "user");
-                JSONObject metadata = user.optJSONObject("user_metadata");
+                String userId = user.optString("id", "-");
+                String lastSignInAt = user.optString("last_sign_in_at", "-");
 
+                JSONObject metadata = user.optJSONObject("user_metadata");
                 String username = metadata != null ? metadata.optString("username") : "";
                 String avatar = metadata != null ? metadata.optString("avatar_url") : "";
-                if (TextUtils.isEmpty(username)) {
-                    username = defaultUsernameFromEmail(email);
-                }
+                if (TextUtils.isEmpty(username)) username = defaultUsernameFromEmail(email);
+
+                long expiryEpochSeconds = decodeJwtExpiry(token);
+                String expiryLabel = expiryEpochSeconds > 0
+                    ? DateFormat.format("yyyy-MM-dd HH:mm", new Date(expiryEpochSeconds * 1000L)).toString()
+                    : "-";
 
                 final String finalUsername = username;
                 final String finalAvatar = avatar;
+                final String finalEmail = email;
+                final String finalRole = role;
+                final String finalUserId = userId;
+                final String finalLastSignInAt = lastSignInAt;
+                final String finalExpiryLabel = expiryLabel;
+
                 runOnUiThread(() -> {
-                    emailInput.setText(email);
                     usernameInput.setText(finalUsername);
                     avatarInput.setText(finalAvatar);
-                    usernamePreview.setText(finalUsername);
-                    authStatus.setText(getString(R.string.profile_status_logged_in, email));
-                    roleStatus.setText(getString(R.string.profile_role_format, role));
+                    authStatus.setText(finalEmail);
+                    roleStatus.setText(getString(R.string.profile_role_format, finalRole));
+                    authChip.setText(R.string.profile_chip_authenticated);
+                    connectionStatus.setText(R.string.profile_connected);
+                    sessionUserId.setText(getString(R.string.profile_session_user_id_format, finalUserId));
+                    sessionLastLogin.setText(getString(R.string.profile_session_last_login_format, finalLastSignInAt));
+                    sessionExpiry.setText(getString(R.string.profile_session_expiry_format, finalExpiryLabel));
+                    updateAvatar(finalAvatar);
+
+                    if (switchToLoggedInState || !isLoggedIn) updateUiState(true);
                 });
             } catch (Exception e) {
+                prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply();
+                runOnUiThread(() -> updateUiState(false));
                 showError(e.getMessage());
             } finally {
                 runOnUiThread(() -> setLoading(false));
@@ -193,11 +263,12 @@ public class ProfileActivity extends Activity {
     private void saveProfile() {
         final String token = prefs.getString(KEY_ACCESS_TOKEN, null);
         if (TextUtils.isEmpty(token)) {
-            toast(getString(R.string.profile_msg_login_first));
+            showSnack(getString(R.string.profile_msg_login_first));
+            updateUiState(false);
             return;
         }
 
-        final String email = emailInput.getText().toString().trim();
+        final String email = authStatus.getText().toString().trim();
         String username = usernameInput.getText().toString().trim();
         final String avatar = avatarInput.getText().toString().trim();
 
@@ -212,14 +283,44 @@ public class ProfileActivity extends Activity {
             try {
                 updateUserMetadata(token, finalUsername, avatar);
                 runOnUiThread(() -> {
-                    usernamePreview.setText(finalUsername);
-                    toast(getString(R.string.profile_msg_saved));
+                    updateAvatar(avatar);
+                    showSnack(getString(R.string.profile_snackbar_profile_updated));
                 });
-                fetchUser();
+                fetchUser(false);
             } catch (Exception e) {
                 showError(e.getMessage());
             } finally {
                 runOnUiThread(() -> setLoading(false));
+            }
+        }).start();
+    }
+
+    private void logout() {
+        setLoading(true);
+        prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply();
+        updateUiState(false);
+        passwordInput.setText("");
+        setLoading(false);
+        showSnack(getString(R.string.profile_snackbar_logged_out));
+    }
+
+    private void updateAvatar(String avatarUrl) {
+        avatarView.setImageResource(R.drawable.ic_profile);
+        if (TextUtils.isEmpty(avatarUrl)) return;
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(avatarUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(5000);
+                connection.setRequestMethod("GET");
+                try (InputStream stream = connection.getInputStream()) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                    if (bitmap != null) runOnUiThread(() -> avatarView.setImageBitmap(bitmap));
+                }
+            } catch (Exception ignored) {
+                // Keep placeholder icon if loading fails.
             }
         }).start();
     }
@@ -282,27 +383,23 @@ public class ProfileActivity extends Activity {
         return email.substring(0, index);
     }
 
-    private void setLoading(boolean loading) {
-        View progress = findViewById(R.id.profile_loading);
-        progress.setVisibility(loading ? View.VISIBLE : View.GONE);
+    private long decodeJwtExpiry(String token) {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) return -1;
+            String payload = new String(Base64.getUrlDecoder().decode(parts[1]), StandardCharsets.UTF_8);
+            JSONObject jsonObject = new JSONObject(payload);
+            return jsonObject.optLong("exp", -1);
+        } catch (Exception ignored) {
+            return -1;
+        }
     }
 
     private void showError(String message) {
-        runOnUiThread(() -> {
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.profile_error_title)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .create();
-            dialog.show();
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_light_bg);
-            }
-            toast(getString(R.string.profile_msg_request_failed));
-        });
+        runOnUiThread(() -> showSnack(getString(R.string.profile_msg_request_failed) + "\n" + message));
     }
 
-    private void toast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private void showSnack(String message) {
+        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
     }
 }
