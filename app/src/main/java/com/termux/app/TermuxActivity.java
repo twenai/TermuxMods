@@ -758,6 +758,16 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return mTermuxActivityRootView;
     }
 
+    private void showInstallationDialog(String part) {
+        showToast("Running setup: " + part, false);
+    }
+
+    private void executeCommand(String command) {
+        TerminalSession session = getCurrentSession();
+        if (session == null || command == null || command.isEmpty()) return;
+        session.write(command + "\n");
+    }
+
     private void executeScriptPart(String part) {
         TerminalSession session = getCurrentSession();
         if (session == null) return;
@@ -844,30 +854,32 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
         session.write(script);
     }
-        session.write(script);
-    }
 
     private void setupRightSidebar() {
-            // Fallback for old sidebar buttons if container is missing
+        GridLayout container = findViewById(R.id.commands_container);
+
+        if (container == null) {
+            // Fallback for old sidebar buttons if container is missing.
             int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
             Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
             if (btnPrompt != null) {
                 btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-                
+
                 int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
                 Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
                 if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-                
+
                 int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
                 Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
                 if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-                
+
                 int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
                 Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
                 if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             }
             return;
         }
+
         container.removeAllViews();
 
         // Section: Info
