@@ -190,7 +190,7 @@ public class FileManagerActivity extends Activity {
 
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(title)
-            .setView(input)
+            .setView(wrapInputInContainer(input))
             .setPositiveButton(android.R.string.ok, (whichDialog, which) -> {
                 String name = input.getText().toString().trim();
                 if (name.isEmpty()) return;
@@ -221,7 +221,7 @@ public class FileManagerActivity extends Activity {
 
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setTitle(R.string.file_manager_action_rename)
-            .setView(input)
+            .setView(wrapInputInContainer(input))
             .setPositiveButton(android.R.string.ok, (whichDialog, which) -> {
                 String newName = input.getText().toString().trim();
                 if (newName.isEmpty()) return;
@@ -322,12 +322,31 @@ public class FileManagerActivity extends Activity {
     }
 
 
+
+    private View wrapInputInContainer(EditText input) {
+        int horizontal = dp(20);
+        int vertical = dp(16);
+        int bottom = dp(10);
+
+        android.widget.LinearLayout container = new android.widget.LinearLayout(this);
+        container.setOrientation(android.widget.LinearLayout.VERTICAL);
+        container.setPadding(horizontal, vertical, horizontal, bottom);
+        container.addView(input, new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
+        return container;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
     private EditText createDialogInput() {
         EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setTextColor(Color.parseColor("#1B1B1B"));
-        input.setHintTextColor(Color.parseColor("#66000000"));
-        input.setBackgroundResource(R.drawable.dialog_input_light);
+        input.setTextColor(Color.parseColor("#FFFFFF"));
+        input.setHintTextColor(Color.parseColor("#99FFFFFF"));
+        input.setBackgroundResource(R.drawable.dialog_input_glass);
         input.setPadding(20, 20, 20, 20);
         return input;
     }

@@ -47,7 +47,7 @@ android {
         manifestPlaceholders.TERMUX_WIDGET_APP_NAME = "Termux:Widget"
 
         def supabaseUrl = System.getenv("TERMUXMODS_SUPABASE_URL") ?: "https://qahpieeevipnklizihel.supabase.co"
-        def supabaseAnonKey = System.getenv("TERMUXMODS_SUPABASE_ANON_KEY") ?: ""
+        def supabaseAnonKey = System.getenv("TERMUXMODS_SUPABASE_ANON_KEY") ?: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhaHBpZWVldmlwbmtsaXppaGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwODIwMzQsImV4cCI6MjA4NjY1ODAzNH0._ArXv7jnn3-9oaV5WsH-vzPjqRgp9pgWVnzLEyuiCxw"
         buildConfigField "String", "SUPABASE_URL", "\"${supabaseUrl}\""
         buildConfigField "String", "SUPABASE_ANON_KEY", "\"${supabaseAnonKey}\""
 

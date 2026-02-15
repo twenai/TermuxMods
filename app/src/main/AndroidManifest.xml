@@ -115,6 +115,12 @@
             android:theme="@style/Theme.Termux.Profile" />
 
         <activity
+            android:name=".app.activities.CommunityActivity"
+            android:exported="false"
+            android:label="@string/community_title"
+            android:theme="@style/Theme.Termux" />
+
+        <activity
             android:name=".shared.activities.ReportActivity"
             android:theme="@style/Theme.AppCompat.TermuxReportActivity"
             android:documentLaunchMode="intoExisting"

@@ -262,6 +262,29 @@
                                     style="@style/ProfileSessionLabel"
                                     android:layout_width="120dp"
                                     android:layout_height="wrap_content"
+                                    android:text="@string/profile_session_termux_id_label" />
+
+                                <TextView
+                                    android:id="@+id/profile_session_termux_id"
+                                    style="@style/ProfileSessionValue"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="-"
+                                    android:textIsSelectable="true" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    style="@style/ProfileSessionLabel"
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
                                     android:text="@string/profile_session_last_login_label" />
 
                                 <TextView

@@ -40,6 +40,7 @@ import com.termux.shared.packages.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
+import com.termux.app.activities.CommunityActivity;
 import com.termux.app.activities.FileManagerActivity;
 import com.termux.app.activities.HelpActivity;
 import com.termux.app.activities.ProfileActivity;
@@ -1004,6 +1005,15 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         session.write(command.endsWith("\n") ? command : command + "\n");
     }
 
+
+    private void openCommunity() {
+        try {
+            startActivity(new Intent(this, CommunityActivity.class));
+        } catch (ActivityNotFoundException e) {
+            showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
+        }
+    }
+
     private void openFileManager() {
         try {
             startActivity(new Intent(this, FileManagerActivity.class));
@@ -1074,6 +1084,15 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             btnSidebarProfile.setOnClickListener(v -> {
                 animateSidebarTap(v);
                 openSidebarProfile();
+            });
+        }
+
+        int btnSidebarCommunityId = getResources().getIdentifier("btn_sidebar_community", "id", getPackageName());
+        View btnSidebarCommunity = btnSidebarCommunityId != 0 ? findViewById(btnSidebarCommunityId) : null;
+        if (btnSidebarCommunity != null) {
+            btnSidebarCommunity.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                openCommunity();
             });
         }
 

@@ -230,7 +230,6 @@
 
     <!-- TermuxMods Right Sidebar -->
     <string name="termuxmods_left_drawer_title">Terminal Sessions</string>
-    <string name="termuxmods_left_drawer_subtitle">Swipe a row for Pin/Delete actions</string>
     <string name="termuxmods_right_drawer_title">TermuxMods Panel</string>
     <string name="termuxmods_right_drawer_subtitle">Quick tools, profile and package actions</string>
     <string name="termuxmods_section_shortcuts">SHORTCUTS</string>
@@ -376,5 +375,20 @@ Last modified: %3$s</string>
     <string name="profile_snackbar_logged_in">Logged in</string>
     <string name="profile_snackbar_profile_updated">Profile updated</string>
     <string name="profile_snackbar_logged_out">Logged out</string>
+
+
+    <string name="termuxmods_action_community">Community</string>
+
+    <string name="community_title">Community Chat</string>
+    <string name="community_hint">Type a message</string>
+    <string name="community_send">Send</string>
+    <string name="community_error_load">Unable to load chat messages</string>
+    <string name="community_error_send">Unable to send message</string>
+
+    <string name="code_editor_search">Search</string>
+    <string name="code_editor_search_hint">Find text</string>
+    <string name="code_editor_search_results">%1$d matches</string>
+
+    <string name="profile_session_termux_id_label">Termux ID</string>
 
 </resources>

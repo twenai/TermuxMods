@@ -3,7 +3,6 @@ package com.termux.app.activities;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -57,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView authStatus;
     private TextView roleStatus;
     private TextView sessionUserId;
+    private TextView sessionTermuxId;
     private TextView sessionLastLogin;
     private TextView sessionExpiry;
     private TextView connectionStatus;
@@ -99,6 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
         authStatus = findViewById(R.id.profile_auth_status);
         roleStatus = findViewById(R.id.profile_role_status);
         sessionUserId = findViewById(R.id.profile_session_user_id);
+        sessionTermuxId = findViewById(R.id.profile_session_termux_id);
         sessionLastLogin = findViewById(R.id.profile_session_last_login);
         sessionExpiry = findViewById(R.id.profile_session_expiry);
         connectionStatus = findViewById(R.id.profile_connection_status);
@@ -120,27 +121,10 @@ public class ProfileActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(v -> fetchUser(false));
         logoutButton.setOnClickListener(v -> logout());
 
-        applyGlassBlur(authCard);
-
         String token = prefs.getString(KEY_ACCESS_TOKEN, null);
         updateUiState(!TextUtils.isEmpty(token));
         if (!TextUtils.isEmpty(token)) {
             fetchUser(false);
-        }
-    }
-
-    private void applyGlassBlur(View target) {
-        if (target == null || Build.VERSION.SDK_INT < 31) return;
-        try {
-            Class<?> renderEffectClass = Class.forName("android.graphics.RenderEffect");
-            Class<?> tileModeClass = Class.forName("android.graphics.Shader$TileMode");
-            Object tileModeClamp = Enum.valueOf((Class<Enum>) tileModeClass.asSubclass(Enum.class), "CLAMP");
-            Object blurEffect = renderEffectClass
-                .getMethod("createBlurEffect", float.class, float.class, tileModeClass)
-                .invoke(null, 18f, 18f, tileModeClamp);
-            View.class.getMethod("setRenderEffect", renderEffectClass).invoke(target, blurEffect);
-        } catch (Throwable ignored) {
-            // Blur is an optional visual enhancement.
         }
     }
 
@@ -190,6 +174,11 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
 
+                if (TextUtils.isEmpty(accessToken) && signup) {
+                    runOnUiThread(() -> showSnack(getString(R.string.profile_msg_signup_success)));
+                    return;
+                }
+
                 if (TextUtils.isEmpty(accessToken)) {
                     String message = response.optString("msg", response.optString("message", getString(R.string.profile_msg_auth_failed)));
                     throw new IllegalStateException(message);
@@ -197,7 +186,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).putString(KEY_REFRESH_TOKEN, refreshToken).apply();
                 if (signup) {
-                    updateUserMetadata(accessToken, defaultUsernameFromEmail(email), "");
+                    updateUserMetadata(accessToken, defaultUsernameFromEmail(email), "", "");
                 }
                 runOnUiThread(() -> {
                     passwordInput.setText("");
@@ -254,7 +243,12 @@ public class ProfileActivity extends AppCompatActivity {
                 JSONObject metadata = user.optJSONObject("user_metadata");
                 String username = metadata != null ? metadata.optString("username") : "";
                 String avatar = metadata != null ? metadata.optString("avatar_url") : "";
+                String termuxId = metadata != null ? metadata.optString("termux_id") : "";
                 if (TextUtils.isEmpty(username)) username = defaultUsernameFromEmail(email);
+                if (TextUtils.isEmpty(termuxId)) {
+                    termuxId = defaultTermuxId(userId);
+                    updateUserMetadata(token, username, avatar, termuxId);
+                }
 
                 long expiryEpochSeconds = decodeJwtExpiry(token);
                 String expiryLabel = expiryEpochSeconds > 0
@@ -265,6 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
                 final String finalAvatar = avatar;
                 final String finalEmail = email;
                 final String finalRole = role;
+                final String finalTermuxId = termuxId;
                 final String finalUserId = userId;
                 final String finalLastSignInAt = lastSignInAt;
                 final String finalExpiryLabel = expiryLabel;
@@ -280,6 +275,7 @@ public class ProfileActivity extends AppCompatActivity {
                     connectionStatus.setText(R.string.profile_connected);
 
                     sessionUserId.setText(finalUserId);
+                    sessionTermuxId.setText(finalTermuxId);
                     sessionLastLogin.setText(finalLastSignInAt);
                     sessionExpiry.setText(finalExpiryLabel);
 
@@ -318,7 +314,11 @@ public class ProfileActivity extends AppCompatActivity {
         setLoading(true);
         new Thread(() -> {
             try {
-                updateUserMetadata(token, finalUsername, avatar);
+                String termuxId = sessionTermuxId.getText().toString().trim();
+                if (TextUtils.isEmpty(termuxId) || "-".equals(termuxId)) {
+                    termuxId = defaultTermuxId(sessionUserId.getText().toString().trim());
+                }
+                updateUserMetadata(token, finalUsername, avatar, termuxId);
                 runOnUiThread(() -> {
                     updateAvatar(avatar);
                     showSnack(getString(R.string.profile_snackbar_profile_updated));
@@ -363,10 +363,11 @@ public class ProfileActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void updateUserMetadata(String token, String username, String avatar) throws Exception {
+    private void updateUserMetadata(String token, String username, String avatar, String termuxId) throws Exception {
         JSONObject data = new JSONObject();
         data.put("username", username);
         data.put("avatar_url", avatar);
+        data.put("termux_id", termuxId);
 
         JSONObject payload = new JSONObject();
         payload.put("data", data);
@@ -438,6 +439,15 @@ public class ProfileActivity extends AppCompatActivity {
         int index = email.indexOf('@');
         if (index <= 0) return email;
         return email.substring(0, index);
+    }
+
+    private String defaultTermuxId(String userId) {
+        if (TextUtils.isEmpty(userId) || "-".equals(userId)) {
+            return "TMX-LOCAL";
+        }
+        String compact = userId.replaceAll("[^A-Za-z0-9]", "");
+        if (compact.length() > 10) compact = compact.substring(0, 10);
+        return "TMX-" + compact.toUpperCase();
     }
 
     private long decodeJwtExpiry(String token) {

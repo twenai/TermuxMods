@@ -132,8 +132,18 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             .setMessage(R.string.session_action_delete_confirm_message)
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.session_action_delete, (d, which) -> {
-                selectedSession.getTerminalSession().finishIfRunning();
-                mActivity.getTermuxTerminalSessionClient().removeFinishedSession(selectedSession.getTerminalSession());
+                if (mActivity.getTermuxService() != null) {
+                    mActivity.getTermuxService().removeTermuxSession(selectedSession.getTerminalSession());
+                    if (mActivity.getTermuxService().getTermuxSessionsSize() > 0) {
+                        mActivity.getTermuxTerminalSessionClient().setCurrentSession(
+                            mActivity.getTermuxTerminalSessionClient().getCurrentStoredSessionOrLast());
+                    } else {
+                        mActivity.finishActivityIfNotFinishing();
+                    }
+                } else {
+                    selectedSession.getTerminalSession().finishIfRunning();
+                    mActivity.getTermuxTerminalSessionClient().removeFinishedSession(selectedSession.getTerminalSession());
+                }
                 notifyDataSetChanged();
             })
             .create();

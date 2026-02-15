@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,9 @@ public class CodeEditorActivity extends Activity {
     public static final String EXTRA_FILE_PATH = "file_path";
 
     private EditText editorInput;
+    private EditText searchInput;
+    private TextView searchInfo;
+    private TextView lineNumbersView;
     private File targetFile;
     private boolean formatting;
 
@@ -47,22 +52,30 @@ public class CodeEditorActivity extends Activity {
         fileName.setText(targetFile.getName());
 
         editorInput = findViewById(R.id.code_editor_input);
+        searchInput = findViewById(R.id.code_editor_search_input);
+        searchInfo = findViewById(R.id.code_editor_search_info);
+        lineNumbersView = findViewById(R.id.code_editor_line_numbers);
+
         findViewById(R.id.code_editor_btn_back).setOnClickListener(v -> finish());
 
         Button saveButton = findViewById(R.id.code_editor_btn_save);
         saveButton.setOnClickListener(v -> saveFile());
 
+        Button searchButton = findViewById(R.id.code_editor_btn_search);
+        searchButton.setOnClickListener(v -> applySyntaxHighlight(editorInput.getText()));
+
         loadFile();
 
         editorInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(Editable s) { applySyntaxHighlight(s); }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                updateLineNumbers(s);
+                applySyntaxHighlight(s);
+            }
         });
 
+        updateLineNumbers(editorInput.getText());
         applySyntaxHighlight(editorInput.getText());
     }
 
@@ -95,14 +108,32 @@ public class CodeEditorActivity extends Activity {
         }
     }
 
+    private void updateLineNumbers(Editable editable) {
+        int lineCount = 1;
+        if (editable != null) {
+            for (int i = 0; i < editable.length(); i++) {
+                if (editable.charAt(i) == '\n') lineCount++;
+            }
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i <= lineCount; i++) {
+            builder.append(i);
+            if (i < lineCount) builder.append('\n');
+        }
+        lineNumbersView.setText(builder.toString());
+    }
+
     private void applySyntaxHighlight(Editable editable) {
         if (formatting || editable == null) return;
         formatting = true;
 
-        ForegroundColorSpan[] spans = editable.getSpans(0, editable.length(), ForegroundColorSpan.class);
-        for (ForegroundColorSpan span : spans) editable.removeSpan(span);
+        ForegroundColorSpan[] fgSpans = editable.getSpans(0, editable.length(), ForegroundColorSpan.class);
+        for (ForegroundColorSpan span : fgSpans) editable.removeSpan(span);
+        BackgroundColorSpan[] bgSpans = editable.getSpans(0, editable.length(), BackgroundColorSpan.class);
+        for (BackgroundColorSpan span : bgSpans) editable.removeSpan(span);
 
-        String name = targetFile.getName().toLowerCase();
+        String name = targetFile.getName().toLowerCase(Locale.ROOT);
         if (name.endsWith(".py")) {
             highlightPython(editable);
         } else if (name.endsWith(".js") || name.endsWith(".ts")) {
@@ -117,12 +148,30 @@ public class CodeEditorActivity extends Activity {
             highlightMarkdown(editable);
         }
 
+        highlightSearchMatches(editable);
         formatting = false;
+    }
+
+    private void highlightSearchMatches(Editable editable) {
+        String query = searchInput.getText().toString().trim();
+        if (query.isEmpty()) {
+            searchInfo.setText("");
+            return;
+        }
+
+        Matcher matcher = Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(editable);
+        int count = 0;
+        while (matcher.find()) {
+            editable.setSpan(new BackgroundColorSpan(Color.parseColor("#6658D6FF")), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            editable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFFFF")), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            count++;
+        }
+        searchInfo.setText(getString(R.string.code_editor_search_results, count));
     }
 
     private void highlightPython(Editable text) {
         applyPattern(text, "(?m)#.*$", "#6A9955");
-        applyPattern(text, "\"\"\"[\\s\\S]*?\"\"\"|'\'\'[\\s\\S]*?'\'\'", "#CE9178");
+        applyPattern(text, "\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''", "#CE9178");
         applyPattern(text, "\"[^\"\\n]*\"|'[^'\\n]*'", "#CE9178");
         applyPattern(text, "\\b(def|class|import|from|as|if|elif|else|for|while|try|except|finally|with|return|yield|pass|break|continue|lambda|global|nonlocal|assert|in|is|and|or|not|None|True|False)\\b", "#C586C0");
         applyPattern(text, "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?=\\()", "#DCDCAA");
