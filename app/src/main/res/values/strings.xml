@@ -81,6 +81,7 @@
     <string name="action_style_terminal">Style</string>
     <string name="action_toggle_keep_screen_on">Keep screen on</string>
     <string name="action_open_help">Help</string>
+    <string name="action_live_chat_support">Live Chat Support</string>
     <string name="action_open_settings">Settings</string>
 
     <string name="action_report_issue">Report Issue</string>
@@ -89,6 +90,23 @@
 
     <string name="error_styling_not_installed">The &TERMUX_STYLING_APP_NAME; Plugin App is not installed.</string>
     <string name="action_styling_install">Install</string>
+
+
+
+    <!-- Live Chat Support -->
+    <string name="title_live_chat_support">Live Chat Support</string>
+    <string name="live_chat_support_description">Send an image to live chat support. Other users can view and download the image. Maximum file size is 10MB.</string>
+    <string name="action_live_chat_choose_image">Choose Image</string>
+    <string name="action_live_chat_send_image">Send Image</string>
+    <string name="title_live_chat_share_chooser">Share image to</string>
+    <string name="live_chat_no_file_selected">No image selected yet.</string>
+    <string name="label_live_chat_selected_file">Selected file: %1$s</string>
+    <string name="live_chat_unknown_file">unknown_file</string>
+    <string name="live_chat_selected_image_preview">Preview of selected image</string>
+    <string name="error_live_chat_image_too_large">Image size exceeds the 10MB limit.</string>
+    <string name="error_live_chat_image_size_unknown">Unable to verify image size. Please choose a different image.</string>
+    <string name="error_live_chat_select_image_first">Please choose an image first.</string>
+    <string name="error_live_chat_no_share_target">No app available to share this image.</string>
 
 
 
