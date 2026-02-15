@@ -24,10 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.termux.R;
@@ -73,11 +76,6 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Button;
-
 public final class TermuxActivity extends Activity implements ServiceConnection {
 
     /**
