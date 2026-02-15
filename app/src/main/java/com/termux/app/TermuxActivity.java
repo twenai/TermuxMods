@@ -414,18 +414,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     private void setActivityTheme() {
-        if (mProperties.isUsingBlackUI()) {
-            this.setTheme(R.style.Theme_Termux_Black);
-        } else {
-            this.setTheme(R.style.Theme_Termux);
-        }
+        // Force dark theme for TermuxMods; light mode is disabled.
+        this.setTheme(R.style.Theme_Termux_Black);
     }
 
     private void setDrawerTheme() {
-        if (mProperties.isUsingBlackUI()) {
-            findViewById(R.id.left_drawer).setBackgroundResource(R.drawable.sidebar_left_glass_bg);
-            ((ImageButton) findViewById(R.id.settings_button)).setColorFilter(Color.WHITE);
-        }
+        findViewById(R.id.left_drawer).setBackgroundResource(R.drawable.sidebar_left_glass_bg);
+        ((ImageButton) findViewById(R.id.settings_button)).setColorFilter(Color.WHITE);
     }
 
     private void setMargins() {

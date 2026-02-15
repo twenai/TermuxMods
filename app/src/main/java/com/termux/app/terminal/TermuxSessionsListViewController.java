@@ -57,11 +57,7 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             return sessionRowView;
         }
 
-        boolean isUsingBlackUI = mActivity.getProperties().isUsingBlackUI();
-
-        if (isUsingBlackUI) {
-            sessionTitleView.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.session_background_black_selected));
-        }
+        sessionTitleView.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.session_background_black_selected));
 
         String name = sessionAtRow.mSessionName;
         String sessionTitle = sessionAtRow.getTitle();
