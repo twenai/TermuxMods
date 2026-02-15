@@ -97,6 +97,30 @@
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
         <activity
+            android:name=".app.activities.FileManagerActivity"
+            android:exported="false"
+            android:label="@string/file_manager_title"
+            android:theme="@style/Theme.Termux" />
+
+        <activity
+            android:name=".app.activities.CodeEditorActivity"
+            android:exported="false"
+            android:label="@string/code_editor_title"
+            android:theme="@style/Theme.Termux" />
+
+        <activity
+            android:name=".app.activities.ProfileActivity"
+            android:exported="false"
+            android:label="@string/termuxmods_action_sidebar_profile"
+            android:theme="@style/Theme.Termux.Profile" />
+
+        <activity
+            android:name=".app.activities.CommunityActivity"
+            android:exported="false"
+            android:label="@string/community_title"
+            android:theme="@style/Theme.Termux" />
+
+        <activity
             android:name=".shared.activities.ReportActivity"
             android:theme="@style/Theme.AppCompat.TermuxReportActivity"
             android:documentLaunchMode="intoExisting"

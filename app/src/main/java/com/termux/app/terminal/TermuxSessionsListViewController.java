@@ -1,6 +1,7 @@
 package com.termux.app.terminal;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,13 +57,7 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
             return sessionRowView;
         }
 
-        boolean isUsingBlackUI = mActivity.getProperties().isUsingBlackUI();
-
-        if (isUsingBlackUI) {
-            sessionTitleView.setBackground(
-                ContextCompat.getDrawable(mActivity, R.drawable.session_background_black_selected)
-            );
-        }
+        sessionTitleView.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.session_background_black_selected));
 
         String name = sessionAtRow.mSessionName;
         String sessionTitle = sessionAtRow.getTitle();
@@ -84,10 +80,86 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
         } else {
             sessionTitleView.setPaintFlags(sessionTitleView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
-        int defaultColor = isUsingBlackUI ? Color.WHITE : Color.BLACK;
+        int defaultColor = Color.WHITE;
         int color = sessionRunning || sessionAtRow.getExitStatus() == 0 ? defaultColor : Color.RED;
         sessionTitleView.setTextColor(color);
         return sessionRowView;
+    }
+
+    public void onItemSwipe(int position) {
+        TermuxSession selectedSession = getItem(position);
+        if (selectedSession == null || selectedSession.getTerminalSession() == null) return;
+
+        View content = LayoutInflater.from(mActivity).inflate(R.layout.session_swipe_action_dialog, null, false);
+        TextView title = content.findViewById(R.id.session_swipe_title);
+        Button pinButton = content.findViewById(R.id.session_swipe_pin);
+        Button deleteButton = content.findViewById(R.id.session_swipe_delete);
+
+        title.setText(selectedSession.getTerminalSession().mSessionName);
+
+        AlertDialog dialog = new AlertDialog.Builder(mActivity)
+            .setView(content)
+            .create();
+
+        pinButton.setOnClickListener(v -> {
+            togglePinSession(selectedSession.getTerminalSession());
+            if (isPinned(selectedSession.getTerminalSession())) {
+                remove(selectedSession);
+                insert(selectedSession, 0);
+            }
+            notifyDataSetChanged();
+            dialog.dismiss();
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            dialog.dismiss();
+            showDeleteConfirmation(selectedSession);
+        });
+
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+    }
+
+    private void showDeleteConfirmation(TermuxSession selectedSession) {
+        AlertDialog confirm = new AlertDialog.Builder(mActivity)
+            .setTitle(R.string.session_action_delete_confirm_title)
+            .setMessage(R.string.session_action_delete_confirm_message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.session_action_delete, (d, which) -> {
+                if (mActivity.getTermuxService() != null) {
+                    mActivity.getTermuxService().removeTermuxSession(selectedSession.getTerminalSession());
+                    if (mActivity.getTermuxService().getTermuxSessionsSize() > 0) {
+                        mActivity.getTermuxTerminalSessionClient().setCurrentSession(
+                            mActivity.getTermuxTerminalSessionClient().getCurrentStoredSessionOrLast());
+                    } else {
+                        mActivity.finishActivityIfNotFinishing();
+                    }
+                } else {
+                    selectedSession.getTerminalSession().finishIfRunning();
+                    mActivity.getTermuxTerminalSessionClient().removeFinishedSession(selectedSession.getTerminalSession());
+                }
+                notifyDataSetChanged();
+            })
+            .create();
+        confirm.show();
+        if (confirm.getWindow() != null) {
+            confirm.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+    }
+
+    private boolean isPinned(TerminalSession session) {
+        return session.mSessionName != null && session.mSessionName.startsWith("[PIN] ");
+    }
+
+    private void togglePinSession(TerminalSession session) {
+        String name = session.mSessionName == null ? "" : session.mSessionName;
+        if (name.startsWith("[PIN] ")) {
+            session.mSessionName = name.substring(6);
+        } else {
+            session.mSessionName = "[PIN] " + name;
+        }
     }
 
     @Override
@@ -103,5 +175,4 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
         mActivity.getTermuxTerminalSessionClient().renameSession(selectedSession.getTerminalSession());
         return true;
     }
-
 }

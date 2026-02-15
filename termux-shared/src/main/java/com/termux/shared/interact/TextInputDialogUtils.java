@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.text.Selection;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -29,6 +30,10 @@ public final class TextInputDialogUtils {
                                  final DialogInterface.OnDismissListener onDismiss) {
         final EditText input = new EditText(activity);
         input.setSingleLine();
+        input.setTextColor(Color.parseColor("#FFFFFF"));
+        input.setHintTextColor(Color.parseColor("#99FFFFFF"));
+        int inputBgRes = activity.getResources().getIdentifier("dialog_input_glass", "drawable", activity.getPackageName());
+        if (inputBgRes != 0) input.setBackgroundResource(inputBgRes);
         if (initialText != null) {
             input.setText(initialText);
             Selection.setSelection(input.getText(), initialText.length());
@@ -73,6 +78,10 @@ public final class TextInputDialogUtils {
         dialogHolder[0] = builder.create();
         dialogHolder[0].setCanceledOnTouchOutside(false);
         dialogHolder[0].show();
+        int dialogBgRes = activity.getResources().getIdentifier("dialog_glass_bg", "drawable", activity.getPackageName());
+        if (dialogBgRes != 0 && dialogHolder[0].getWindow() != null) {
+            dialogHolder[0].getWindow().setBackgroundDrawableResource(dialogBgRes);
+        }
     }
 
 }

@@ -11,12 +11,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.ContextMenu;
+import android.view.MotionEvent;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.termux.R;
 import com.termux.app.terminal.TermuxActivityRootView;
@@ -37,7 +41,10 @@ import com.termux.shared.packages.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
+import com.termux.app.activities.CommunityActivity;
+import com.termux.app.activities.FileManagerActivity;
 import com.termux.app.activities.HelpActivity;
+import com.termux.app.activities.ProfileActivity;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.settings.preferences.TermuxAppSharedPreferences;
 import com.termux.app.terminal.TermuxSessionsListViewController;
@@ -58,7 +65,6 @@ import com.termux.view.TerminalViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -72,11 +78,6 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Button;
-
 public final class TermuxActivity extends Activity implements ServiceConnection {
 
     /**
@@ -413,18 +414,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     private void setActivityTheme() {
-        if (mProperties.isUsingBlackUI()) {
-            this.setTheme(R.style.Theme_Termux_Black);
-        } else {
-            this.setTheme(R.style.Theme_Termux);
-        }
+        // Force dark theme for TermuxMods; light mode is disabled.
+        this.setTheme(R.style.Theme_Termux_Black);
     }
 
     private void setDrawerTheme() {
-        if (mProperties.isUsingBlackUI()) {
-            findViewById(R.id.left_drawer).setBackgroundResource(R.drawable.sidebar_left_glass_bg);
-            ((ImageButton) findViewById(R.id.settings_button)).setColorFilter(Color.WHITE);
-        }
+        findViewById(R.id.left_drawer).setBackgroundResource(R.drawable.sidebar_left_glass_bg);
+        ((ImageButton) findViewById(R.id.settings_button)).setColorFilter(Color.WHITE);
     }
 
     private void setMargins() {
@@ -469,6 +465,27 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
+
+        final float[] touchStartX = new float[1];
+        final int[] touchStartPosition = new int[] { ListView.INVALID_POSITION };
+        termuxSessionsListView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    touchStartX[0] = event.getX();
+                    touchStartPosition[0] = termuxSessionsListView.pointToPosition((int) event.getX(), (int) event.getY());
+                    return false;
+                case MotionEvent.ACTION_UP:
+                    int endPosition = termuxSessionsListView.pointToPosition((int) event.getX(), (int) event.getY());
+                    float deltaX = event.getX() - touchStartX[0];
+                    if (touchStartPosition[0] != ListView.INVALID_POSITION && touchStartPosition[0] == endPosition && Math.abs(deltaX) > 120f) {
+                        mTermuxSessionListViewController.onItemSwipe(endPosition);
+                        return true;
+                    }
+                    return false;
+                default:
+                    return false;
+            }
+        });
     }
 
 
@@ -754,6 +771,143 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return mTermuxActivityRootView;
     }
 
+    public View getTermuxActivityBottomSpaceView() {
+        return mTermuxActivityBottomSpaceView;
+    }
+
+    public ExtraKeysView getExtraKeysView() {
+        return mExtraKeysView;
+    }
+
+    public void setExtraKeysView(ExtraKeysView extraKeysView) {
+        mExtraKeysView = extraKeysView;
+    }
+
+    public void setTerminalBackground(Drawable drawable) {
+        if (mTerminalView == null) return;
+
+        if (drawable == null)
+            mTerminalView.setBackgroundColor(Color.BLACK);
+        else
+            mTerminalView.setBackground(drawable);
+    }
+
+    public DrawerLayout getDrawer() {
+        return findViewById(R.id.drawer_layout);
+    }
+
+    public ViewPager getTerminalToolbarViewPager() {
+        return findViewById(R.id.terminal_toolbar_view_pager);
+    }
+
+    public boolean isTerminalViewSelected() {
+        ViewPager viewPager = getTerminalToolbarViewPager();
+        return viewPager != null && viewPager.getCurrentItem() == 0;
+    }
+
+    public boolean isTerminalToolbarTextInputViewSelected() {
+        ViewPager viewPager = getTerminalToolbarViewPager();
+        return viewPager != null && viewPager.getCurrentItem() == 1;
+    }
+
+    public void termuxSessionListNotifyUpdated() {
+        if (mTermuxSessionListViewController != null) {
+            mTermuxSessionListViewController.notifyDataSetChanged();
+        }
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
+    }
+
+    public boolean isOnResumeAfterOnCreate() {
+        return isOnResumeAfterOnCreate;
+    }
+
+    public TermuxService getTermuxService() {
+        return mTermuxService;
+    }
+
+    public TerminalView getTerminalView() {
+        return mTerminalView;
+    }
+
+    public TermuxTerminalViewClient getTermuxTerminalViewClient() {
+        return mTermuxTerminalViewClient;
+    }
+
+    public TermuxTerminalSessionClient getTermuxTerminalSessionClient() {
+        return mTermuxTerminalSessionClient;
+    }
+
+    @Nullable
+    public TerminalSession getCurrentSession() {
+        if (mTerminalView != null)
+            return mTerminalView.getCurrentSession();
+        else
+            return null;
+    }
+
+    public TermuxAppSharedPreferences getPreferences() {
+        return mPreferences;
+    }
+
+    public TermuxAppSharedProperties getProperties() {
+        return mProperties;
+    }
+
+    public static void updateTermuxActivityStyling(Context context) {
+        Intent stylingIntent = new Intent(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
+        context.sendBroadcast(stylingIntent);
+    }
+
+    private void showInstallationDialog(String part) {
+        String message;
+        switch (part) {
+            case "prompt":
+                message = getString(R.string.termuxmods_dialog_apply_prompt);
+                break;
+            case "logo":
+                message = getString(R.string.termuxmods_dialog_install_logo);
+                break;
+            case "reset":
+                message = getString(R.string.termuxmods_dialog_reset);
+                break;
+            default:
+                message = getString(R.string.termuxmods_dialog_run_script);
+                break;
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(R.string.termuxmods_dialog_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#8BE9FF"));
+        }
+    }
+
+    private void setCustomBackground() {
+        setTerminalBackground(null);
+        showToast(getString(R.string.termuxmods_toast_bg_reset), false);
+    }
+
+    private void animateSidebarTap(View view) {
+        if (view == null) return;
+        view.animate().cancel();
+        view.animate()
+            .scaleX(0.96f)
+            .scaleY(0.96f)
+            .setDuration(80)
+            .withEndAction(() -> view.animate().scaleX(1f).scaleY(1f).setDuration(120).start())
+            .start();
+    }
+
     private void executeScriptPart(String part) {
         TerminalSession session = getCurrentSession();
         if (session == null) return;
@@ -786,7 +940,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "    fi\n" +
                         "}\n" +
                         "EOF\n" +
-                        "source ~/.bashrc\n";
+                        "source ~/.bashrc >/dev/null 2>&1; clear; echo 'Prompt updated. Restart Termux to apply changes.'\n";
                 break;
             case "logo":
                 script = "pkg update -y && pkg upgrade -y && pkg install -y bash git curl make ruby neofetch lolcat && " +
@@ -830,132 +984,223 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                         "neofetch --source ~/.config/neofetch/vip-art.txt --ascii\n";
                 break;
             case "reset":
-                script = "if [ -f ~/.bashrc.bak.* ]; then cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; fi; " +
+                script = "if [ -f ~/.bashrc.bak.* ]; then cp $(ls -t ~/.bashrc.bak.* | head -n1) ~/.bashrc; else : > ~/.bashrc; fi; " +
                         "rm -rf ~/.config/neofetch; " +
                         "sed -i '/neofetch --source/d' ~/.bashrc; " +
-                        "source ~/.bashrc; " +
-                        "echo 'Reset complete';\n";
+                        "source ~/.bashrc >/dev/null 2>&1; clear; " +
+                        "echo 'Reset complete. Restart Termux to apply changes.';\n";
                 setTerminalBackground(null);
                 break;
         }
         session.write(script);
     }
-        session.write(script);
+
+    private void runTerminalCommand(String command) {
+        TerminalSession session = getCurrentSession();
+        if (session == null) return;
+        session.write(command.endsWith("\n") ? command : command + "\n");
+    }
+
+
+    private void openCommunity() {
+        SharedPreferences prefs = getSharedPreferences("secure_supabase_auth", MODE_PRIVATE);
+        String token = prefs.getString("access_token", null);
+        if (token == null || token.trim().isEmpty()) {
+            showToast(getString(R.string.community_login_required), true);
+            startActivity(new Intent(this, ProfileActivity.class));
+            return;
+        }
+
+        try {
+            startActivity(new Intent(this, CommunityActivity.class));
+        } catch (ActivityNotFoundException e) {
+            showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
+        }
+    }
+
+    private void openFileManager() {
+        try {
+            startActivity(new Intent(this, FileManagerActivity.class));
+        } catch (ActivityNotFoundException e) {
+            showToast(getString(R.string.termuxmods_toast_no_file_manager), true);
+        }
+    }
+
+    private void showTermuxInfoDialog() {
+        String versionName = "unknown";
+        try {
+            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException ignored) {
+        }
+
+        String infoText = getString(R.string.termuxmods_info_message, versionName);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle(R.string.termuxmods_info_title)
+            .setMessage(infoText)
+            .setNeutralButton(R.string.termuxmods_action_youtube, (d, which) -> {
+                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
+                try {
+                    startActivity(youtubeIntent);
+                } catch (ActivityNotFoundException e) {
+                    showToast(getString(R.string.termuxmods_toast_no_browser), true);
+                }
+            })
+            .setPositiveButton(android.R.string.ok, null)
+            .create();
+        dialog.show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_glass_bg);
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#8BE9FF"));
+        }
+        if (dialog.getButton(AlertDialog.BUTTON_NEUTRAL) != null) {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#8BE9FF"));
+        }
+    }
+
+    private void openSidebarProfile() {
+        startActivity(new Intent(this, ProfileActivity.class));
     }
 
     private void setupRightSidebar() {
-            // Fallback for old sidebar buttons if container is missing
-            int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
-            Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
-            if (btnPrompt != null) {
-                btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-                
-                int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
-                Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
-                if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-                
-                int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
-                Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
-                if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-                
-                int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
-                Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
-                if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
-            }
-            return;
+        int btnFileManagerId = getResources().getIdentifier("btn_file_manager", "id", getPackageName());
+        View btnFileManager = btnFileManagerId != 0 ? findViewById(btnFileManagerId) : null;
+        if (btnFileManager != null) {
+            btnFileManager.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                openFileManager();
+            });
         }
-        container.removeAllViews();
 
-        // Section: Info
-        addSidebarSection(container, "Package Info", R.drawable.ic_pkg);
-        addSidebarCommand(container, "List", "pkg list-installed", false);
-        addSidebarCommand(container, "Storage", "df -h", false);
-
-        // Section: Packages
-        addSidebarSection(container, "Packages", R.drawable.ic_pkg);
-        addSidebarCommandWithCheck(container, "Update", "apt update && apt upgrade -y", "apt", false);
-        addSidebarCommandWithCheck(container, "Python", "pkg install python -y", "python", false);
-        addSidebarCommandWithCheck(container, "Git", "pkg install git -y", "git", false);
-        addSidebarCommandWithCheck(container, "NodeJS", "pkg install nodejs -y", "node", false);
-
-        // Section: System
-        addSidebarSection(container, "System", R.drawable.ic_system);
-        addSidebarCommand(container, "Top", "top", false);
-        addSidebarCommand(container, "Network", "ifconfig", false);
-
-        // Section: Root
-        addSidebarSection(container, "Root", R.drawable.ic_root);
-        addSidebarCommand(container, "tsu", "tsu", true);
-        addSidebarCommand(container, "Mount", "mount -o remount,rw /", true);
-    }
-
-    private void addSidebarSection(GridLayout container, String title, int iconRes) {
-        TextView tv = new TextView(this);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.columnSpec = GridLayout.spec(0, 2);
-        params.setMargins(0, 24, 0, 8);
-        tv.setLayoutParams(params);
-        tv.setText(title);
-        tv.setTextColor(ContextCompat.getColor(this, R.color.accent_color));
-        tv.setTextSize(14);
-        tv.setAllCaps(true);
-        tv.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
-        tv.setCompoundDrawablePadding(12);
-        container.addView(tv);
-    }
-
-    private void addSidebarCommand(GridLayout container, String label, String command, boolean isRoot) {
-        Button btn = createSidebarButton(label, isRoot);
-        btn.setOnClickListener(v -> executeCommand(command));
-        container.addView(btn);
-    }
-
-    private void addSidebarCommandWithCheck(GridLayout container, String label, String command, String binary, boolean isRoot) {
-        Button btn = createSidebarButton(label, isRoot);
-        btn.setOnClickListener(v -> {
-            String fullCmd = "command -v " + binary + " >/dev/null 2>&1 || " + command + " && " + binary + " --version || echo '" + label + " ready'";
-            executeCommand(fullCmd);
-        });
-        container.addView(btn);
-    }
-
-    private Button createSidebarButton(String label, boolean isRoot) {
-        Button btn = new Button(this);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        params.setMargins(4, 4, 4, 4);
-        btn.setLayoutParams(params);
-        btn.setText(label);
-        btn.setAllCaps(false);
-        btn.setTextColor(Color.WHITE);
-        btn.setBackgroundResource(R.drawable.btn_glass_rounded);
-        btn.setPadding(12, 16, 12, 16);
-        btn.setTextSize(12);
-        btn.setGravity(Gravity.CENTER);
-        
-        int iconRes = 0;
-        /*
-        switch (label.toLowerCase()) {
-            case "list": iconRes = R.drawable.ic_list; break;
-            case "storage": iconRes = R.drawable.ic_storage; break;
-            case "update": iconRes = R.drawable.ic_update; break;
-            case "python": iconRes = R.drawable.ic_python; break;
-            case "git": iconRes = R.drawable.ic_git; break;
-            case "nodejs": iconRes = R.drawable.ic_node; break;
-            case "top": iconRes = R.drawable.ic_system; break;
-            case "network": iconRes = R.drawable.ic_network; break;
-            case "tsu": iconRes = R.drawable.ic_root; break;
-            case "mount": iconRes = R.drawable.ic_storage; break;
+        int btnInfoTermuxId = getResources().getIdentifier("btn_info_termux", "id", getPackageName());
+        View btnInfoTermux = btnInfoTermuxId != 0 ? findViewById(btnInfoTermuxId) : null;
+        if (btnInfoTermux != null) {
+            btnInfoTermux.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                showTermuxInfoDialog();
+            });
         }
-        */
-        
-        // Map labels to existing icons safely
-        String lowerLabel = label.toLowerCase();
-        if (lowerLabel.contains("pkg") || lowerLabel.contains("list")) iconRes = R.drawable.ic_pkg;
-        else if (lowerLabel.contains("system") || lowerLabel.contains("top")) iconRes = R.drawable.ic_system;
-        
-        return btn;
+
+        int btnSidebarProfileId = getResources().getIdentifier("btn_sidebar_profile", "id", getPackageName());
+        View btnSidebarProfile = btnSidebarProfileId != 0 ? findViewById(btnSidebarProfileId) : null;
+        if (btnSidebarProfile != null) {
+            btnSidebarProfile.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                openSidebarProfile();
+            });
+        }
+
+        int btnSidebarCommunityId = getResources().getIdentifier("btn_sidebar_community", "id", getPackageName());
+        View btnSidebarCommunity = btnSidebarCommunityId != 0 ? findViewById(btnSidebarCommunityId) : null;
+        if (btnSidebarCommunity != null) {
+            btnSidebarCommunity.setOnClickListener(v -> {
+                animateSidebarTap(v);
+                openCommunity();
+            });
+        }
+
+        int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
+        Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
+        if (btnPrompt != null) {
+            btnPrompt.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("prompt"); });
+        }
+
+        int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
+        Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
+        if (btnLogo != null) {
+            btnLogo.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("logo"); });
+        }
+
+        int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
+        Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
+        if (btnBackground != null) {
+            btnBackground.setOnClickListener(v -> { animateSidebarTap(v); setCustomBackground(); });
+        }
+
+        int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
+        Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
+        if (btnReset != null) {
+            btnReset.setOnClickListener(v -> { animateSidebarTap(v); executeScriptPart("reset"); });
+        }
+
+        int btnUpdateId = getResources().getIdentifier("btn_update", "id", getPackageName());
+        Button btnUpdate = btnUpdateId != 0 ? findViewById(btnUpdateId) : null;
+        if (btnUpdate != null) {
+            btnUpdate.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg update -y"); });
+        }
+
+        int btnUpgradeId = getResources().getIdentifier("btn_upgrade", "id", getPackageName());
+        Button btnUpgrade = btnUpgradeId != 0 ? findViewById(btnUpgradeId) : null;
+        if (btnUpgrade != null) {
+            btnUpgrade.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg upgrade -y"); });
+        }
+
+
+        int btnPkgGitId = getResources().getIdentifier("btn_pkg_git", "id", getPackageName());
+        Button btnPkgGit = btnPkgGitId != 0 ? findViewById(btnPkgGitId) : null;
+        if (btnPkgGit != null) {
+            btnPkgGit.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install git -y"); });
+        }
+
+        int btnPkgCurlId = getResources().getIdentifier("btn_pkg_curl", "id", getPackageName());
+        Button btnPkgCurl = btnPkgCurlId != 0 ? findViewById(btnPkgCurlId) : null;
+        if (btnPkgCurl != null) {
+            btnPkgCurl.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install curl -y"); });
+        }
+
+        int btnPkgWgetId = getResources().getIdentifier("btn_pkg_wget", "id", getPackageName());
+        Button btnPkgWget = btnPkgWgetId != 0 ? findViewById(btnPkgWgetId) : null;
+        if (btnPkgWget != null) {
+            btnPkgWget.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install wget -y"); });
+        }
+
+        int btnPkgPythonId = getResources().getIdentifier("btn_pkg_python", "id", getPackageName());
+        Button btnPkgPython = btnPkgPythonId != 0 ? findViewById(btnPkgPythonId) : null;
+        if (btnPkgPython != null) {
+            btnPkgPython.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install python -y"); });
+        }
+
+        int btnPkgPipId = getResources().getIdentifier("btn_pkg_pip", "id", getPackageName());
+        Button btnPkgPip = btnPkgPipId != 0 ? findViewById(btnPkgPipId) : null;
+        if (btnPkgPip != null) {
+            btnPkgPip.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install python-pip -y"); });
+        }
+
+        int btnPkgNodejsId = getResources().getIdentifier("btn_pkg_nodejs", "id", getPackageName());
+        Button btnPkgNodejs = btnPkgNodejsId != 0 ? findViewById(btnPkgNodejsId) : null;
+        if (btnPkgNodejs != null) {
+            btnPkgNodejs.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install nodejs -y"); });
+        }
+
+        int btnPkgOpensshId = getResources().getIdentifier("btn_pkg_openssh", "id", getPackageName());
+        Button btnPkgOpenssh = btnPkgOpensshId != 0 ? findViewById(btnPkgOpensshId) : null;
+        if (btnPkgOpenssh != null) {
+            btnPkgOpenssh.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install openssh -y"); });
+        }
+
+        int btnPkgOpensslId = getResources().getIdentifier("btn_pkg_openssl", "id", getPackageName());
+        Button btnPkgOpenssl = btnPkgOpensslId != 0 ? findViewById(btnPkgOpensslId) : null;
+        if (btnPkgOpenssl != null) {
+            btnPkgOpenssl.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg install openssl -y"); });
+        }
+
+        int btnPkgMoreId = getResources().getIdentifier("btn_pkg_more", "id", getPackageName());
+        Button btnPkgMore = btnPkgMoreId != 0 ? findViewById(btnPkgMoreId) : null;
+        if (btnPkgMore != null) {
+            btnPkgMore.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("pkg search ."); });
+        }
+        int btnClearTerminalId = getResources().getIdentifier("btn_clear_terminal", "id", getPackageName());
+        Button btnClearTerminal = btnClearTerminalId != 0 ? findViewById(btnClearTerminalId) : null;
+        if (btnClearTerminal != null) {
+            btnClearTerminal.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("clear && printf '\\e[3J'"); });
+        }
+
+        int btnRemoveCacheId = getResources().getIdentifier("btn_remove_cache", "id", getPackageName());
+        Button btnRemoveCache = btnRemoveCacheId != 0 ? findViewById(btnRemoveCacheId) : null;
+        if (btnRemoveCache != null) {
+            btnRemoveCache.setOnClickListener(v -> { animateSidebarTap(v); runTerminalCommand("rm -rf ~/.cache/* && rm -rf $PREFIX/tmp/* && echo 'Cache removed'"); });
+        }
     }
 
     private void unregisterTermuxActivityBroadcastReceiever() {

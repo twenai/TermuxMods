@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+    android:padding="10dp"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/community_btn_back"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/btn_glass_rounded"
+            android:src="@drawable/ic_arrow_back_material"
+            android:tint="@color/text_white"
+            android:contentDescription="@string/file_manager_back"
+            android:padding="8dp"/>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_title"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/text_white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/community_subtitle"
+                android:textColor="@color/sidebar_subtitle"
+                android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/community_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/file_manager_panel_smooth"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="6dp"
+        android:padding="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/community_input"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_input_glass"
+            android:hint="@string/community_hint"
+            android:paddingHorizontal="12dp"
+            android:textColor="@color/text_white"
+            android:textColorHint="#99FFFFFF" />
+
+        <Button
+            android:id="@+id/community_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/btn_glass_rounded"
+            android:text="@string/community_send"
+            android:textAllCaps="false"
+            android:textColor="@color/text_white" />
+    </LinearLayout>
+</LinearLayout>

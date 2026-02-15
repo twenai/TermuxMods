@@ -76,13 +76,34 @@
                 android:dividerHeight="0dp"
                 android:descendantFocusability="blocksDescendants"
                 android:orientation="vertical"
+                android:animateLayoutChanges="true"
                 android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/sidebar_section_card"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/termuxmods_left_drawer_title"
+                            android:textColor="@color/sidebar_title"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
                     <ImageButton
                         android:id="@+id/settings_button"
                         android:layout_width="40dp"
@@ -104,6 +125,9 @@
                     android:choiceMode="singleChoice"
                     android:divider="@color/glass_card_stroke"
                     android:dividerHeight="1dp"
+                    android:listSelector="@drawable/session_ripple"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:longClickable="true" />
 
                 <LinearLayout
@@ -143,47 +167,204 @@
                 android:layout_gravity="end"
                 android:background="@drawable/sidebar_glass_bg"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:elevation="8dp">
+                android:padding="0dp"
+                android:elevation="8dp"
+                android:animateLayoutChanges="true">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:overScrollMode="ifContentScrolls">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/sidebar_section_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/termuxmods_right_drawer_title"
+                        android:textColor="@color/sidebar_title"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/termuxmods_right_drawer_subtitle"
+                        android:textColor="@color/sidebar_subtitle"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="DEVELOPER INFO"
-                    android:textColor="@color/text_white"
-                    android:textSize="20sp"
+                    android:text="@string/termuxmods_section_shortcuts"
+                    android:textColor="@color/sidebar_section_title"
                     android:textStyle="bold"
-                    android:gravity="center"
+                    android:textSize="12sp"
                     android:layout_marginBottom="8dp" />
 
                 <LinearLayout
-                    android:id="@+id/developer_info_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@drawable/btn_glass_rounded"
-                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:id="@+id/btn_file_manager"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/sidebar_shortcut_neon"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageButton
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:src="@drawable/ic_file_manager"
+                            android:background="@android:color/transparent"
+                            android:tint="@color/sidebar_shortcut_file_tint"
+                            android:contentDescription="@string/termuxmods_action_file_manager" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/termuxmods_action_file_manager"
+                            android:textColor="@color/text_white"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_info_termux"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@drawable/sidebar_shortcut_neon"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageButton
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:src="@drawable/ic_info_termux"
+                            android:background="@android:color/transparent"
+                            android:tint="@color/sidebar_shortcut_info_tint"
+                            android:contentDescription="@string/termuxmods_action_info_termux" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/termuxmods_action_info_termux"
+                            android:textColor="@color/text_white"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_sidebar_profile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/sidebar_shortcut_neon"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageButton
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:src="@drawable/ic_profile"
+                            android:background="@android:color/transparent"
+                            android:tint="@color/sidebar_shortcut_profile_tint"
+                            android:contentDescription="@string/termuxmods_action_sidebar_profile" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:text="@string/termuxmods_action_sidebar_profile"
+                            android:textColor="@color/text_white"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_sidebar_community"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/sidebar_shortcut_neon"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_marginBottom="24dp">
-                    
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <ImageButton
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/termuxmods_action_community"
+                        android:src="@drawable/ic_community"
+                        android:tint="@color/sidebar_shortcut_profile_tint" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Created By Kz.tutorial"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/termuxmods_action_community"
                         android:textColor="@color/text_white"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Youtube @Kz.tutorial"
-                        android:textColor="#FF0000"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_section_customize"
+                    android:textColor="@color/sidebar_section_title"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -195,8 +376,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="PROMPT"
-                        android:textAllCaps="true"
+                        android:text="@string/termuxmods_action_prompt"
+                        android:textAllCaps="false"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
@@ -205,12 +386,210 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="RESET"
-                        android:textAllCaps="true"
+                        android:text="@string/termuxmods_action_reset"
+                        android:textAllCaps="false"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/btn_glass_rounded"
                         android:textColor="@color/text_white" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_update_system"
+                    android:textColor="@color/text_white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_update"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_update"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_upgrade"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_upgrade"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_packages"
+                    android:textColor="@color/text_white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <Button
+                        android:id="@+id/btn_pkg_git"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_git"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_curl"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_curl"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_wget"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_wget"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <Button
+                        android:id="@+id/btn_pkg_python"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_python"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_pip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_pip"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_nodejs"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_nodejs"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_pkg_openssh"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_openssh"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_openssl"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_openssl"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="2dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_pkg_more"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_more_pkg"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/termuxmods_cleanup"
+                    android:textColor="@color/text_white"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_clear_terminal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_clear"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_remove_cache"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/termuxmods_action_remove_cache"
+                        android:textAllCaps="false"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
 

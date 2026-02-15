@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="18dp">
+
+    <TextView
+        android:id="@+id/file_action_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:textColor="#1B1B1B"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="14dp"
+        android:background="#22000000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/action_rename"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_rename"
+            android:textAllCaps="false"
+            android:textColor="#1B1B1B" />
+
+        <Button
+            android:id="@+id/action_copy"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_copy"
+            android:textAllCaps="false"
+            android:textColor="#1B1B1B" />
+
+        <Button
+            android:id="@+id/action_delete"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_delete"
+            android:textAllCaps="false"
+            android:textColor="#B3261E" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/action_move"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_move"
+            android:textAllCaps="false"
+            android:textColor="#1B1B1B" />
+
+        <Button
+            android:id="@+id/action_info"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_show_info"
+            android:textAllCaps="false"
+            android:textColor="#1B1B1B" />
+
+        <Button
+            android:id="@+id/action_edit"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_action_button_light"
+            android:text="@string/file_manager_action_edit_code"
+            android:textAllCaps="false"
+            android:textColor="#1B1B1B" />
+    </LinearLayout>
+
+</LinearLayout>

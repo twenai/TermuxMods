@@ -27,6 +27,7 @@
 
     <!-- Termux Bootstrap Packages Installation -->
     <string name="bootstrap_installer_body">Installing bootstrap packages…</string>
+    <string name="bootstrap_installer_subtitle">Please wait while we prepare your environment…</string>
     <string name="bootstrap_error_title">Unable to install bootstrap</string>
     <string name="bootstrap_error_body">&TERMUX_APP_NAME; was unable to install the bootstrap packages.</string>
     <string name="bootstrap_error_abort">Abort</string>
@@ -225,5 +226,178 @@
 
     <!-- Donate Preference -->
     <string name="donate_preference_title">Donate</string>
+
+
+    <!-- TermuxMods Right Sidebar -->
+    <string name="termuxmods_left_drawer_title">Terminal Sessions</string>
+    <string name="termuxmods_right_drawer_title">TermuxMods Panel</string>
+    <string name="termuxmods_right_drawer_subtitle">Quick tools, profile and package actions</string>
+    <string name="termuxmods_section_shortcuts">SHORTCUTS</string>
+    <string name="termuxmods_section_customize">CUSTOMIZE</string>
+    <string name="termuxmods_update_system">UPDATE SYSTEM</string>
+    <string name="termuxmods_cleanup">CLEAN UP</string>
+    <string name="termuxmods_action_prompt">PROMPT</string>
+    <string name="termuxmods_action_reset">RESET</string>
+    <string name="termuxmods_action_update">UPDATE</string>
+    <string name="termuxmods_action_upgrade">UPGRADE</string>
+    <string name="termuxmods_action_clear">CLEAR</string>
+    <string name="termuxmods_action_remove_cache">REMOVE CACHE</string>
+    <string name="termuxmods_dialog_title">Termux Mods</string>
+    <string name="termuxmods_dialog_apply_prompt">Apply custom prompt configuration?</string>
+    <string name="termuxmods_dialog_install_logo">Install/refresh logo and neofetch setup?</string>
+    <string name="termuxmods_dialog_reset">Reset terminal customization to defaults?</string>
+    <string name="termuxmods_dialog_run_script">Run customization script?</string>
+    <string name="termuxmods_toast_bg_reset">Background reset to default</string>
+    <string name="termuxmods_action_file_manager">FILE MANAGER</string>
+    <string name="termuxmods_action_info_termux">INFO TERMUX</string>
+    <string name="termuxmods_action_sidebar_settings">SETTING</string>
+    <string name="termuxmods_action_sidebar_profile">PROFILE</string>
+    <string name="termuxmods_toast_no_file_manager">No file manager app found</string>
+    <string name="termuxmods_toast_no_browser">No browser app found</string>
+    <string name="termuxmods_info_title">Info Termux</string>
+    <string name="termuxmods_action_youtube">YouTube</string>
+    <string name="termuxmods_info_message">Termux Information
+
+Version: %1$s
+
+Developer Info
+Created By Kz.tutorial
+
+File Manager opens internal Termux storage.
+Info Termux shows application details.
+Profile opens Supabase account page (login/signup/reset password and account details).</string>
+
+
+    <string name="termuxmods_packages">PACKAGES</string>
+    <string name="termuxmods_action_git">GIT</string>
+    <string name="termuxmods_action_curl">CURL</string>
+    <string name="termuxmods_action_wget">WGET</string>
+    <string name="termuxmods_action_python">PYTHON</string>
+    <string name="termuxmods_action_pip">PIP</string>
+    <string name="termuxmods_action_nodejs">NODEJS</string>
+    <string name="termuxmods_action_openssh">OPENSSH</string>
+    <string name="termuxmods_action_openssl">OPENSSL</string>
+    <string name="termuxmods_action_more_pkg">MORE</string>
+
+
+    <!-- Termux File Manager -->
+    <string name="file_manager_title">Termux File Manager</string>
+    <string name="file_manager_back">Back</string>
+    <string name="file_manager_current_path">Path: %1$s</string>
+    <string name="file_manager_up">UP</string>
+    <string name="file_manager_home">HOME</string>
+    <string name="file_manager_new_folder">NEW FOLDER</string>
+    <string name="file_manager_new_file">NEW FILE</string>
+    <string name="file_manager_paste">PASTE</string>
+    <string name="file_manager_refresh">REFRESH</string>
+    <string name="file_manager_folder_details">Folder • %1$d items</string>
+    <string name="file_manager_file_details">File • %1$s</string>
+    <string name="file_manager_dialog_new_folder">Create folder</string>
+    <string name="file_manager_dialog_new_file">Create file</string>
+    <string name="file_manager_action_rename">Rename</string>
+    <string name="file_manager_action_delete">Delete</string>
+    <string name="file_manager_action_copy">Copy</string>
+    <string name="file_manager_action_move">Move</string>
+    <string name="file_manager_action_show_info">Show info</string>
+    <string name="file_manager_delete_confirm">Delete %1$s ?</string>
+    <string name="file_manager_file_info">Path: %1$s
+Size: %2$s
+Last modified: %3$s</string>
+    <string name="file_manager_clipboard_empty">Clipboard is empty</string>
+    <string name="file_manager_clipboard_copy_ready">File or folder copied. Tap PASTE to duplicate.</string>
+    <string name="file_manager_clipboard_move_ready">File or folder selected for move. Tap PASTE to move.</string>
+    <string name="file_manager_success_created">Created successfully</string>
+    <string name="file_manager_error_create">Failed to create file or folder</string>
+    <string name="file_manager_success_rename">Rename completed</string>
+    <string name="file_manager_error_rename">Rename failed</string>
+    <string name="file_manager_success_delete">Delete completed</string>
+    <string name="file_manager_error_delete">Delete failed</string>
+    <string name="file_manager_success_paste">Paste completed</string>
+    <string name="file_manager_error_paste">Paste failed</string>
+
+
+    <string name="file_manager_go">GO</string>
+    <string name="file_manager_path_hint">Enter path manually</string>
+    <string name="file_manager_invalid_path">Invalid path or directory cannot be opened</string>
+    <string name="file_manager_action_edit_code">Edit Code</string>
+
+    <string name="code_editor_title">Code Editor</string>
+    <string name="code_editor_save">Save</string>
+    <string name="code_editor_saved">File saved successfully</string>
+    <string name="code_editor_error_no_file">File path was not found</string>
+    <string name="code_editor_error_load">Failed to open file</string>
+    <string name="code_editor_error_save">Failed to save file</string>
+
+    <string name="file_manager_only_files_editable">Only files can be opened in the code editor</string>
+    <string name="session_action_pin">PIN</string>
+    <string name="session_action_delete">DELETE</string>
+    <string name="session_action_delete_confirm_title">Delete Session</string>
+    <string name="session_action_delete_confirm_message">Are you sure you want to delete this session?</string>
+
+    <string name="profile_subtitle">Secure Supabase authentication and profile metadata.</string>
+    <string name="profile_hint_email">Email</string>
+    <string name="profile_hint_password">Password</string>
+    <string name="profile_hint_username">Username (default from email)</string>
+    <string name="profile_action_login">Log in</string>
+    <string name="profile_action_signup">Create account</string>
+    <string name="profile_action_reset">Forgot password?</string>
+    <string name="profile_action_logout">Sign out</string>
+    <string name="profile_action_save">Save profile</string>
+    <string name="profile_action_refresh">Refresh profile</string>
+    <string name="profile_role_default">Authenticated account</string>
+    <string name="profile_msg_email_password_required">Email and password are required.</string>
+    <string name="profile_msg_email_required">Enter your email first.</string>
+    <string name="profile_msg_auth_failed">Authentication failed.</string>
+    <string name="profile_msg_signup_success">Account created. Check your email if verification is required.</string>
+    <string name="profile_msg_login_success">Logged in successfully.</string>
+    <string name="profile_msg_reset_sent">Password reset link has been sent.</string>
+    <string name="profile_msg_login_first">Please sign in first.</string>
+    <string name="profile_msg_saved">Profile saved.</string>
+    <string name="profile_error_title">Supabase Error</string>
+    <string name="profile_msg_request_failed">Supabase request failed.</string>
+    <string name="profile_msg_missing_config">Supabase configuration is missing. Set TERMUXMODS_SUPABASE_URL and TERMUXMODS_SUPABASE_ANON_KEY.</string>
+    <string name="profile_msg_missing_endpoint">Supabase endpoint is missing.</string>
+    <string name="profile_msg_invalid_url">Supabase URL must start with http:// or https://.</string>
+
+    <string name="profile_screen_title">Profile</string>
+    <string name="profile_auth_title">Supabase account</string>
+    <string name="profile_placeholder_user">user</string>
+    <string name="profile_session_user_id_label">User ID</string>
+    <string name="profile_session_last_login_label">Last login</string>
+    <string name="profile_session_expiry_label">Session expiry</string>
+
+    <string name="profile_avatar_desc">Profile avatar</string>
+    <string name="profile_chip_authenticated">Authenticated</string>
+    <string name="profile_connected">Connected to Supabase</string>
+    <string name="profile_data_title">Profile data</string>
+    <string name="profile_session_title">Session</string>
+    <string name="profile_snackbar_logged_in">Logged in</string>
+    <string name="profile_snackbar_profile_updated">Profile updated</string>
+    <string name="profile_snackbar_logged_out">Logged out</string>
+
+
+    <string name="termuxmods_action_community">Community</string>
+
+    <string name="community_title">Community Chat</string>
+    <string name="community_hint">Type a message</string>
+    <string name="community_send">Send</string>
+    <string name="community_error_load">Unable to load chat messages</string>
+    <string name="community_error_send">Unable to send message</string>
+
+    <string name="code_editor_search">Search</string>
+    <string name="code_editor_search_hint">Find text</string>
+    <string name="code_editor_search_results">%1$d matches</string>
+
+    <string name="profile_session_termux_id_label">Termux ID</string>
+
+    <string name="profile_action_change_avatar">Change avatar</string>
+
+    <string name="profile_snackbar_avatar_updated">Avatar updated</string>
+
+    <string name="community_login_required">Please sign in first to use Community chat.</string>
+
+    <string name="community_meta_format">%1$s • %2$s</string>
+
+    <string name="community_subtitle">Live chat with TermuxMods users</string>
 
 </resources>
