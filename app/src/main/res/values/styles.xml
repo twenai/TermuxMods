@@ -42,7 +42,7 @@
         <item name="android:colorAccent">#212121</item>
     </style>
 
-    <style name="Theme.Termux.Profile" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Termux.Profile" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 

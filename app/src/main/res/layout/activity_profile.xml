@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/termuxmods_action_sidebar_profile"
-            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:textStyle="bold" />
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="@string/profile_subtitle"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_auth"
@@ -44,12 +44,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/profile_auth_card_title"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/profile_email_layout"
-                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -64,7 +64,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/profile_password_layout"
-                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -80,7 +80,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/profile_btn_login"
-                    style="@style/Widget.Material3.Button"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -89,7 +89,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/profile_btn_signup"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -97,7 +97,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/profile_btn_reset_pass"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/profile_action_reset" />
@@ -145,7 +145,7 @@
                             android:id="@+id/profile_auth_status"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             android:textStyle="bold" />
 
                         <TextView
@@ -153,7 +153,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -168,7 +168,7 @@
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/profile_auth_chip"
-                        style="@style/Widget.Material3.Chip.Assist"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/profile_chip_authenticated" />
@@ -185,7 +185,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/profile_connected"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -206,11 +206,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/profile_data_title"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
@@ -223,7 +223,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -238,7 +238,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/profile_btn_save"
-                        style="@style/Widget.Material3.Button"
+                        style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
@@ -247,7 +247,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/profile_btn_refresh"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -273,7 +273,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/profile_session_title"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         android:textStyle="bold" />
 
                     <TextView
@@ -281,7 +281,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                         android:textIsSelectable="true" />
 
                     <TextView
@@ -289,20 +289,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
                     <TextView
                         android:id="@+id/profile_session_expiry"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/profile_btn_logout"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
