@@ -324,5 +324,7 @@ Last modified: %3$s</string>
     <string name="file_manager_only_files_editable">Only files can be opened in the code editor</string>
     <string name="session_action_pin">PIN</string>
     <string name="session_action_delete">DELETE</string>
+    <string name="session_action_delete_confirm_title">Delete Session</string>
+    <string name="session_action_delete_confirm_message">Are you sure you want to delete this session?</string>
 
 </resources>

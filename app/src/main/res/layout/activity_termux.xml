@@ -176,7 +176,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginEnd="4dp"
-                        android:background="@drawable/btn_glass_rounded"
+                        android:background="@drawable/dialog_action_button_light"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -197,7 +197,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_file_manager"
-                            android:textColor="#F2F6FF"
+                            android:textColor="#1B1B1B"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -210,7 +210,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginHorizontal="4dp"
-                        android:background="@drawable/btn_glass_rounded"
+                        android:background="@drawable/dialog_action_button_light"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -231,7 +231,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_info_termux"
-                            android:textColor="#F2F6FF"
+                            android:textColor="#1B1B1B"
                             android:textSize="10sp" />
                     </LinearLayout>
 
@@ -244,7 +244,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:layout_marginStart="4dp"
-                        android:background="@drawable/btn_glass_rounded"
+                        android:background="@drawable/dialog_action_button_light"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -265,7 +265,7 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:text="@string/termuxmods_action_sidebar_settings"
-                            android:textColor="#F2F6FF"
+                            android:textColor="#1B1B1B"
                             android:textSize="10sp" />
                     </LinearLayout>
                 </LinearLayout>
