@@ -192,13 +192,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="8dp">
                     <Button
                         android:id="@+id/btn_prompt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="PROMPT"
+                        android:textAllCaps="true"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="LOGO"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_background"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BG"
                         android:textAllCaps="true"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
