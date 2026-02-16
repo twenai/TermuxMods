@@ -104,6 +104,26 @@
             android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
 
         <activity
+            android:name=".app.activities.ProfileActivity"
+            android:exported="false"
+            android:label="@string/title_profile"
+            android:parentActivityName=".app.TermuxActivity"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <activity
+            android:name=".app.activities.CommunityActivity"
+            android:exported="false"
+            android:label="@string/title_community"
+            android:parentActivityName=".app.TermuxActivity"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <activity
+            android:name=".app.activities.PrivateChatActivity"
+            android:exported="false"
+            android:parentActivityName=".app.TermuxActivity"
+            android:theme="@android:style/Theme.Material.Light.DarkActionBar" />
+
+        <activity
             android:name=".shared.activities.ReportActivity"
             android:theme="@style/Theme.AppCompat.TermuxReportActivity"
             android:documentLaunchMode="intoExisting"

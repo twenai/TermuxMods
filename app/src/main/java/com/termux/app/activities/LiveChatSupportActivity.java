@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.termux.R;
+import com.termux.app.social.SocialStore;
 
 public class LiveChatSupportActivity extends Activity {
 
@@ -25,6 +26,7 @@ public class LiveChatSupportActivity extends Activity {
 
     private Uri selectedImageUri;
     private ImageView imagePreview;
+    private ImageView profileAvatar;
     private TextView selectedFileLabel;
 
     @Override
@@ -37,10 +39,26 @@ public class LiveChatSupportActivity extends Activity {
         Button chooseImageButton = findViewById(R.id.button_choose_image);
         Button sendImageButton = findViewById(R.id.button_send_image);
         imagePreview = findViewById(R.id.image_preview);
+        profileAvatar = findViewById(R.id.live_chat_profile_avatar);
         selectedFileLabel = findViewById(R.id.text_selected_file);
 
         chooseImageButton.setOnClickListener(v -> openImagePicker());
         sendImageButton.setOnClickListener(v -> shareSelectedImage());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadProfileAvatar();
+    }
+
+    private void loadProfileAvatar() {
+        Uri avatarUri = SocialStore.getProfileAvatarUri(this);
+        if (avatarUri != null) {
+            profileAvatar.setImageURI(avatarUri);
+        } else {
+            profileAvatar.setImageResource(android.R.drawable.sym_def_app_icon);
+        }
     }
 
     private void openImagePicker() {
