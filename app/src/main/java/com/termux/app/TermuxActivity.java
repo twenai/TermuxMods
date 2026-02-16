@@ -867,6 +867,20 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         session.write(script);
     }
 
+    private void setCustomBackground() {
+        setTerminalBackground(R.drawable.terminal_bg_custom);
+    }
+
+    private void setTerminalBackground(@Nullable Integer drawableResId) {
+        if (mTerminalView == null) return;
+
+        if (drawableResId == null) {
+            mTerminalView.setBackgroundResource(0);
+        } else {
+            mTerminalView.setBackgroundResource(drawableResId);
+        }
+    }
+
     private void setupRightSidebar() {
         int commandsContainerId = getResources().getIdentifier("commands_container", "id", getPackageName());
         GridLayout container = commandsContainerId != 0 ? findViewById(commandsContainerId) : null;
