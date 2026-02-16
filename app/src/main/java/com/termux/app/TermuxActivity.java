@@ -868,7 +868,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     private void setupRightSidebar() {
-        GridLayout container = findViewById(R.id.commands_container);
+        int commandsContainerId = getResources().getIdentifier("commands_container", "id", getPackageName());
+        GridLayout container = commandsContainerId != 0 ? findViewById(commandsContainerId) : null;
 
         if (container == null) {
             // Fallback for old sidebar buttons if container is missing.
