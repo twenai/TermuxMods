@@ -762,6 +762,14 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
 
+    public View getTermuxActivityBottomSpaceView() {
+        return mTermuxActivityBottomSpaceView;
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
+    }
+
     public int getNavBarHeight() {
         return mNavBarHeight;
     }
