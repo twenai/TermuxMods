@@ -899,19 +899,19 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
             if (btnPrompt != null) {
                 btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-
-                int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
-                Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
-                if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-
-                int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
-                Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
-                if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-
-                int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
-                Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
-                if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             }
+
+            int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
+            Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
+            if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
+
+            int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
+            Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
+            if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
+
+            int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
+            Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
+            if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             return;
         }
 
