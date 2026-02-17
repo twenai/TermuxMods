@@ -24,10 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.termux.R;
@@ -37,7 +40,10 @@ import com.termux.shared.packages.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
+import com.termux.app.activities.CommunityActivity;
 import com.termux.app.activities.HelpActivity;
+import com.termux.app.activities.ProfileActivity;
+import com.termux.app.activities.LiveChatSupportActivity;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.settings.preferences.TermuxAppSharedPreferences;
 import com.termux.app.terminal.TermuxSessionsListViewController;
@@ -72,11 +78,6 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Button;
-
 public final class TermuxActivity extends Activity implements ServiceConnection {
 
     /**
@@ -174,6 +175,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     private static final int CONTEXT_MENU_STYLING_ID = 5;
     private static final int CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON = 6;
     private static final int CONTEXT_MENU_HELP_ID = 7;
+    private static final int CONTEXT_MENU_LIVE_CHAT_SUPPORT_ID = 12;
+    private static final int CONTEXT_MENU_PROFILE_ID = 13;
+    private static final int CONTEXT_MENU_COMMUNITY_ID = 14;
     private static final int CONTEXT_MENU_SETTINGS_ID = 8;
     private static final int CONTEXT_MENU_REPORT_ID = 9;
 
@@ -609,6 +613,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         menu.add(Menu.NONE, CONTEXT_MENU_STYLING_ID, Menu.NONE, R.string.action_style_terminal);
         menu.add(Menu.NONE, CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON, Menu.NONE, R.string.action_toggle_keep_screen_on).setCheckable(true).setChecked(mPreferences.shouldKeepScreenOn());
         menu.add(Menu.NONE, CONTEXT_MENU_HELP_ID, Menu.NONE, R.string.action_open_help);
+        menu.add(Menu.NONE, CONTEXT_MENU_LIVE_CHAT_SUPPORT_ID, Menu.NONE, R.string.action_live_chat_support);
+        menu.add(Menu.NONE, CONTEXT_MENU_PROFILE_ID, Menu.NONE, R.string.action_open_profile);
+        menu.add(Menu.NONE, CONTEXT_MENU_COMMUNITY_ID, Menu.NONE, R.string.action_open_community);
         menu.add(Menu.NONE, CONTEXT_MENU_SETTINGS_ID, Menu.NONE, R.string.action_open_settings);
         menu.add(Menu.NONE, CONTEXT_MENU_REPORT_ID, Menu.NONE, R.string.action_report_issue);
     }
@@ -654,6 +661,15 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 return true;
             case CONTEXT_MENU_HELP_ID:
                 startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case CONTEXT_MENU_LIVE_CHAT_SUPPORT_ID:
+                startActivity(new Intent(this, LiveChatSupportActivity.class));
+                return true;
+            case CONTEXT_MENU_PROFILE_ID:
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            case CONTEXT_MENU_COMMUNITY_ID:
+                startActivity(new Intent(this, CommunityActivity.class));
                 return true;
             case CONTEXT_MENU_SETTINGS_ID:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -746,12 +762,30 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
 
+    public View getTermuxActivityBottomSpaceView() {
+        return mTermuxActivityBottomSpaceView;
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
+    }
+
     public int getNavBarHeight() {
         return mNavBarHeight;
     }
 
     public TermuxActivityRootView getTermuxActivityRootView() {
         return mTermuxActivityRootView;
+    }
+
+    private void showInstallationDialog(String part) {
+        showToast("Running setup: " + part, false);
+    }
+
+    private void executeCommand(String command) {
+        TerminalSession session = getCurrentSession();
+        if (session == null || command == null || command.isEmpty()) return;
+        session.write(command + "\n");
     }
 
     private void executeScriptPart(String part) {
@@ -840,30 +874,47 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
         session.write(script);
     }
-        session.write(script);
+
+    private void setCustomBackground() {
+        setTerminalBackground(R.drawable.terminal_bg_custom);
+    }
+
+    private void setTerminalBackground(@Nullable Integer drawableResId) {
+        if (mTerminalView == null) return;
+
+        if (drawableResId == null) {
+            mTerminalView.setBackgroundResource(0);
+        } else {
+            mTerminalView.setBackgroundResource(drawableResId);
+        }
     }
 
     private void setupRightSidebar() {
-            // Fallback for old sidebar buttons if container is missing
+        int commandsContainerId = getResources().getIdentifier("commands_container", "id", getPackageName());
+        GridLayout container = commandsContainerId != 0 ? findViewById(commandsContainerId) : null;
+
+        if (container == null) {
+            // Fallback for old sidebar buttons if container is missing.
             int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
             Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
             if (btnPrompt != null) {
                 btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-                
-                int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
-                Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
-                if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-                
-                int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
-                Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
-                if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-                
-                int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
-                Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
-                if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             }
+
+            int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
+            Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
+            if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
+
+            int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
+            Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
+            if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
+
+            int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
+            Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
+            if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
             return;
         }
+
         container.removeAllViews();
 
         // Section: Info

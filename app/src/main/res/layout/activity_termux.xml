@@ -138,18 +138,21 @@
 
             <LinearLayout
                 android:id="@+id/right_drawer"
-                android:layout_width="320dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:background="@drawable/sidebar_glass_bg"
+                android:layout_width="286dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/dialog_glass_bg"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:elevation="8dp">
+                android:padding="14dp"
+                android:elevation="16dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="DEVELOPER INFO"
+                    android:text="FLOATING MENU"
                     android:textColor="@color/text_white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -166,7 +169,7 @@
                     android:gravity="center"
                     android:clickable="true"
                     android:focusable="true"
-                    android:layout_marginBottom="24dp">
+                    android:layout_marginBottom="14dp">
                     
                     <TextView
                         android:layout_width="wrap_content"
@@ -189,13 +192,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="8dp">
                     <Button
                         android:id="@+id/btn_prompt"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="PROMPT"
+                        android:textAllCaps="true"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                    <Button
+                        android:id="@+id/btn_logo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="LOGO"
+                        android:textAllCaps="true"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/btn_glass_rounded"
+                        android:textColor="@color/text_white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <Button
+                        android:id="@+id/btn_background"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BG"
                         android:textAllCaps="true"
                         android:layout_marginEnd="4dp"
                         android:background="@drawable/btn_glass_rounded"
