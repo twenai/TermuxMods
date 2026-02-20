@@ -72,9 +72,7 @@ import androidx.viewpager.widget.ViewPager;
  * </ul>
  * about memory leaks.
  */
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Button;
 
 public final class TermuxActivity extends Activity implements ServiceConnection {
@@ -840,122 +838,52 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
         session.write(script);
     }
-        session.write(script);
+
+    private void executeCommand(String command) {
+        TerminalSession session = getCurrentSession();
+        if (session == null || command == null || command.trim().isEmpty()) return;
+        session.write(command + "\n");
+    }
+
+    private void showInstallationDialog(String title) {
+        Toast.makeText(this, title + " setup started", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setCustomBackground() {
+        if (mTerminalView == null) return;
+
+        int drawableId = getResources().getIdentifier("terminal_bg_custom", "drawable", getPackageName());
+        if (drawableId == 0) return;
+
+        android.graphics.drawable.Drawable drawable = ContextCompat.getDrawable(this, drawableId);
+        if (drawable != null) mTerminalView.setBackground(drawable);
     }
 
     private void setupRightSidebar() {
-            // Fallback for old sidebar buttons if container is missing
-            int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
-            Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
-            if (btnPrompt != null) {
-                btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
-                
-                int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
-                Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
-                if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
-                
-                int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
-                Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
-                if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
-                
-                int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
-                Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
-                if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
-            }
-            return;
+        int developerInfoLinkId = getResources().getIdentifier("developer_info_link", "id", getPackageName());
+        LinearLayout developerInfoLink = developerInfoLinkId != 0 ? findViewById(developerInfoLinkId) : null;
+        if (developerInfoLink != null) {
+            developerInfoLink.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtube.com/@Kz.tutorial"));
+                startActivity(intent);
+            });
         }
-        container.removeAllViews();
 
-        // Section: Info
-        addSidebarSection(container, "Package Info", R.drawable.ic_pkg);
-        addSidebarCommand(container, "List", "pkg list-installed", false);
-        addSidebarCommand(container, "Storage", "df -h", false);
+        int btnPromptId = getResources().getIdentifier("btn_prompt", "id", getPackageName());
+        Button btnPrompt = btnPromptId != 0 ? findViewById(btnPromptId) : null;
+        if (btnPrompt != null) btnPrompt.setOnClickListener(v -> executeScriptPart("prompt"));
 
-        // Section: Packages
-        addSidebarSection(container, "Packages", R.drawable.ic_pkg);
-        addSidebarCommandWithCheck(container, "Update", "apt update && apt upgrade -y", "apt", false);
-        addSidebarCommandWithCheck(container, "Python", "pkg install python -y", "python", false);
-        addSidebarCommandWithCheck(container, "Git", "pkg install git -y", "git", false);
-        addSidebarCommandWithCheck(container, "NodeJS", "pkg install nodejs -y", "node", false);
+        int btnLogoId = getResources().getIdentifier("btn_logo", "id", getPackageName());
+        Button btnLogo = btnLogoId != 0 ? findViewById(btnLogoId) : null;
+        if (btnLogo != null) btnLogo.setOnClickListener(v -> executeScriptPart("logo"));
 
-        // Section: System
-        addSidebarSection(container, "System", R.drawable.ic_system);
-        addSidebarCommand(container, "Top", "top", false);
-        addSidebarCommand(container, "Network", "ifconfig", false);
+        int btnBackgroundId = getResources().getIdentifier("btn_background", "id", getPackageName());
+        Button btnBackground = btnBackgroundId != 0 ? findViewById(btnBackgroundId) : null;
+        if (btnBackground != null) btnBackground.setOnClickListener(v -> setCustomBackground());
 
-        // Section: Root
-        addSidebarSection(container, "Root", R.drawable.ic_root);
-        addSidebarCommand(container, "tsu", "tsu", true);
-        addSidebarCommand(container, "Mount", "mount -o remount,rw /", true);
-    }
-
-    private void addSidebarSection(GridLayout container, String title, int iconRes) {
-        TextView tv = new TextView(this);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.columnSpec = GridLayout.spec(0, 2);
-        params.setMargins(0, 24, 0, 8);
-        tv.setLayoutParams(params);
-        tv.setText(title);
-        tv.setTextColor(ContextCompat.getColor(this, R.color.accent_color));
-        tv.setTextSize(14);
-        tv.setAllCaps(true);
-        tv.setCompoundDrawablesWithIntrinsicBounds(iconRes, 0, 0, 0);
-        tv.setCompoundDrawablePadding(12);
-        container.addView(tv);
-    }
-
-    private void addSidebarCommand(GridLayout container, String label, String command, boolean isRoot) {
-        Button btn = createSidebarButton(label, isRoot);
-        btn.setOnClickListener(v -> executeCommand(command));
-        container.addView(btn);
-    }
-
-    private void addSidebarCommandWithCheck(GridLayout container, String label, String command, String binary, boolean isRoot) {
-        Button btn = createSidebarButton(label, isRoot);
-        btn.setOnClickListener(v -> {
-            String fullCmd = "command -v " + binary + " >/dev/null 2>&1 || " + command + " && " + binary + " --version || echo '" + label + " ready'";
-            executeCommand(fullCmd);
-        });
-        container.addView(btn);
-    }
-
-    private Button createSidebarButton(String label, boolean isRoot) {
-        Button btn = new Button(this);
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
-        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-        params.setMargins(4, 4, 4, 4);
-        btn.setLayoutParams(params);
-        btn.setText(label);
-        btn.setAllCaps(false);
-        btn.setTextColor(Color.WHITE);
-        btn.setBackgroundResource(R.drawable.btn_glass_rounded);
-        btn.setPadding(12, 16, 12, 16);
-        btn.setTextSize(12);
-        btn.setGravity(Gravity.CENTER);
-        
-        int iconRes = 0;
-        /*
-        switch (label.toLowerCase()) {
-            case "list": iconRes = R.drawable.ic_list; break;
-            case "storage": iconRes = R.drawable.ic_storage; break;
-            case "update": iconRes = R.drawable.ic_update; break;
-            case "python": iconRes = R.drawable.ic_python; break;
-            case "git": iconRes = R.drawable.ic_git; break;
-            case "nodejs": iconRes = R.drawable.ic_node; break;
-            case "top": iconRes = R.drawable.ic_system; break;
-            case "network": iconRes = R.drawable.ic_network; break;
-            case "tsu": iconRes = R.drawable.ic_root; break;
-            case "mount": iconRes = R.drawable.ic_storage; break;
-        }
-        */
-        
-        // Map labels to existing icons safely
-        String lowerLabel = label.toLowerCase();
-        if (lowerLabel.contains("pkg") || lowerLabel.contains("list")) iconRes = R.drawable.ic_pkg;
-        else if (lowerLabel.contains("system") || lowerLabel.contains("top")) iconRes = R.drawable.ic_system;
-        
-        return btn;
+        int btnResetId = getResources().getIdentifier("btn_reset", "id", getPackageName());
+        Button btnReset = btnResetId != 0 ? findViewById(btnResetId) : null;
+        if (btnReset != null) btnReset.setOnClickListener(v -> executeScriptPart("reset"));
     }
 
     private void unregisterTermuxActivityBroadcastReceiever() {
